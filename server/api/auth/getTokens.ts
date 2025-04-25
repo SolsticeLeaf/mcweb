@@ -14,7 +14,10 @@ export default defineEventHandler(async (event) => {
             return error.response;
         });
         const tokensData: Token = tokens.data.token;
-        if (tokensData) { setCookie(event, 'token', JSON.stringify(tokensData)); }
+        if (tokensData) {
+            setCookie(event, 'token', JSON.stringify(tokensData));
+            deleteCookie(event, 'clientId');
+        }
         return { status: 'OK', clientId: '' };
     } catch (error) {
         return { status: 'ERR', clientId: '' };
