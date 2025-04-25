@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
             }
         };
     } catch (error) {
-        console.log('Error on checking auth status', error);
+        console.log('Error on checking auth status:', error);
         return { status: 'NOT_AUTHORIZED', user: { system: {}, player: {} } };
     }
 });

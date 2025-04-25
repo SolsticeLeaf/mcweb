@@ -17,8 +17,10 @@ onBeforeMount(async () => {
     });
     status.value = response_status;
   } finally {
-    window.location.assign(redirectUrl);
-    window.open(redirectUrl, "_self");
+    if (status.value === 'OK') {
+      window.location.assign(redirectUrl);
+      window.open(redirectUrl, "_self");
+    }
   }
 });
 
