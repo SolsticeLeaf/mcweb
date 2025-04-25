@@ -74,7 +74,7 @@ export default defineNuxtConfig({
     id: process.env.UMAMI_ID,
     host: process.env.UMAMI_HOST,
     autoTrack: true,
-    enabled: false
+    enabled: false // TODO: Enable
   },
   runtimeConfig: {
     public: {

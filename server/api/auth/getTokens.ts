@@ -20,6 +20,7 @@ export default defineEventHandler(async (event) => {
         }
         return { status: 'OK', clientId: '' };
     } catch (error) {
+        console.log('Error on getting tokens', error);
         return { status: 'ERR', clientId: '' };
     }
 });

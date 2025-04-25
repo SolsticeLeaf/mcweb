@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
             redirectUrl: `${domain}/login/`
         }))}` };
     } catch (error) {
+        console.log('Error on getting auth link', error);
         return { status: 'ERR', link: '' };
     }
 });

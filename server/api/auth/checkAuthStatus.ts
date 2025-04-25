@@ -5,13 +5,11 @@ import { connectDB } from '../database/MongoDB';
 
 export default defineEventHandler(async (event) => {
     try {
+        await connectDB();
         const date = new Date();
         let token: Token = { accessToken: '', refreshToken: '', accessExpire: date, refreshExpire: date };
-        try {
-            token = JSON.parse(getCookie(event, 'token')?.toString() || '');
-        } catch {}
+        try { token = JSON.parse(getCookie(event, 'token')?.toString() || ''); } catch {}
         if (token.accessToken.length <= 0 || token.refreshToken.length <= 0) { return { status: 'NOT_AUTHORIZED', user: { system: {}, player: {} } }; }
-        await connectDB();
         const data = await getData(event, token);
         if (data === undefined) { return { status: 'NOT_AUTHORIZED', user: { system: {}, player: {} } }; }
         return {
@@ -21,7 +19,7 @@ export default defineEventHandler(async (event) => {
             }
         };
     } catch (error) {
-        console.log(error);
+        console.log('Error on checking auth status', error);
         return { status: 'NOT_AUTHORIZED', user: { system: {}, player: {} } };
     }
 });
