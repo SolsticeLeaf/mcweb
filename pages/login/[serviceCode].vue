@@ -3,10 +3,9 @@ const route = useRoute();
 const { locale } = useI18n();
 const redirectUrl = useCookie('redirectUrl').value || `/${locale.value}`;
 
-const status = ref('');
 onBeforeMount(async () => {
   try {
-    const { status: response_status } = await $fetch('/api/auth/getTokens', {
+    await $fetch('/api/auth/getTokens', {
       default: () => [],
       cache: "no-cache",
       server: false,
@@ -15,12 +14,9 @@ onBeforeMount(async () => {
         serviceCode: route.params.serviceCode
       }
     });
-    status.value = response_status;
   } finally {
-    if (status.value === 'OK') {
-      window.location.assign(redirectUrl);
-      window.open(redirectUrl, "_self");
-    }
+    window.location.assign(redirectUrl);
+    window.open(redirectUrl, "_self");
   }
 });
 
