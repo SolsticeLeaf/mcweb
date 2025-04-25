@@ -1,0 +1,15 @@
+services:
+  mcweb:
+    build: .
+    container_name: minecraft-web
+    image: minecraft-web:latest
+    restart: always
+    network_mode: "host"
+    environment:
+      - PORT=4440
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_URL=${DATABASE_URL}
+      - UMAMI_ID=${UMAMI_ID}
+      - UMAMI_HOST=${UMAMI_HOST}
+      - DOMAIN=${DOMAIN}
+      - AUTH_DOMAIN=${AUTH_DOMAIN}
