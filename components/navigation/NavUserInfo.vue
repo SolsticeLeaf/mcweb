@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { PlayerData } from '~/utilities/player.interface copy';
 import iconsConfig from "~/config/icons.config";
 import FlexButton from "../utilities/FlexButton.vue";
 import ActionButton from "../utilities/ActionButton.vue";
@@ -9,7 +10,7 @@ const theme = useColorMode();
 defineProps<{
   authStatus: string;
   user: any;
-  player: any;
+  player: PlayerData;
   onExit: any;
 }>();
 
@@ -58,8 +59,8 @@ const getAlternateLocale = computed(() => {
       </div>
       <div class="nav__userbox__userinfo__user">
         <NuxtLink class="nav__userbox__userinfo__user__info transparent__glass" :to="`/${locale}/player/${user.username}`">
-          <h6>{{ user.username }}</h6>
-          <NuxtImg class="nav__userbox__userinfo__user__img" :src="`https://vzge.me/bust/256/${user.username}`"/>
+          <h6>{{ player.username }}</h6>
+          <NuxtImg class="nav__userbox__userinfo__user__img" :src="player.skin.bust"/>
         </NuxtLink>
         <div class="user__content">
           <div class="user__content__box">
@@ -132,6 +133,8 @@ const getAlternateLocale = computed(() => {
     gap: 0.3rem;
     filter: none !important;
     -webkit-filter: none !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-radius: 2rem;
     padding: 0.5rem;
     border: 1px solid rgba(44, 32, 68, 0.2);
@@ -170,10 +173,12 @@ const getAlternateLocale = computed(() => {
         -webkit-filter: none !important;
         border-radius: 3rem;
         padding: 0 0.5rem;
+        border: 1px solid rgba(44, 32, 68, 0.2);
         background: -webkit-linear-gradient(0deg, rgba(255, 221, 0, 0.737), rgba(81, 209, 255, 0.761)) !important;
       }
 
       .dark &__money {
+        border: 1px solid rgba(210, 210, 210, 0.2);
         background: -webkit-linear-gradient(0deg, rgb(24, 130, 0), rgb(30, 126, 161)) !important;
       }
 

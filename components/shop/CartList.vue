@@ -68,9 +68,7 @@ const getShopCart = (server: Server) => {
   flex-direction: column;
   position: sticky;
   top: 6rem;
-  z-index: 200;
-  width: 25%;
-  max-width: fit-content;
+  z-index: 10;
   height: fit-content;
   align-items: center;
   gap: 1rem;

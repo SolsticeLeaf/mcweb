@@ -20,6 +20,7 @@ const getServerMenuClass = (server: Server) => {
 
 <style scoped lang="scss">
 .servers {
+  z-index: 10;
   display: flex;
   flex-direction: row;
   justify-content: center;

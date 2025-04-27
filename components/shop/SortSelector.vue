@@ -20,7 +20,7 @@ const getSortName = (sort: any): string => {
 <template>
   <div class="sort" v-if="filteredItems.length > 1">
     <span>{{t('sort')}}:</span>
-    <select class="sort__selector transparent__glass" v-model="modelValue" @change="changed">
+    <select class="sort__selector blur__glass" v-model="modelValue" @change="changed">
       <option v-for="sort in sortTypes" :value="sort">
         {{ getSortName(sort) }}
       </option>
@@ -46,7 +46,7 @@ const getSortName = (sort: any): string => {
   }
 }
 
-.transparent__glass {
+.blur__glass {
   padding: 0.5rem;
 }
 </style>

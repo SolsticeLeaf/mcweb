@@ -1,3 +1,3 @@
 export default {
-    siteName: "MCWeb"
-}
+  siteName: "MCWeb",
+};

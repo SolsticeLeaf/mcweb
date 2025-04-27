@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import NavigationSection from "~/components/navigation/NavigationSection.vue";
+import Navigation from "~/components/navigation/Navigation.vue";
+import BackgroundWords from "./components/utilities/BackgroundWords.vue";
+
+const { tm } = useI18n();
 
 onMounted(() => {
   umTrackView();
@@ -8,13 +11,20 @@ onMounted(() => {
 
 <template>
   <Body>
+    <ClientOnly>
+      <Suspense>
+        <KeepAlive>
+          <BackgroundWords :array="tm('backgroundWords')"/>
+        </KeepAlive>
+      </Suspense>
+    </ClientOnly>
     <NuxtLayout>
       <div id="body" class="body">
         <div class="footer__top">
           <ClientOnly>
             <Suspense>
               <KeepAlive>
-                <NavigationSection />
+                <Navigation />
               </KeepAlive>
             </Suspense>
           </ClientOnly>
@@ -65,12 +75,6 @@ onMounted(() => {
     @media screen and (max-width: $screen-xss) {
       height: 4rem;
     }
-  }
-
-  &__bottom {
-    display: flex;
-    width: 100%;
-    height: 8rem;
   }
 }
 </style>

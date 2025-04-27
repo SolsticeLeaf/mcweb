@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type ShopItem } from "~/utilities/shopitem.interface";
-import ShopitemCard from "~/components/shop/ShopitemCard.vue";
+import ShopitemCard from "~/components/shop/itemCard.vue";
 
 defineProps<{
   paginatedItems: ShopItem[];
@@ -19,14 +19,19 @@ defineProps<{
 </template>
 
 <style scoped lang="scss">
+
 .items {
+  z-index: 10;
   height: fit-content;
   justify-content: center;
   display: grid;
+  flex-wrap: wrap;
   grid-gap: 1rem;
   grid-auto-rows: auto;
-  grid-template-columns: repeat(3, 14rem);
   padding-bottom: 0.5rem;
-  width: fit-content;
+
+  &__card {
+    min-width: 14rem;
+  }
 }
 </style>

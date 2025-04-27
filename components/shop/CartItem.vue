@@ -3,7 +3,7 @@ import { type ShopItem, type LocalizationString } from "~/utilities/shopitem.int
 import iconsConfig from "~/config/icons.config";
 import ActionButton from "../utilities/ActionButton.vue";
 
-const { locale } = useI18n()
+const { t, locale } = useI18n()
 const theme = useColorMode();
 const event = new Event('cart-changed');
 
@@ -14,6 +14,14 @@ const props = defineProps<{
 
 const itemId = props.item._id;
 const hasEnchants = props.item.enchants.length > 0;
+
+const getEnchants = (): string => {
+  let string = '';
+  props.item.enchants.forEach((enchant) => {
+    string = `${string}${string.length > 0 ? '\n' : ''}${t(enchant.name.toLowerCase().replaceAll(' ', ''))} ${enchant.level}`
+  })
+  return string;
+};
 
 const getLocalizedName = (): string => {
   const item = props.item;
@@ -64,10 +72,11 @@ const parseNumber = (numb: number): string => {
 
 <template>
   <ClientOnly>
-    <div class="item transparent__glass">
+    <div class="item blur__glass">
       <div class="item__info">
         <nuxt-img loading="lazy" class="item__info__image" :src="item.image"/>
         <p :class="getNameColor()">{{ getLocalizedName() }}{{ hasEnchants ? '*' : '' }}</p>
+        <p v-if="hasEnchants" class="item__info__enchants-box blur__glass"> {{ getEnchants() }} </p>
       </div>
       <div class="item__count">
         <ActionButton text=""
@@ -132,6 +141,7 @@ const parseNumber = (numb: number): string => {
   &__info {
     display: flex;
     flex-direction: row;
+    text-align: start;
     align-items: center;
     gap: 0.6rem;
 
@@ -141,6 +151,7 @@ const parseNumber = (numb: number): string => {
 
     &__enchants {
       overflow: hidden;
+      cursor: pointer;
       background: -webkit-linear-gradient(0deg, #00d037 15%, #a7ca0c 60%, #d5bf16 100%);
       -webkit-background-clip: text;
       background-clip: text;
@@ -186,17 +197,36 @@ const parseNumber = (numb: number): string => {
       background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+
+    &__enchants-box {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      position: absolute;
+      z-index: 200;
+      bottom: 80%;
+      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+      width: fit-content;
+      text-align: center;
+      white-space: pre-line;
+    }
+
+    &:hover &__enchants-box {
+      cursor: pointer;
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .blur__glass {
+      padding: 0 2rem;
+    }
   }
 }
 
 .blur__glass {
-  padding: 0;
-  background: transparent;
-  border-radius: 1rem;
-}
-
-.transparent__glass {
   padding: 0.5rem 1rem;
+  border-radius: 1rem;
   background: rgba(70, 70, 70, 0.084);
 }
 

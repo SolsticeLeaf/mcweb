@@ -66,8 +66,8 @@ const changeServer = (server: Server) => {
           <KeepAlive>
             <div v-if="selectedServer" class="map">
               <iframe v-if="status === 'OK'"
-                    class="map__frame"
-                    :src="`${selectedServer.map}/?mapname=surface`"
+                    class="map__frame blur__glass"
+                    :src="`${selectedServer.map}/?mapname=flat`"
                     :style="colorMode.value === 'dark' ? 'mix-blend-mode: lighten' : ''"/>
               <div v-else class="transparent__glass">
                 <p>{{ t('authorize_to_view') }}</p>
@@ -81,6 +81,7 @@ const changeServer = (server: Server) => {
 </template>
 
 <style scoped lang="scss">
+@use 'assets/scss/screens' as *;
 
 .body {
   display: flex;
@@ -92,8 +93,8 @@ const changeServer = (server: Server) => {
 }
 
 .map {
-  width: 98%;
-  height: 92%;
+  width: 99%;
+  height: 95%;
   border-radius: 2rem;
 
   &__frame {
@@ -102,6 +103,15 @@ const changeServer = (server: Server) => {
     border-color: transparent;
     border-radius: 2rem;
   }
+
+  @media screen and (max-width: $screen-lg) {
+    width: 98%;
+    height: 92%;
+  }
+}
+
+.blur__glass {
+  padding: 0;
 }
 
 .transparent__glass {

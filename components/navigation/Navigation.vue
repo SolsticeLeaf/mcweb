@@ -6,16 +6,6 @@ import NavUserInfo from "./NavUserInfo.vue";
 
 const { locale } = useI18n();
 
-// function isActive(path: string): boolean {
-//   const currentLocale = locale.value;
-//   const currentPath = route.path.replace(/\/\s*$/, "");
-//   if (path === `/${currentLocale}`) {
-//     return currentPath === path;
-//   } else {
-//     return currentPath.includes(path)
-//   }
-// }
-
 const homePath = computed(() => {
   return `/${locale.value}`;
 })
@@ -26,15 +16,15 @@ const getCart = () => {
 
 const status = ref('');
 const user = ref();
-const player = ref();
+const player = ref<any>();
 const isLoaded = ref(false);
 const cart = ref<number>(getCart());
 
 function exit() {
   useCookie('token').value = '';
   status.value = 'EXITED';
-  user.value = '';
-  player.value = '';
+  user.value = undefined;
+  player.value = undefined;
   const url = `/${locale.value}`;
   window.location.assign(url);
   window.open(url, "_self");

@@ -16,6 +16,8 @@ const { t, locale } = useI18n();
 const route = useRoute();
 const router = useRouter();
 
+const itemsPerPage = 24;
+
 const status = ref('');
 const cart = ref<any>([]);
 const isLoaded = ref(false);
@@ -27,7 +29,6 @@ const filteredShopTypes = ref<ShopType[]>([]);
 const isTypesLoaded = ref(false);
 const selectedType = ref<ShopType>();
 const currentPage = ref(1);
-const itemsPerPage = 21;
 const servers = ref<Server[]>([]);
 const isServersLoaded = ref(false);
 const selectedServer = ref<Server>();
@@ -241,7 +242,7 @@ const getItemName = (type: ShopItem): string => {
             </Suspense>
             <Suspense>
               <KeepAlive>
-                <ItemsList :paginated-items="paginatedItems"/>
+                <ItemsList class="shop__items" :paginated-items="paginatedItems"/>
               </KeepAlive>
             </Suspense>
             <Suspense>
@@ -252,7 +253,7 @@ const getItemName = (type: ShopItem): string => {
           </div>
           <Suspense>
             <KeepAlive>
-              <CartList :cart="cart" :servers="servers" :paginated-items="paginatedItems"/>
+              <CartList class="cart" :cart="cart" :servers="servers" :paginated-items="paginatedItems"/>
             </KeepAlive>
           </Suspense>
         </div>
@@ -269,27 +270,48 @@ const getItemName = (type: ShopItem): string => {
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 6rem;
+  top: 5.5rem;
   max-height: fit-content;
   align-items: center;
+  width: 100vw;
   gap: 1rem;
 }
 
 .wrapper {
+  display: flex;
   flex-direction: row;
   box-sizing: border-box;
   height: fit-content;
   overflow-y: visible;
   align-items: start;
-  gap: 2rem;
-  width: 100vw;
-  padding: 0;
+  gap: 1rem;
+  width: 100%;
+  padding: 0 2.5rem;;
+  padding-bottom: 2rem;
 }
 
 .shop {
   display: flex;
+  width: 40%;
   flex-direction: column;
   align-items: center;
+
+  &__items {
+    display: flex;
+    width: 100%;
+  }
+
+  @media screen and (max-width: $screen-lg) {
+    width: 70%;
+  }
+}
+
+.cart {
+  max-width: 45%;
+
+  @media screen and (max-width: $screen-lg) {
+    max-width: 30%;
+  }
 }
 
 .transparent__glass {
