@@ -19,4 +19,6 @@ export default {
   account: 'pixelarticons:user',
   settings: 'pixelarticons:list',
   gold: 'mdi:gold',
+  accept: 'pixelarticons:check',
+  info: 'pixelarticons:info-box',
 };

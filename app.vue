@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import Navigation from '~/components/navigation/Navigation.vue';
-import BackgroundWords from './components/utilities/BackgroundWords.vue';
+import BackgroundWords from '~/components/utilities/other/BackgroundWords.vue';
+import CookieBanner from '~/components/utilities/other/CookieBanner.vue';
+import { ClientOnly } from '#components';
 
 const { tm } = useI18n();
 
@@ -20,6 +22,11 @@ onMounted(() => {
     </ClientOnly>
     <NuxtLayout>
       <div id="body" class="body">
+        <ClientOnly>
+          <Suspense>
+            <CookieBanner class="cookies-banner" />
+          </Suspense>
+        </ClientOnly>
         <div class="footer__top">
           <ClientOnly>
             <Suspense>
@@ -50,6 +57,18 @@ onMounted(() => {
   width: 100vw;
   max-width: 100vw;
   height: 100vh;
+}
+
+.cookies-banner {
+  display: flex;
+  position: fixed;
+  z-index: 200;
+  bottom: 1rem;
+  right: 1rem;
+
+  @media screen and (max-width: $screen-xss) {
+    right: auto;
+  }
 }
 
 .footer {
