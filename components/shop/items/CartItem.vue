@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { type ShopItem, type LocalizationString } from "~/utilities/shopitem.interface"
-import iconsConfig from "~/config/icons.config";
-import ActionButton from "~/components/utilities/buttons/ActionButton.vue";
+import { type ShopItem, type LocalizationString } from '~/utilities/shopitem.interface';
+import iconsConfig from '~/config/icons.config';
+import ActionButton from '~/components/utilities/buttons/ActionButton.vue';
 
-const { t, locale } = useI18n()
+const { t, locale } = useI18n();
 const theme = useColorMode();
 const event = new Event('cart-changed');
 
@@ -18,8 +18,8 @@ const hasEnchants = props.item.enchants.length > 0;
 const getEnchants = (): string => {
   let string = '';
   props.item.enchants.forEach((enchant) => {
-    string = `${string}${string.length > 0 ? '\n' : ''}${t(enchant.name.toLowerCase().replaceAll(' ', ''))} ${enchant.level}`
-  })
+    string = `${string}${string.length > 0 ? '\n' : ''}${t(enchant.name.toLowerCase().replaceAll(' ', ''))} ${enchant.level}`;
+  });
   return string;
 };
 
@@ -37,11 +37,14 @@ const getNameColor = (): string => {
     return 'item__info__enchants';
   }
   switch (item.type) {
-    case 'permission': return 'item__info__permission';
-    case 'whitelist': return 'item__info__whitelist';
-    default: return 'item__info__name';
+    case 'permission':
+      return 'item__info__permission';
+    case 'whitelist':
+      return 'item__info__whitelist';
+    default:
+      return 'item__info__name';
   }
-}
+};
 
 const minusCart = () => {
   const cart = JSON.parse(localStorage.getItem('cart') || '{}');
@@ -64,39 +67,47 @@ const addToCart = () => {
 };
 
 const parseNumber = (numb: number): string => {
-  if (numb < 1000) { return numb.toString(); }
-  if (numb >= 1000 && numb < 1000000) { return `${numb/1000}k`; }
-  return `${numb/1000000}m`;
-}
+  if (numb < 1000) {
+    return numb.toString();
+  }
+  if (numb >= 1000 && numb < 1000000) {
+    return `${numb / 1000}k`;
+  }
+  return `${numb / 1000000}m`;
+};
 </script>
 
 <template>
   <ClientOnly>
     <div class="item blur__glass">
       <div class="item__info">
-        <nuxt-img loading="lazy" class="item__info__image" :src="item.image"/>
+        <nuxt-img loading="lazy" class="item__info__image" :src="item.image" />
         <p :class="getNameColor()">{{ getLocalizedName() }}{{ hasEnchants ? '*' : '' }}</p>
-        <p v-if="hasEnchants" class="item__info__enchants-box blur__glass"> {{ getEnchants() }} </p>
+        <p v-if="hasEnchants" class="item__info__enchants-box blur__glass">
+          {{ getEnchants() }}
+        </p>
       </div>
       <div class="item__count">
-        <ActionButton text=""
-                      :text-bold="true"
-                      :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
-                      :icon="iconsConfig.arrow_left"
-                      :disableBackground="true"
-                      @click="minusCart()"
-                      :outline="false" />
+        <ActionButton
+          text=""
+          :text-bold="true"
+          :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+          :icon="iconsConfig.arrow_left"
+          :disableBackground="true"
+          @click="minusCart()"
+          :outline="false" />
         <div class="item__count__price">
           <h6>{{ parseNumber(props.value) }} / {{ parseNumber(item.price * props.value) }}</h6>
-          <Icon :name="iconsConfig.gold" :style="`color: ${theme.value === 'dark' ? '#ffffff' : '#3d3a48'}`"/>
+          <Icon :name="iconsConfig.gold" :style="`color: ${theme.value === 'dark' ? '#ffffff' : '#3d3a48'}`" />
         </div>
-        <ActionButton text=""
-                      :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
-                      :icon="iconsConfig.arrow_right"
-                      :disabled="value >= item.max"
-                      :disableBackground="true"
-                      @click="addToCart()"
-                      :outline="false" />
+        <ActionButton
+          text=""
+          :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+          :icon="iconsConfig.arrow_right"
+          :disabled="value >= item.max"
+          :disableBackground="true"
+          @click="addToCart()"
+          :outline="false" />
       </div>
     </div>
   </ClientOnly>
@@ -113,7 +124,7 @@ const parseNumber = (numb: number): string => {
 ::-webkit-scrollbar-thumb {
   border-radius: 3rem;
   background-color: rgba(100, 100, 100, 0.5);
-  box-shadow: 0 0 1px rgba(255, 255, 255, .2);
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
 .item {
@@ -229,5 +240,4 @@ const parseNumber = (numb: number): string => {
   border-radius: 1rem;
   background: rgba(70, 70, 70, 0.084);
 }
-
 </style>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { type ShopItem, type LocalizationString } from "~/utilities/shopitem.interface"
-import iconsConfig from "~/config/icons.config";
-import ActionButton from "~/components/utilities/buttons/ActionButton.vue";
+import { type ShopItem, type LocalizationString } from '~/utilities/shopitem.interface';
+import iconsConfig from '~/config/icons.config';
+import ActionButton from '~/components/utilities/buttons/ActionButton.vue';
 
-const { t, locale } = useI18n()
+const { t, locale } = useI18n();
 const theme = useColorMode();
 const event = new Event('cart-changed');
 
@@ -26,8 +26,8 @@ const getLocalizedName = (): string => {
 const getEnchants = (): string => {
   let string = '';
   props.item.enchants.forEach((enchant) => {
-    string = `${string}${string.length > 0 ? '\n' : ''}${t(enchant.name.toLowerCase().replaceAll(' ', ''))} ${enchant.level}`
-  })
+    string = `${string}${string.length > 0 ? '\n' : ''}${t(enchant.name.toLowerCase().replaceAll(' ', ''))} ${enchant.level}`;
+  });
   return string;
 };
 
@@ -37,16 +37,19 @@ const getNameColor = (): string => {
     return 'card__info__title__enchants enchants-trigger';
   }
   switch (item.type) {
-    case 'permission': return 'card__info__title__permission';
-    case 'whitelist': return 'card__info__title__whitelist';
-    default: return 'card__info__title__text';
+    case 'permission':
+      return 'card__info__title__permission';
+    case 'whitelist':
+      return 'card__info__title__whitelist';
+    default:
+      return 'card__info__title__text';
   }
-}
+};
 
 const changeCart = (cart: any, value: number) => {
   cart[itemId] = value;
   cartCount.value = value;
-}
+};
 
 const minusCart = () => {
   const cart = JSON.parse(localStorage.getItem('cart') || '{}');
@@ -92,47 +95,52 @@ onBeforeMount(() => {
   window.addEventListener('cart-cleared', () => {
     cartCount.value = 0;
   });
-})
+});
 </script>
 
 <template>
   <ClientOnly>
     <div class="card blur__glass">
       <div class="card__image">
-        <nuxt-img loading="lazy" class="card__image__content" :src="item.image"/>
+        <nuxt-img loading="lazy" class="card__image__content" :src="item.image" />
       </div>
       <div class="card__info">
         <div class="card__info__title">
           <h6 :class="getNameColor()">{{ getLocalizedName() }}{{ hasEnchants ? '*' : '' }}</h6>
-          <p v-if="hasEnchants" class="card__info__enchants blur__glass"> {{ getEnchants() }} </p>
+          <p v-if="hasEnchants" class="card__info__enchants blur__glass">
+            {{ getEnchants() }}
+          </p>
         </div>
       </div>
       <div class="card__button">
         <div v-if="cartCount > 0" class="card__button__cart">
-          <ActionButton text=""
-                        :text-bold="true"
-                        :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
-                        :icon="iconsConfig.arrow_left"
-                        @click="minusCart()"
-                        :outline="false" />
+          <ActionButton
+            text=""
+            :text-bold="true"
+            :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+            :icon="iconsConfig.arrow_left"
+            @click="minusCart()"
+            :outline="false" />
           <h6>{{ cartCount }}</h6>
           <!-- TODO: Сделать input -->
-          <ActionButton text=""
-                        :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
-                        :icon="iconsConfig.arrow_right"
-                        :disabled="cartCount >= item.max"
-                        @click="addToCart()"
-                        :outline="false" />
+          <ActionButton
+            text=""
+            :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+            :icon="iconsConfig.arrow_right"
+            :disabled="cartCount >= item.max"
+            @click="addToCart()"
+            :outline="false" />
         </div>
-        <ActionButton v-else
-                      :text="item.price.toString()"
-                      :text-bold="true"
-                      text-color="#f8f8f8"
-                      :icon="iconsConfig.shop_cart"
-                      color="#00a6ac"
-                      @click="addToCart()"
-                      class="main__content__button__btn"
-                      :outline="false" />
+        <ActionButton
+          v-else
+          :text="item.price.toString()"
+          :text-bold="true"
+          text-color="#f8f8f8"
+          :icon="iconsConfig.shop_cart"
+          color="#00a6ac"
+          @click="addToCart()"
+          class="main__content__button__btn"
+          :outline="false" />
       </div>
     </div>
   </ClientOnly>
@@ -149,7 +157,7 @@ onBeforeMount(() => {
 ::-webkit-scrollbar-thumb {
   border-radius: 3rem;
   background-color: rgba(100, 100, 100, 0.5);
-  box-shadow: 0 0 1px rgba(255, 255, 255, .2);
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
 .blur__glass {
@@ -206,7 +214,7 @@ onBeforeMount(() => {
 
       &__text {
         overflow: hidden;
-        background: -webkit-linear-gradient(0deg, #A782FF 15%, #9872cb 60%, #4a2e7c 100%);
+        background: -webkit-linear-gradient(0deg, #a782ff 15%, #9872cb 60%, #4a2e7c 100%);
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -317,5 +325,4 @@ onBeforeMount(() => {
     }
   }
 }
-
 </style>

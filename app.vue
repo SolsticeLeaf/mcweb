@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Navigation from "~/components/navigation/Navigation.vue";
-import BackgroundWords from "./components/utilities/BackgroundWords.vue";
+import Navigation from '~/components/navigation/Navigation.vue';
+import BackgroundWords from './components/utilities/BackgroundWords.vue';
 
 const { tm } = useI18n();
 
@@ -10,7 +10,6 @@ onMounted(() => {
 </script>
 
 <template>
-
   <Body>
     <ClientOnly>
       <Suspense>

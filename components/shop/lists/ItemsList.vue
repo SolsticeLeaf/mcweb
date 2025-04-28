@@ -1,25 +1,23 @@
 <script setup lang="ts">
-import { type ShopItem } from "~/utilities/shopitem.interface";
-import ShopitemCard from "~/components/shop/items/itemCard.vue";
+import { type ShopItem } from '~/utilities/shopitem.interface';
+import ShopitemCard from '~/components/shop/items/itemCard.vue';
 
 defineProps<{
   paginatedItems: ShopItem[];
 }>();
-
 </script>
 
 <template>
   <div class="items" v-if="paginatedItems">
     <div class="items__card" v-for="item in paginatedItems" :key="item._id">
       <Suspense>
-        <ShopitemCard v-bind:item="item"/>
+        <ShopitemCard v-bind:item="item" />
       </Suspense>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-
 .items {
   z-index: 10;
   height: fit-content;

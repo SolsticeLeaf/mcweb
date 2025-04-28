@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { type ShopItem, type LocalizationString } from "~/utilities/shopitem.interface";
-import sortTypes from "~/config/sortTypes.config";
+import { type ShopItem, type LocalizationString } from '~/utilities/shopitem.interface';
+import sortTypes from '~/config/sortTypes.config';
 const { t, locale } = useI18n();
 
 const modelValue = defineModel();
 defineProps<{
   filteredItems: ShopItem[];
-  changed: () => void
+  changed: () => void;
 }>();
 
 const getSortName = (sort: any): string => {
@@ -19,7 +19,7 @@ const getSortName = (sort: any): string => {
 
 <template>
   <div class="sort" v-if="filteredItems.length > 1">
-    <span>{{t('sort')}}:</span>
+    <span>{{ t('sort') }}:</span>
     <select class="sort__selector blur__glass" v-model="modelValue" @change="changed">
       <option v-for="sort in sortTypes" :value="sort">
         {{ getSortName(sort) }}
@@ -38,7 +38,7 @@ const getSortName = (sort: any): string => {
 
   &__selector {
     background: transparent;
-    color: #2C2044;
+    color: #2c2044;
   }
 
   .dark &__selector {

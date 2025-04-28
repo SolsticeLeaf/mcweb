@@ -1,13 +1,9 @@
-<script setup lang="ts">
-const { t } = useI18n()
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <ClientOnly>
     <KeepAlive>
-      <div class="body">
-        FAQ
-      </div>
+      <div class="body">FAQ</div>
     </KeepAlive>
   </ClientOnly>
 </template>

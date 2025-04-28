@@ -1,4 +1,4 @@
-@use "screens" as *;
+@use 'screens' as *;
 
 html {
   overflow: scroll;
@@ -70,7 +70,8 @@ h6 {
   }
 }
 
-p, q {
+p,
+q {
   font-size: 1rem;
   margin: 0;
   @media screen and (max-width: $screen-sm) {
@@ -95,7 +96,7 @@ label {
 
 .light html {
   background-color: #ececec;
-  color: #2C2044;
+  color: #2c2044;
 }
 
 .dark html {
@@ -104,14 +105,15 @@ label {
 }
 
 input {
-  font-family: "Fusion Pixel 10px Proportional KR", sans-serif;
+  font-family: 'Fusion Pixel 10px Proportional KR', sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
 }
 
-select, option {
-  font-family: "Fusion Pixel 10px Proportional KR", sans-serif;
+select,
+option {
+  font-family: 'Fusion Pixel 10px Proportional KR', sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
@@ -121,7 +123,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Fusion Pixel 10px Proportional KR", sans-serif;
+  font-family: 'Fusion Pixel 10px Proportional KR', sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
@@ -129,7 +131,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   line-height: 2;
   background-color: #ececec;
-  color: #2C2044;
+  color: #2c2044;
 
   .displayed {
     display: flex;

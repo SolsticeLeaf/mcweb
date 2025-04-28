@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import initialConfig from "@/config/initial.config";
-import iconsConfig from "~/config/icons.config";
-import NavItems from "./NavItems.vue";
-import NavUser from "./NavUser.vue";
+import initialConfig from '@/config/initial.config';
+import iconsConfig from '~/config/icons.config';
+import NavItems from './NavItems.vue';
+import NavUser from './NavUser.vue';
 
 const { locale } = useI18n();
 
 const homePath = computed(() => {
   return `/${locale.value}`;
-})
+});
 
 const getCart = () => {
   return Object.keys(JSON.parse(localStorage.getItem('cart') || '{}')).length;
-}
+};
 
 const status = ref('');
 const user = ref();
@@ -27,7 +27,7 @@ function exit() {
   player.value = undefined;
   const url = `/${locale.value}`;
   window.location.assign(url);
-  window.open(url, "_self");
+  window.open(url, '_self');
 }
 
 onBeforeMount(async () => {
@@ -40,10 +40,10 @@ onBeforeMount(async () => {
   try {
     const { status: response_status, user: response_data } = await $fetch('/api/auth/checkAuthStatus', {
       default: () => [],
-      cache: "no-cache",
+      cache: 'no-cache',
       server: false,
       method: 'POST',
-      body: {}
+      body: {},
     });
     status.value = response_status;
     user.value = response_data.system;
@@ -62,7 +62,7 @@ const links = computed((): any => {
       postfix: '',
       vif: true,
       type: 'path',
-      action: `/${currentLocale}`
+      action: `/${currentLocale}`,
     },
     {
       label: 'nav_servers',
@@ -70,7 +70,7 @@ const links = computed((): any => {
       postfix: '',
       vif: true,
       type: 'path',
-      action: `/${currentLocale}/servers`
+      action: `/${currentLocale}/servers`,
     },
     {
       label: 'nav_map',
@@ -78,7 +78,7 @@ const links = computed((): any => {
       postfix: '',
       vif: status.value === 'OK',
       type: 'path',
-      action: `/${currentLocale}/map`
+      action: `/${currentLocale}/map`,
     },
     {
       label: 'nav_shop',
@@ -88,7 +88,7 @@ const links = computed((): any => {
       }).value,
       vif: status.value === 'OK',
       type: 'path',
-      action: `/${currentLocale}/shop`
+      action: `/${currentLocale}/shop`,
     },
     {
       label: 'nav_faq',
@@ -96,10 +96,10 @@ const links = computed((): any => {
       postfix: '',
       vif: true,
       type: 'path',
-      action: `/${currentLocale}/faq`
-    }
+      action: `/${currentLocale}/faq`,
+    },
   ];
-})
+});
 </script>
 
 <template>
@@ -175,14 +175,14 @@ nav {
     text-decoration: none;
 
     &__name {
-      background: -webkit-linear-gradient(0deg, #A782FF 10%, #9870cc 50%, #4d2e8c 90%);
+      background: -webkit-linear-gradient(0deg, #a782ff 10%, #9870cc 50%, #4d2e8c 90%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
     .dark &__name {
-      background: -webkit-linear-gradient(0deg, #dcc944 10%, #FCF58D 50%, #a960f5 90%);
+      background: -webkit-linear-gradient(0deg, #dcc944 10%, #fcf58d 50%, #a960f5 90%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -194,4 +194,3 @@ nav {
   }
 }
 </style>
-

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ServerSelector from "~/components/utilities/selectors/ServerSelector.vue";
-import { type Server } from "~/utilities/server.interface";
+import ServerSelector from '~/components/utilities/selectors/ServerSelector.vue';
+import { type Server } from '~/utilities/server.interface';
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
@@ -16,28 +16,30 @@ onBeforeMount(async () => {
   try {
     const { servers: response_servers } = await $fetch('/api/server/getServers', {
       default: () => [],
-      cache: "no-cache",
+      cache: 'no-cache',
       server: false,
-      method: 'GET'
+      method: 'GET',
     });
     servers.value = response_servers as Server[];
     const serversArray = servers.value;
     if (serversArray.length > 0) {
       const selected = (route.query.server as string) || serversArray[0]._id;
       const server = serversArray.filter((srv) => srv._id === selected);
-      if (server.length > 0) { changeServer(server[0]); }
+      if (server.length > 0) {
+        changeServer(server[0]);
+      }
     }
   } finally {
     isServersLoaded.value = true;
     try {
       const { status: response_status, player: response_player } = await $fetch('/api/player/getPlayerInfo', {
         default: () => [],
-        cache: "no-cache",
+        cache: 'no-cache',
         server: false,
         method: 'POST',
         body: {
-          player: route.params.username
-        }
+          player: route.params.username,
+        },
       });
       status.value = response_status;
       player.value = response_player;
@@ -50,7 +52,7 @@ onBeforeMount(async () => {
 const changeServer = (server: Server) => {
   router.push({ query: { server: server._id } });
   selectedServer.value = server;
-}
+};
 </script>
 
 <template>
@@ -60,10 +62,7 @@ const changeServer = (server: Server) => {
         <div v-if="isLoaded" class="wrapper">
           <Suspense>
             <KeepAlive>
-              <ServerSelector v-if="isServersLoaded && servers.length > 1"
-                              v-model="selectedServer"
-                              :servers="servers"
-                              :changed="changeServer"/>
+              <ServerSelector v-if="isServersLoaded && servers.length > 1" v-model="selectedServer" :servers="servers" :changed="changeServer" />
             </KeepAlive>
           </Suspense>
           <div v-if="status === 'OK'" class="main">
@@ -72,7 +71,7 @@ const changeServer = (server: Server) => {
                 <div class="info__user__skin">
                   <Suspense>
                     <KeepAlive KeepAlive>
-                      <NuxtImg class="info__user__skin__img" :src="player.skin.full"/>
+                      <NuxtImg class="info__user__skin__img" :src="player.skin.full" />
                     </KeepAlive>
                   </Suspense>
                 </div>
@@ -88,7 +87,6 @@ const changeServer = (server: Server) => {
             </div>
             <div class="data blur__glass">
               <h2>{{ t('statistic') }}</h2>
-
             </div>
           </div>
           <div v-else>
@@ -183,5 +181,4 @@ const changeServer = (server: Server) => {
   padding: 0.5rem 2rem;
   width: 70%;
 }
-
 </style>

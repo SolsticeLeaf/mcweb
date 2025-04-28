@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import ActionButton from '~/components/utilities/buttons/ActionButton.vue';
 import CartItem from '~/components/shop/items/CartItem.vue';
-import { type ShopItem } from "~/utilities/shopitem.interface";
-import { type Server } from "~/utilities/server.interface";
-import iconsConfig from "~/config/icons.config";
+import { type ShopItem } from '~/utilities/shopitem.interface';
+import { type Server } from '~/utilities/server.interface';
+import iconsConfig from '~/config/icons.config';
 
 const clearEvent = new Event('cart-cleared');
 const { t } = useI18n();
@@ -16,19 +16,19 @@ const props = defineProps<{
 const clearCart = () => {
   localStorage.setItem('cart', '{}');
   window.dispatchEvent(clearEvent);
-}
+};
 
 const getCartPrice = computed(() => {
   let price = 0;
   props.cart.forEach((item: any) => {
-    price = price + (item.item.price * item.value);
+    price = price + item.item.price * item.value;
   });
-  return price > 0 ? ` ${price}` : ''
+  return price > 0 ? ` ${price}` : '';
 });
 
 const getShopCart = (server: Server) => {
   return props.cart.filter((item: any) => item.server === server._id);
-}
+};
 </script>
 
 <template>
@@ -37,27 +37,23 @@ const getShopCart = (server: Server) => {
       <h5>{{ t('cart') }}</h5>
       <div class="cart__items" v-for="server in servers">
         <h5 v-if="getShopCart(server).length > 0">{{ server.name }}</h5>
-          <div class="cart__items__card" v-for="item in getShopCart(server)" :key="item.item._id">
-            <Suspense>
-              <CartItem v-bind:item="item.item" v-bind:value="item.value"/>
-            </Suspense>
-          </div>
+        <div class="cart__items__card" v-for="item in getShopCart(server)" :key="item.item._id">
+          <Suspense>
+            <CartItem v-bind:item="item.item" v-bind:value="item.value" />
+          </Suspense>
         </div>
       </div>
-      <div class="cart__buttons">
-      <ActionButton :text="getCartPrice"
-                    text-color="#ffffff"
-                    :icon="iconsConfig.gold"
-                    color="#50C878"
-                    class="cart__buttons__button"
-                    :outline="false" />
-      <ActionButton :text="t('clear')"
-                    text-color="#ffffff"
-                    :icon="iconsConfig.clear"
-                    color="#c71700"
-                    @click="clearCart"
-                    class="cart__buttons__button"
-                    :outline="false" />
+    </div>
+    <div class="cart__buttons">
+      <ActionButton :text="getCartPrice" text-color="#ffffff" :icon="iconsConfig.gold" color="#50C878" class="cart__buttons__button" :outline="false" />
+      <ActionButton
+        :text="t('clear')"
+        text-color="#ffffff"
+        :icon="iconsConfig.clear"
+        color="#c71700"
+        @click="clearCart"
+        class="cart__buttons__button"
+        :outline="false" />
     </div>
   </div>
 </template>

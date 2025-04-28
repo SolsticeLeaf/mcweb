@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { type ShopType, type LocalizationString } from "~/utilities/shoptype.interface";
+import { type ShopType, type LocalizationString } from '~/utilities/shoptype.interface';
 const { locale } = useI18n();
 
 const modelValue = defineModel();
 defineProps<{
   filteredShopTypes: ShopType[];
-  changed: (type: ShopType) => {}
+  changed: (type: ShopType) => {};
 }>();
 
 const getTypeMenuClass = (type: ShopType) => {
   return (modelValue.value as any)._id === type._id ? 'types__active' : 'types__default';
-}
+};
 
 const getTypeName = (type: ShopType): string => {
   if (locale.value in type.name) {
@@ -22,7 +22,9 @@ const getTypeName = (type: ShopType): string => {
 
 <template>
   <div class="types">
-    <p v-for="type in filteredShopTypes" :class="getTypeMenuClass(type)" @click="changed(type)">{{ getTypeName(type) }}</p>
+    <p v-for="type in filteredShopTypes" :class="getTypeMenuClass(type)" @click="changed(type)">
+      {{ getTypeName(type) }}
+    </p>
   </div>
 </template>
 
@@ -38,7 +40,7 @@ const getTypeName = (type: ShopType): string => {
 
   &__default {
     font-weight: normal;
-    color: #2C2044;
+    color: #2c2044;
   }
 
   .dark &__default {
@@ -61,7 +63,7 @@ const getTypeName = (type: ShopType): string => {
   }
 
   .dark &__active {
-    color: #FCF58D !important;
+    color: #fcf58d !important;
   }
 }
 </style>

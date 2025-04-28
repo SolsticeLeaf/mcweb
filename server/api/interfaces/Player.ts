@@ -1,8 +1,8 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from 'mongoose';
 
-const headSkinUrl = process.env.MC_SKIN_HEAD || "https://vzge.me/head/256/{name}?y=70&no=shadow";
-const bustSkinUrl = process.env.MC_SKIN_BUST || "https://vzge.me/bust/256/{name}";
-const fullSkinUrl = process.env.MC_SKIN_FULL || "https://vzge.me/full/256/{name}?no=shadow";
+const headSkinUrl = process.env.MC_SKIN_HEAD || 'https://vzge.me/head/256/{name}?y=70&no=shadow';
+const bustSkinUrl = process.env.MC_SKIN_BUST || 'https://vzge.me/bust/256/{name}';
+const fullSkinUrl = process.env.MC_SKIN_FULL || 'https://vzge.me/full/256/{name}?no=shadow';
 
 export interface Skin {
   head: string;
@@ -38,10 +38,10 @@ const schema: Schema = new Schema(
     money: { type: Number, required: true },
     stats: { type: Array, required: true },
   },
-  { collection: "players" }
+  { collection: 'players' }
 );
 
-const PlayerModel = mongoose.model<Player>("players", schema);
+const PlayerModel = mongoose.model<Player>('players', schema);
 
 export async function hasPlayer(id: string): Promise<boolean> {
   try {
@@ -55,8 +55,8 @@ export async function createPlayer(id: string, username: string): Promise<void> 
   await PlayerModel.create({
     _id: id,
     username: username,
-    role: "USER",
-    lastServer: "undefined",
+    role: 'USER',
+    lastServer: 'undefined',
     money: 0,
     stats: [],
   });
@@ -104,5 +104,5 @@ function getPlayerData(player: Player): PlayerData {
 }
 
 function replaceName(url: string, name: string): string {
-  return url.replace("{name}", name);
+  return url.replace('{name}', name);
 }

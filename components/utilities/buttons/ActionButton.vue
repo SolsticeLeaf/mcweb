@@ -4,52 +4,52 @@ import { computed } from 'vue';
 const props = defineProps({
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   align: {
     type: String,
-    default: 'center'
+    default: 'center',
   },
   transparent: {
     type: Boolean,
-    default: false
+    default: false,
   },
   disableBackground: {
     type: Boolean,
-    default: false
+    default: false,
   },
   text: {
     type: String,
-    default: ''
+    default: '',
   },
   textInvertedColor: {
     type: Boolean,
-    default: false
+    default: false,
   },
   textBold: {
     type: Boolean,
-    default: true
+    default: true,
   },
   icon: {
     type: String,
-    required: true
+    required: true,
   },
   color: {
     type: String,
-    default: 'transparent'
+    default: 'transparent',
   },
   textColor: {
     type: String,
-    default: 'white'
+    default: 'white',
   },
   click: {
     type: Promise<void>,
-    default: () => {}
+    default: () => {},
   },
   outline: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 const buttonStyle = computed(() => ({
@@ -63,19 +63,20 @@ const buttonStyle = computed(() => ({
 const textStyle = computed(() => ({
   color: props.textInvertedColor ? 'white' : props.textColor,
   fontWeight: props.textBold ? 'bold' : 'normal',
-  mixBlendMode: props.textInvertedColor ? 'difference' : 'none'
-}))
+  mixBlendMode: props.textInvertedColor ? 'difference' : 'none',
+}));
 </script>
 
 <template>
   <div @click="props.click" :class="props.transparent ? 'transparent__glass' : 'button'" :style="props.transparent ? '' : buttonStyle">
-    <Icon :name="props.icon" class="button__img" :style="textStyle"/>
-    <p :style="textStyle" v-if="props.text.length > 0">{{ props.text }}</p>
+    <Icon :name="props.icon" class="button__img" :style="textStyle" />
+    <p :style="textStyle" v-if="props.text.length > 0">
+      {{ props.text }}
+    </p>
   </div>
 </template>
 
 <style scoped lang="scss">
-
 * {
   cursor: pointer;
   user-select: none;

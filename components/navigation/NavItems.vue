@@ -1,12 +1,11 @@
 <script setup lang="ts">
-
 interface Link {
-  label: string,
-  icon: string,
-  postfix: string,
-  vif: boolean,
-  type: string,
-  action: any
+  label: string;
+  icon: string;
+  postfix: string;
+  vif: boolean;
+  type: string;
+  action: any;
 }
 
 const { t, locale } = useI18n();
@@ -17,11 +16,11 @@ defineProps<{
 
 function isActive(path: string): boolean {
   const currentLocale = locale.value;
-  const currentPath = route.path.replace(/\/\s*$/, "");
+  const currentPath = route.path.replace(/\/\s*$/, '');
   if (path === `/${currentLocale}`) {
     return currentPath === path;
   } else {
-    return currentPath.includes(path)
+    return currentPath.includes(path);
   }
 }
 </script>
@@ -30,12 +29,18 @@ function isActive(path: string): boolean {
   <div v-for="link in links" :key="link.icon" class="nav__links" :style="link.vif ? '' : 'display: none'">
     <NuxtLink v-if="link.type === 'path'" :to="link.action" :class="`nav__links__default ${isActive(link.action) ? 'active' : ''}`">
       <Icon :name="link.icon" class="nav__links__default__icon" />
-      <p v-if="link.label" class="nav__links__default__label">{{ t(link.label) }}</p>
-      <p v-if="link.postfix" class="nav__links__default__label">{{ link.postfix }}</p>
+      <p v-if="link.label" class="nav__links__default__label">
+        {{ t(link.label) }}
+      </p>
+      <p v-if="link.postfix" class="nav__links__default__label">
+        {{ link.postfix }}
+      </p>
     </NuxtLink>
     <div v-else class="nav__links__default" @click="link.action">
       <Icon :name="link.icon" class="nav__links__default__icon" />
-      <p v-if="link.label" class="relative nav__links__default__label">{{ t(link.label) }}</p>
+      <p v-if="link.label" class="relative nav__links__default__label">
+        {{ t(link.label) }}
+      </p>
     </div>
   </div>
 </template>
@@ -50,7 +55,7 @@ function isActive(path: string): boolean {
 }
 
 .dark .active {
-  color: #FCF58D !important;
+  color: #fcf58d !important;
 }
 
 .nav {
@@ -73,7 +78,7 @@ function isActive(path: string): boolean {
       gap: 0.2rem;
       height: 100%;
       text-decoration: none;
-      color: #2C2044;
+      color: #2c2044;
 
       &__label {
         @media screen and (max-width: $screen-sm) {

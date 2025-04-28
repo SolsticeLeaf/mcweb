@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { PlayerData } from '~/utilities/player.interface copy';
-import iconsConfig from "~/config/icons.config";
-import FlexButton from "../utilities/buttons/FlexButton.vue";
-import ActionButton from "../utilities/buttons/ActionButton.vue";
+import iconsConfig from '~/config/icons.config';
+import FlexButton from '../utilities/buttons/FlexButton.vue';
+import ActionButton from '../utilities/buttons/ActionButton.vue';
 
 const { t, locale } = useI18n();
 const route = useRoute();
@@ -15,17 +15,17 @@ defineProps<{
 }>();
 
 const getSystemTheme = (): string => {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 };
 
 const toggleTheme = (): void => {
-  if (theme.preference === "system") {
-    theme.preference = theme.value === "light" ? "dark" : "light";
+  if (theme.preference === 'system') {
+    theme.preference = theme.value === 'light' ? 'dark' : 'light';
   } else if (theme.preference !== getSystemTheme()) {
-    const value = theme.preference === "light" ? "dark" : "light";
+    const value = theme.preference === 'light' ? 'dark' : 'light';
     theme.preference = value;
   } else {
-    theme.preference = "system";
+    theme.preference = 'system';
   }
 };
 
@@ -34,80 +34,76 @@ function getAuthPage(): string {
 }
 
 const themeIcon = computed(() => {
-  if (theme.preference === 'system') { return iconsConfig.nav_theme_system; }
+  if (theme.preference === 'system') {
+    return iconsConfig.nav_theme_system;
+  }
   return theme.preference === 'dark' ? iconsConfig.nav_theme_dark : iconsConfig.nav_theme_light;
 });
 
 const getAlternateLocale = computed(() => {
   const currentLocale = locale.value;
   const alternateLocale = currentLocale === 'en' ? 'ru' : 'en';
-  return route.path.replace(`/${currentLocale}`, `/${alternateLocale}`)
-})
+  return route.path.replace(`/${currentLocale}`, `/${alternateLocale}`);
+});
 </script>
 
 <template>
   <div class="nav__userbox">
     <div v-if="authStatus === 'OK'" class="nav__userbox__userinfo">
       <div class="nav__userbox__userinfo__money">
-        <Icon :name="iconsConfig.gold" :style="`color: ${theme.value === 'dark' ? '#ffffff' : '#3d3a48'}`"/>
+        <Icon :name="iconsConfig.gold" :style="`color: ${theme.value === 'dark' ? '#ffffff' : '#3d3a48'}`" />
         <h6>{{ player.money }}</h6>
-        <ActionButton text=""
-                      :text-bold="true"
-                      :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
-                      :icon="iconsConfig.plus"
-                      :disableBackground="true"/>
+        <ActionButton
+          text=""
+          :text-bold="true"
+          :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+          :icon="iconsConfig.plus"
+          :disableBackground="true" />
       </div>
       <div class="nav__userbox__userinfo__user">
         <NuxtLink class="nav__userbox__userinfo__user__info transparent__glass" :to="`/${locale}/player/${user.username}`">
           <h6>{{ player.username }}</h6>
-          <NuxtImg class="nav__userbox__userinfo__user__img" :src="player.skin.bust"/>
+          <NuxtImg class="nav__userbox__userinfo__user__img" :src="player.skin.bust" />
         </NuxtLink>
         <div class="user__content">
           <div class="user__content__box">
             <FlexButton
-                      :text="t('settings')"
-                      :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
-                      align="start"
-                      :icon="iconsConfig.settings"
-                      color="transparent"
-                      :transparent="true"
-                      :link="`/${locale}/settings`"/>
+              :text="t('settings')"
+              :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+              align="start"
+              :icon="iconsConfig.settings"
+              color="transparent"
+              :transparent="true"
+              :link="`/${locale}/settings`" />
             <ActionButton
-                      :text="t(`theme_${theme.preference}`)"
-                      :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
-                      align="start"
-                      :icon="themeIcon"
-                      color="transparent"
-                      :transparent="true"
-                      @click="toggleTheme()"/>
+              :text="t(`theme_${theme.preference}`)"
+              :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+              align="start"
+              :icon="themeIcon"
+              color="transparent"
+              :transparent="true"
+              @click="toggleTheme()" />
             <FlexButton
-                      :text="locale.toUpperCase()"
-                      :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
-                      align="start"
-                      :icon="iconsConfig.nav_lang"
-                      color="transparent"
-                      :transparent="true"
-                      :link="getAlternateLocale"/>
-            <ActionButton
-                      :text="t('button_signout')"
-                      align="start"
-                      :icon="iconsConfig.button_logout"
-                      color="#c71700"
-                      text-color="#ffffff"
-                      @click="onExit"/>
+              :text="locale.toUpperCase()"
+              :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+              align="start"
+              :icon="iconsConfig.nav_lang"
+              color="transparent"
+              :transparent="true"
+              :link="getAlternateLocale" />
+            <ActionButton :text="t('button_signout')" align="start" :icon="iconsConfig.button_logout" color="#c71700" text-color="#ffffff" @click="onExit" />
           </div>
         </div>
       </div>
     </div>
     <div v-else>
       <FlexButton
-                :text="t('button_login')"
-                :icon="iconsConfig.button_login"
-                color="#50C878"
-                text-color="#ffffff"
-                @click="useCookie('redirectUrl').value = route.fullPath;"
-                :link="getAuthPage()"
-      />
+        :text="t('button_login')"
+        :icon="iconsConfig.button_login"
+        color="#50C878"
+        text-color="#ffffff"
+        @click="useCookie('redirectUrl').value = route.fullPath"
+        :link="getAuthPage()" />
     </div>
   </div>
 </template>
@@ -192,7 +188,7 @@ const getAlternateLocale = computed(() => {
 
         &__info {
           text-decoration: none;
-          color: #2C2044;
+          color: #2c2044;
           display: flex;
           flex-direction: row;
           justify-content: center;
@@ -203,7 +199,7 @@ const getAlternateLocale = computed(() => {
         .dark &__info {
           color: #ffffff;
         }
-          
+
         &__img {
           width: 2.5rem;
           height: auto;
@@ -213,7 +209,7 @@ const getAlternateLocale = computed(() => {
       &__user:hover {
         cursor: pointer;
       }
-        
+
       &__user:hover .user__content {
         opacity: 1;
         pointer-events: auto;

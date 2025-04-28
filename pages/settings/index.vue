@@ -1,19 +1,14 @@
-<script setup lang="ts">
-const { t } = useI18n()
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <ClientOnly>
     <KeepAlive>
-      <div class="body">
-        SETTINGS
-      </div>
+      <div class="body">SETTINGS</div>
     </KeepAlive>
   </ClientOnly>
 </template>
 
 <style scoped lang="scss">
-
 .body {
   display: flex;
   width: 100vw;
@@ -21,5 +16,4 @@ const { t } = useI18n()
   justify-content: center;
   align-items: center;
 }
-
 </style>

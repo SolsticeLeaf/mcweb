@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Vue3Marquee } from "vue3-marquee";
+import { Vue3Marquee } from 'vue3-marquee';
 
 const props = defineProps<{
   array: any;
@@ -15,16 +15,16 @@ const words = computed(() => {
     }
   });
   return array;
-})
+});
 
 const repeatRows = ref(4);
 
-function calculateDirection(index: any): "normal" | "reverse" {
-  return (index % 2 === 0) ? "reverse" : "normal";
+function calculateDirection(index: any): 'normal' | 'reverse' {
+  return index % 2 === 0 ? 'reverse' : 'normal';
 }
 
 const resizeEvent = function () {
-  const row = document.querySelector(".background__text__row");
+  const row = document.querySelector('.background__text__row');
   const screenHeight = window.innerHeight;
   const clientHeight = row?.clientHeight || 160;
   if (clientHeight > 0) {
@@ -33,21 +33,21 @@ const resizeEvent = function () {
 };
 
 onBeforeMount(() => {
-  window.addEventListener("resize", resizeEvent);
+  window.addEventListener('resize', resizeEvent);
   nextTick(() => {
     resizeEvent();
   });
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener("resize", resizeEvent);
+  window.removeEventListener('resize', resizeEvent);
 });
 </script>
 
 <template>
   <div class="background__blur">
     <div class="background__text">
-      <div v-for="(rowIndex) in repeatRows" :key="'row-' + rowIndex" class="background__text__row">
+      <div v-for="rowIndex in repeatRows" :key="'row-' + rowIndex" class="background__text__row">
         <Vue3Marquee :duration="100" clone :direction="calculateDirection(rowIndex)">
           <div class="background__text__word" v-for="word in words">
             {{ word }}
@@ -110,7 +110,7 @@ onBeforeUnmount(() => {
     }
 
     .dark &__word {
-      -webkit-text-stroke: 2px #3D2A5A;
+      -webkit-text-stroke: 2px #3d2a5a;
     }
   }
 }

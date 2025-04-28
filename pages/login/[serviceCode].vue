@@ -7,23 +7,20 @@ onBeforeMount(async () => {
   try {
     await $fetch('/api/auth/getTokens', {
       default: () => [],
-      cache: "no-cache",
+      cache: 'no-cache',
       server: false,
       method: 'POST',
       body: {
-        serviceCode: route.params.serviceCode
-      }
+        serviceCode: route.params.serviceCode,
+      },
     });
   } finally {
     window.location.assign(redirectUrl);
-    window.open(redirectUrl, "_self");
+    window.open(redirectUrl, '_self');
   }
 });
-
 </script>
 
-<template>
-</template>
+<template></template>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>

@@ -1,25 +1,27 @@
 <script setup lang="ts">
-import { type Server } from "~/utilities/server.interface";
+import { type Server } from '~/utilities/server.interface';
 
 const modelValue = defineModel();
 const props = defineProps<{
   cart: any;
   servers: Server[];
-  changed: (server: Server) => {}
+  changed: (server: Server) => {};
 }>();
 
 const getServerMenuClass = (server: Server) => {
   return (modelValue.value as any)._id === server._id ? 'servers__active' : 'servers__default';
-}
+};
 
 const getShopCart = (server: Server) => {
   return props.cart.filter((item: any) => item.server === server._id);
-}
+};
 </script>
 
 <template>
   <div class="servers">
-    <h6 v-for="server in servers" :class="getServerMenuClass(server)" @click="changed(server)">{{ server.name }} {{ getShopCart(server).length > 0 ? `(${getShopCart(server).length})` : '' }}</h6>
+    <h6 v-for="server in servers" :class="getServerMenuClass(server)" @click="changed(server)">
+      {{ server.name }} {{ getShopCart(server).length > 0 ? `(${getShopCart(server).length})` : '' }}
+    </h6>
   </div>
 </template>
 
@@ -35,7 +37,7 @@ const getShopCart = (server: Server) => {
 
   &__default {
     font-weight: normal;
-    color: #2C2044;
+    color: #2c2044;
   }
 
   .dark &__default {
@@ -58,7 +60,7 @@ const getShopCart = (server: Server) => {
   }
 
   .dark &__active {
-    color: #FCF58D !important;
+    color: #fcf58d !important;
   }
 }
 </style>

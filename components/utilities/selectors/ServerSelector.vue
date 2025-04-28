@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { type Server } from "~/utilities/server.interface";
+import { type Server } from '~/utilities/server.interface';
 
 const modelValue = defineModel();
-const props = defineProps<{
+defineProps<{
   servers: Server[];
-  changed: (server: Server) => void
+  changed: (server: Server) => void;
 }>();
 
 const getServerMenuClass = (server: Server) => {
   return (modelValue.value as any)._id === server._id ? 'servers__active' : 'servers__default';
-}
+};
 </script>
 
 <template>
@@ -31,7 +31,7 @@ const getServerMenuClass = (server: Server) => {
 
   &__default {
     font-weight: normal;
-    color: #2C2044;
+    color: #2c2044;
   }
 
   .dark &__default {
@@ -54,7 +54,7 @@ const getServerMenuClass = (server: Server) => {
   }
 
   .dark &__active {
-    color: #FCF58D !important;
+    color: #fcf58d !important;
   }
 }
 </style>
