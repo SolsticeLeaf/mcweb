@@ -10,6 +10,8 @@ const words = computed(() => {
   props.array.forEach((element: any) => {
     if (element.loc !== undefined) {
       array.push(element.loc.source);
+    } else if (element.b !== undefined) {
+      array.push(element.b.s);
     }
   });
   return array;

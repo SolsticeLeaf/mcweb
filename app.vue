@@ -10,11 +10,12 @@ onMounted(() => {
 </script>
 
 <template>
+
   <Body>
     <ClientOnly>
       <Suspense>
         <KeepAlive>
-          <BackgroundWords :array="tm('backgroundWords')"/>
+          <BackgroundWords :array="tm('backgroundWords')" />
         </KeepAlive>
       </Suspense>
     </ClientOnly>
