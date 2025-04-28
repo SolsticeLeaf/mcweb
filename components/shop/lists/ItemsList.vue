@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type ShopItem } from "~/utilities/shopitem.interface";
-import ShopitemCard from "~/components/shop/itemCard.vue";
+import ShopitemCard from "~/components/shop/items/itemCard.vue";
 
 defineProps<{
   paginatedItems: ShopItem[];

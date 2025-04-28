@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type ShopItem, type LocalizationString } from "~/utilities/shopitem.interface"
 import iconsConfig from "~/config/icons.config";
-import ActionButton from "../utilities/ActionButton.vue";
+import ActionButton from "~/components/utilities/buttons/ActionButton.vue";
 
 const { t, locale } = useI18n()
 const theme = useColorMode();
@@ -103,7 +103,7 @@ const parseNumber = (numb: number): string => {
 </template>
 
 <style scoped lang="scss">
-@use '../../assets/scss/screens' as *;
+@use '/assets/scss/screens' as *;
 
 ::-webkit-scrollbar {
   -webkit-appearance: none;

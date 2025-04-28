@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type ShopItem, type LocalizationString } from "~/utilities/shopitem.interface"
 import iconsConfig from "~/config/icons.config";
-import ActionButton from "../utilities/ActionButton.vue";
+import ActionButton from "~/components/utilities/buttons/ActionButton.vue";
 
 const { t, locale } = useI18n()
 const theme = useColorMode();
@@ -139,7 +139,7 @@ onBeforeMount(() => {
 </template>
 
 <style scoped lang="scss">
-@use '../../assets/scss/screens' as *;
+@use 'assets/scss/screens.scss' as *;
 
 ::-webkit-scrollbar {
   -webkit-appearance: none;

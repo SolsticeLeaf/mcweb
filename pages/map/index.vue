@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ServerSelector from "~/components/utilities/ServerSelector.vue";
+import ServerSelector from "~/components/utilities/selectors/ServerSelector.vue";
 import { type Server } from "~/utilities/server.interface";
 const { t } = useI18n();
 const colorMode = useColorMode();

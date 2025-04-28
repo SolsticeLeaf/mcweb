@@ -2,7 +2,7 @@
 import initialConfig from "@/config/initial.config";
 import iconsConfig from "~/config/icons.config";
 import NavItems from "./NavItems.vue";
-import NavUserInfo from "./NavUserInfo.vue";
+import NavUser from "./NavUser.vue";
 
 const { locale } = useI18n();
 
@@ -112,12 +112,12 @@ const links = computed((): any => {
     <div v-if="isLoaded" class="nav">
       <Suspense>
         <KeepAlive>
-          <NavItems :links="links"/>
+          <NavItems :links="links" />
         </KeepAlive>
       </Suspense>
       <Suspense>
         <KeepAlive>
-          <NavUserInfo :auth-status="status" :user="user" :player="player" :onExit="exit"/>
+          <NavUser :auth-status="status" :user="user" :player="player" :onExit="exit" />
         </KeepAlive>
       </Suspense>
     </div>

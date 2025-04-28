@@ -8,7 +8,9 @@ const props = defineProps<{
 const words = computed(() => {
   const array: string[] = [];
   props.array.forEach((element: any) => {
-    array.push(element.loc.source);
+    if (element.loc !=== undefined) {
+      array.push(element.loc.source);
+    }
   });
   return array;
 })

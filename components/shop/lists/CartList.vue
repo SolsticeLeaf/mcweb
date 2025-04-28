@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ActionButton from '~/components/utilities/ActionButton.vue';
-import CartItem from '~/components/shop/CartItem.vue';
+import ActionButton from '~/components/utilities/buttons/ActionButton.vue';
+import CartItem from '~/components/shop/items/CartItem.vue';
 import { type ShopItem } from "~/utilities/shopitem.interface";
 import { type Server } from "~/utilities/server.interface";
 import iconsConfig from "~/config/icons.config";

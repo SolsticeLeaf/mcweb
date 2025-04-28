@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { PlayerData } from '~/utilities/player.interface copy';
 import iconsConfig from "~/config/icons.config";
-import FlexButton from "../utilities/FlexButton.vue";
-import ActionButton from "../utilities/ActionButton.vue";
+import FlexButton from "../utilities/buttons/FlexButton.vue";
+import ActionButton from "../utilities/buttons/ActionButton.vue";
 
 const { t, locale } = useI18n();
 const route = useRoute();

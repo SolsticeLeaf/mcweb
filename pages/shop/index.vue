@@ -5,12 +5,12 @@ import sortTypes from "~/config/sortTypes.config";
 import { type ShopItem } from "~/utilities/shopitem.interface";
 import { type ShopType, type LocalizationString } from "~/utilities/shoptype.interface";
 import { type Server } from "~/utilities/server.interface";
-import ItemsList from '~/components/shop/ItemsList.vue';
-import SortSelector from '~/components/shop/SortSelector.vue';
-import CartList from '~/components/shop/CartList.vue';
-import ServerSelector from '~/components/shop/ServerSelector.vue';
-import TypeSelector from '~/components/shop/TypeSelector.vue';
-import Pagination from '~/components/shop/Pagination.vue';
+import ItemsList from '~/components/shop/lists/ItemsList.vue';
+import SortSelector from '~/components/shop/selectors/SortSelector.vue';
+import CartList from '~/components/shop/lists/CartList.vue';
+import ServerSelector from '~/components/shop/selectors/ServerSelector.vue';
+import TypeSelector from '~/components/shop/selectors/TypeSelector.vue';
+import Pagination from '~/components/shop/selectors/Pagination.vue';
 
 const { t, locale } = useI18n();
 const route = useRoute();
