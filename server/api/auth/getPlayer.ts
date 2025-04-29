@@ -1,5 +1,6 @@
 import Token from '../interfaces/Token';
 import { getDataWithPlayerCreate } from '../utilities/axios.utilities';
+import { getPlayerById } from '../interfaces/Player';
 import { connectDB } from '../database/MongoDB';
 
 export default defineEventHandler(async (event) => {
@@ -11,18 +12,17 @@ export default defineEventHandler(async (event) => {
       token = JSON.parse(getCookie(event, 'token')?.toString() || '');
     } catch {}
     if (token.accessToken.length <= 0 || token.refreshToken.length <= 0) {
-      return { status: 'NOT_AUTHORIZED', user: {} };
+      return { status: 'NOT_AUTHORIZED', player: {} };
     }
     const data = await getDataWithPlayerCreate(event, token);
     if (data === undefined) {
-      return { status: 'NOT_AUTHORIZED', user: {} };
+      return { player: {} };
     }
     return {
-      status: 'OK',
-      user: data as Object,
+      player: await getPlayerById(data.userId),
     };
   } catch (error) {
     console.log('Error on checking auth status:', error);
-    return { status: 'NOT_AUTHORIZED', user: {} };
+    return { player: {} };
   }
 });

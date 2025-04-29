@@ -16,7 +16,6 @@ const getCart = () => {
 
 const status = ref('');
 const user = ref();
-const player = ref<any>();
 const isLoaded = ref(false);
 const cart = ref<number>(getCart());
 
@@ -24,7 +23,6 @@ function exit() {
   useCookie('token').value = '';
   status.value = 'EXITED';
   user.value = undefined;
-  player.value = undefined;
   const url = `/${locale.value}`;
   window.location.assign(url);
   window.open(url, '_self');
@@ -46,8 +44,7 @@ onBeforeMount(async () => {
       body: {},
     });
     status.value = response_status;
-    user.value = response_data.system;
-    player.value = response_data.player;
+    user.value = response_data;
   } finally {
     isLoaded.value = true;
   }
@@ -117,7 +114,7 @@ const links = computed((): any => {
       </Suspense>
       <Suspense>
         <KeepAlive>
-          <NavUser :auth-status="status" :user="user" :player="player" :onExit="exit" />
+          <NavUser :auth-status="status" :user="user" :onExit="exit" />
         </KeepAlive>
       </Suspense>
     </div>

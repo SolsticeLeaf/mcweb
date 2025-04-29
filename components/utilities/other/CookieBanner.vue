@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import FlexButton from '~/components/utilities/buttons/FlexButton.vue';
 import ActionButton from '~/components/utilities/buttons/ActionButton.vue';
+import { getDefaultTextColor } from '~/utilities/colors.utils';
 import iconsConfig from '~/config/icons.config';
 
 const { t, locale } = useI18n();
@@ -25,8 +26,8 @@ function acceptCookies() {
         :transparent="false"
         @click="acceptCookies()" />
       <FlexButton
-        :text="t('cookies_button_more')"
-        :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+        :text="t('cookies_button_info')"
+        :text-color="getDefaultTextColor(theme.value)"
         :icon="iconsConfig.info"
         color="transparent"
         :transparent="true"

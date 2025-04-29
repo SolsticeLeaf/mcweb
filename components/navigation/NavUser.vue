@@ -1,18 +1,37 @@
 <script setup lang="ts">
-import type { PlayerData } from '~/utilities/player.interface copy';
 import iconsConfig from '~/config/icons.config';
 import FlexButton from '../utilities/buttons/FlexButton.vue';
 import ActionButton from '../utilities/buttons/ActionButton.vue';
+import { getDefaultTextColor } from '~/utilities/colors.utils';
 
 const { t, locale } = useI18n();
 const route = useRoute();
 const theme = useColorMode();
-defineProps<{
+const props = defineProps<{
   authStatus: string;
   user: any;
-  player: PlayerData;
   onExit: any;
 }>();
+
+const isLoaded = ref(false);
+const player = ref<any>();
+
+onBeforeMount(async () => {
+  if (props.authStatus === 'OK') {
+    try {
+      const { player: response_data } = await $fetch('/api/auth/getPlayer', {
+        default: () => [],
+        cache: 'no-cache',
+        server: false,
+        method: 'POST',
+        body: {},
+      });
+      player.value = response_data;
+    } finally {
+      isLoaded.value = true;
+    }
+  }
+});
 
 const getSystemTheme = (): string => {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -49,49 +68,46 @@ const getAlternateLocale = computed(() => {
 
 <template>
   <div class="nav__userbox">
-    <div v-if="authStatus === 'OK'" class="nav__userbox__userinfo">
-      <div class="nav__userbox__userinfo__money">
-        <Icon :name="iconsConfig.gold" :style="`color: ${theme.value === 'dark' ? '#ffffff' : '#3d3a48'}`" />
-        <h6>{{ player.money }}</h6>
-        <ActionButton
-          text=""
-          :text-bold="true"
-          :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
-          :icon="iconsConfig.plus"
-          :disableBackground="true" />
-      </div>
-      <div class="nav__userbox__userinfo__user">
-        <NuxtLink class="nav__userbox__userinfo__user__info transparent__glass" :to="`/${locale}/player/${user.username}`">
-          <h6>{{ player.username }}</h6>
-          <NuxtImg class="nav__userbox__userinfo__user__img" :src="player.skin.bust" />
-        </NuxtLink>
-        <div class="user__content">
-          <div class="user__content__box">
-            <FlexButton
-              :text="t('settings')"
-              :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
-              align="start"
-              :icon="iconsConfig.settings"
-              color="transparent"
-              :transparent="true"
-              :link="`/${locale}/settings`" />
-            <ActionButton
-              :text="t(`theme_${theme.preference}`)"
-              :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
-              align="start"
-              :icon="themeIcon"
-              color="transparent"
-              :transparent="true"
-              @click="toggleTheme()" />
-            <FlexButton
-              :text="locale.toUpperCase()"
-              :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
-              align="start"
-              :icon="iconsConfig.nav_lang"
-              color="transparent"
-              :transparent="true"
-              :link="getAlternateLocale" />
-            <ActionButton :text="t('button_signout')" align="start" :icon="iconsConfig.button_logout" color="#c71700" text-color="#ffffff" @click="onExit" />
+    <div v-if="authStatus === 'OK'">
+      <div v-if="isLoaded" class="nav__userbox__userinfo">
+        <div class="nav__userbox__userinfo__money">
+          <Icon :name="iconsConfig.gold" :style="`color: ${getDefaultTextColor(theme.value)}`" />
+          <h6>{{ player.money }}</h6>
+          <ActionButton text="" :text-bold="true" :text-color="getDefaultTextColor(theme.value)" :icon="iconsConfig.plus" :disableBackground="true" />
+        </div>
+        <div class="nav__userbox__userinfo__user">
+          <NuxtLink class="nav__userbox__userinfo__user__info transparent__glass" :to="`/${locale}/player/${player.username}`">
+            <h6>{{ player.username }}</h6>
+            <NuxtImg class="nav__userbox__userinfo__user__img" :src="player.skin.bust" />
+          </NuxtLink>
+          <div class="user__content">
+            <div class="user__content__box">
+              <FlexButton
+                :text="t('settings')"
+                :text-color="getDefaultTextColor(theme.value)"
+                align="start"
+                :icon="iconsConfig.settings"
+                color="transparent"
+                :transparent="true"
+                :link="`/${locale}/settings`" />
+              <ActionButton
+                :text="t(`theme_${theme.preference}`)"
+                :text-color="getDefaultTextColor(theme.value)"
+                align="start"
+                :icon="themeIcon"
+                color="transparent"
+                :transparent="true"
+                @click="toggleTheme()" />
+              <FlexButton
+                :text="locale.toUpperCase()"
+                :text-color="getDefaultTextColor(theme.value)"
+                align="start"
+                :icon="iconsConfig.nav_lang"
+                color="transparent"
+                :transparent="true"
+                :link="getAlternateLocale" />
+              <ActionButton :text="t('button_signout')" align="start" :icon="iconsConfig.button_logout" color="#c71700" text-color="#ffffff" @click="onExit" />
+            </div>
           </div>
         </div>
       </div>

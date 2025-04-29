@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { type ShopItem, type LocalizationString } from '~/utilities/shopitem.interface';
+import { getDefaultTextColor } from '~/utilities/colors.utils';
 import iconsConfig from '~/config/icons.config';
 import ActionButton from '~/components/utilities/buttons/ActionButton.vue';
 
@@ -83,7 +84,7 @@ const addToCart = () => {
   }
 };
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   window.addEventListener('cart-changed', () => {
     const cart = JSON.parse(localStorage.getItem('cart') || '{}');
     cartCount.value = cart[itemId] || 0;
@@ -117,7 +118,7 @@ onBeforeMount(() => {
           <ActionButton
             text=""
             :text-bold="true"
-            :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+            :text-color="getDefaultTextColor(theme.value)"
             :icon="iconsConfig.arrow_left"
             @click="minusCart()"
             :outline="false" />
@@ -125,7 +126,7 @@ onBeforeMount(() => {
           <!-- TODO: Сделать input -->
           <ActionButton
             text=""
-            :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+            :text-color="getDefaultTextColor(theme.value)"
             :icon="iconsConfig.arrow_right"
             :disabled="cartCount >= item.max"
             @click="addToCart()"

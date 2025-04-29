@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ActionButton from '~/components/utilities/buttons/ActionButton.vue';
+import { getDefaultTextColor } from '~/utilities/colors.utils';
 import iconsConfig from '~/config/icons.config';
 
 const { t } = useI18n();
@@ -18,7 +19,7 @@ defineProps<{
     <ActionButton
       text=""
       :text-bold="true"
-      :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+      :text-color="getDefaultTextColor(theme.value)"
       :icon="iconsConfig.arrow_left"
       @click="changed(currentPage - 1)"
       :disabled="currentPage === 1"
@@ -26,7 +27,7 @@ defineProps<{
     <span>{{ t('page') }} {{ currentPage }}/{{ totalPages }}</span>
     <ActionButton
       text=""
-      :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+      :text-color="getDefaultTextColor(theme.value)"
       :icon="iconsConfig.arrow_right"
       @click="changed(currentPage + 1)"
       :disabled="currentPage === totalPages"

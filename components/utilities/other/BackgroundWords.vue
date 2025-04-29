@@ -32,7 +32,7 @@ const resizeEvent = function () {
   }
 };
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   window.addEventListener('resize', resizeEvent);
   nextTick(() => {
     resizeEvent();

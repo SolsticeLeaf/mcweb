@@ -6,7 +6,7 @@ import { ClientOnly } from '#components';
 
 const { tm } = useI18n();
 
-onMounted(() => {
+onMounted(async () => {
   umTrackView();
 });
 </script>
@@ -66,7 +66,7 @@ onMounted(() => {
   bottom: 1rem;
   right: 1rem;
 
-  @media screen and (max-width: $screen-xss) {
+  @media screen and (max-width: $screen-sm) {
     right: auto;
   }
 }

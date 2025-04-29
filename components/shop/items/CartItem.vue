@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { type ShopItem, type LocalizationString } from '~/utilities/shopitem.interface';
+import { getDefaultTextColor } from '~/utilities/colors.utils';
 import iconsConfig from '~/config/icons.config';
 import ActionButton from '~/components/utilities/buttons/ActionButton.vue';
 
@@ -91,18 +92,18 @@ const parseNumber = (numb: number): string => {
         <ActionButton
           text=""
           :text-bold="true"
-          :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+          :text-color="getDefaultTextColor(theme.value)"
           :icon="iconsConfig.arrow_left"
           :disableBackground="true"
           @click="minusCart()"
           :outline="false" />
         <div class="item__count__price">
           <h6>{{ parseNumber(props.value) }} / {{ parseNumber(item.price * props.value) }}</h6>
-          <Icon :name="iconsConfig.gold" :style="`color: ${theme.value === 'dark' ? '#ffffff' : '#3d3a48'}`" />
+          <Icon :name="iconsConfig.gold" :style="`color: ${getDefaultTextColor(theme.value)}`" />
         </div>
         <ActionButton
           text=""
-          :text-color="theme.value === 'dark' ? '#ffffff' : '#3d3a48'"
+          :text-color="getDefaultTextColor(theme.value)"
           :icon="iconsConfig.arrow_right"
           :disabled="value >= item.max"
           :disableBackground="true"
