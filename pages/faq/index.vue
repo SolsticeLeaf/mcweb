@@ -45,10 +45,10 @@ function toggleAnswer(id: number) {
       <div class="body">
         <div class="wrapper blur__glass">
           <Suspense>
-            <div v-if="isLoaded" class="question">
+            <div v-if="isLoaded" class="questions">
               <h5>{{ t('faq_qa') }}</h5>
-              <div class="question noselect blur__glass" v-for="question in data" :key="question._id">
-                <div class="question__q" @click="toggleAnswer(question._id)">
+              <div class="question noselect blur__glass" v-for="question in data" :key="question._id" @click="toggleAnswer(question._id)">
+                <div class="question__q">
                   <h6>{{ getLocaleObjects(question).question }}</h6>
                   <span class="arrow" :class="{ 'arrow--open': answerVisibility[question._id] }">▼</span>
                 </div>
@@ -147,16 +147,26 @@ function toggleAnswer(id: number) {
   }
 }
 
+.questions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .blur__glass {
+    border-radius: 1rem;
+  }
+}
+
 .question {
   display: flex;
   flex-direction: column;
+  cursor: pointer;
   gap: 1rem;
 
   &__q {
     display: flex;
     flex-direction: row;
     align-items: center;
-    cursor: pointer;
     position: relative;
   }
 
@@ -184,10 +194,6 @@ function toggleAnswer(id: number) {
     .dark &__text {
       color: #bfbfbf;
     }
-  }
-
-  .blur__glass {
-    border-radius: 1rem;
   }
 }
 
