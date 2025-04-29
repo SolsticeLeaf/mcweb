@@ -5,6 +5,8 @@ import NavItems from './NavItems.vue';
 import NavUser from './NavUser.vue';
 
 const { locale } = useI18n();
+const colorMode = useColorMode();
+const route = useRoute();
 
 const homePath = computed(() => {
   return `/${locale.value}`;
@@ -18,6 +20,25 @@ const status = ref('');
 const user = ref();
 const isLoaded = ref(false);
 const cart = ref<number>(getCart());
+
+const getSystemTheme = (): string => {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
+
+const toggleTheme = (): void => {
+  if (colorMode.preference === 'system') {
+    colorMode.preference = colorMode.value === 'light' ? 'dark' : 'light';
+  } else if (colorMode.preference !== getSystemTheme()) {
+    const value = colorMode.preference === 'light' ? 'dark' : 'light';
+    colorMode.preference = value;
+  } else {
+    colorMode.preference = 'system';
+  }
+};
+
+const canDisplay = computed((): boolean => {
+  return status.value === 'OK';
+});
 
 function exit() {
   useCookie('token').value = '';
@@ -52,6 +73,9 @@ onBeforeMount(async () => {
 
 const links = computed((): any => {
   const currentLocale = locale.value;
+  const alternateLocale = currentLocale === 'en' ? 'ru' : 'en';
+  const currentPath = route.path;
+  const alternatePath = currentPath.replace(`/${currentLocale}`, `/${alternateLocale}`);
   return [
     {
       label: 'nav_home',
@@ -73,7 +97,7 @@ const links = computed((): any => {
       label: 'nav_map',
       icon: iconsConfig.nav_map,
       postfix: '',
-      vif: status.value === 'OK',
+      vif: canDisplay.value,
       type: 'path',
       action: `/${currentLocale}/map`,
     },
@@ -83,7 +107,7 @@ const links = computed((): any => {
       postfix: computed(() => {
         return cart.value > 0 ? `(${cart.value})` : '';
       }).value,
-      vif: status.value === 'OK',
+      vif: canDisplay.value,
       type: 'path',
       action: `/${currentLocale}/shop`,
     },
@@ -94,6 +118,24 @@ const links = computed((): any => {
       vif: true,
       type: 'path',
       action: `/${currentLocale}/faq`,
+    },
+    {
+      icon: computed(() => {
+        if (colorMode.preference === 'system') {
+          return iconsConfig.nav_theme_system;
+        }
+        return colorMode.preference === 'dark' ? iconsConfig.nav_theme_dark : iconsConfig.nav_theme_light;
+      }).value,
+      vif: !canDisplay.value,
+      type: 'action',
+      action: toggleTheme,
+    },
+    {
+      label: locale.value.toUpperCase(),
+      icon: iconsConfig.nav_lang,
+      vif: !canDisplay.value,
+      type: 'path',
+      action: alternatePath,
     },
   ];
 });
