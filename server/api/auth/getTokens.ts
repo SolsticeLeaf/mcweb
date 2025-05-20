@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
   try {
     let clientId = getCookie(event, 'clientId')?.toString();
     if (!clientId) {
-      console.log('No clientId');
       return { status: 'NO_CLIENT_ID' };
     }
     const tokens = await axios
