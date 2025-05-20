@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     const date = new Date();
     let token: Token = { accessToken: '', refreshToken: '', accessExpire: date, refreshExpire: date };
     try {
-      token = JSON.parse(getCookie(event, 'token')?.toString() || '');
+      token = JSON.parse(getCookie(event, 'tokens')?.toString() || '');
     } catch {}
     if (token.accessToken.length <= 0 || token.refreshToken.length <= 0) {
       return { status: 'NOT_AUTHORIZED', player: {} };
