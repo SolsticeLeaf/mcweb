@@ -28,6 +28,7 @@
   "cookies_button_accept": "Хорошо",
   "cookies_button_info": "Подробнее",
   "back": "Назад",
+  "error": "Ошибка",
   "faq_qa": "Вопросы и ответы",
   "faq_docs": "Документы",
   "faq_cookie": "Использование файлов Cookies",
@@ -74,5 +75,7 @@
   "channeling": "Громовержец",
   "multishot": "Мультистрел",
   "quick_charge": "Быстрая перезарядка",
-  "piercing": "Проникание"
+  "piercing": "Проникание",
+  "RU": "RU",
+  "EN": "EN"
 }

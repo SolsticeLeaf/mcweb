@@ -2,9 +2,11 @@ import axios from 'axios';
 import Token from '../interfaces/Token';
 import { createPlayer, hasPlayer } from '../interfaces/Player';
 
+const authDomain = process.env.AUTH_DOMAIN || 'https://auth.sleaf.dev';
+
 export async function getDataWithPlayerCreate(event: any, token: Token): Promise<any> {
   const response = await axios
-    .get('https://auth.sleaf.dev/api/getUserData', {
+    .get(`${authDomain}/api/getUserData`, {
       headers: { authorization: `Bearer ${token.accessToken}` },
     })
     .catch((error) => {
@@ -32,7 +34,7 @@ export async function refreshToken(event: any, token: Token): Promise<Token | un
   try {
     const response = await axios
       .put(
-        'https://auth.sleaf.dev/api/refreshToken',
+        `${authDomain}/api/refreshToken`,
         { refreshToken: token.refreshToken },
         {
           headers: { authorization: `Bearer ${token.accessToken}` },
@@ -45,7 +47,7 @@ export async function refreshToken(event: any, token: Token): Promise<Token | un
     if (data.status !== 'OK') {
       return undefined;
     }
-    setCookie(event, 'token', JSON.stringify(data.token));
+    setCookie(event, 'tokens', JSON.stringify(data.token));
     return data.token;
   } catch (error) {
     return undefined;

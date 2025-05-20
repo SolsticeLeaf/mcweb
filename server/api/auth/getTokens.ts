@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
   try {
     let clientId = getCookie(event, 'clientId')?.toString();
     if (!clientId) {
+      console.log('No clientId');
       return { status: 'NO_CLIENT_ID' };
     }
     const tokens = await axios
@@ -21,7 +22,7 @@ export default defineEventHandler(async (event) => {
       });
     const tokensData: Token = tokens.data.token;
     if (tokensData) {
-      setCookie(event, 'token', JSON.stringify(tokensData));
+      setCookie(event, 'tokens', JSON.stringify(tokensData));
       deleteCookie(event, 'clientId');
     }
     return { status: 'OK' };

@@ -41,7 +41,7 @@ const canDisplay = computed((): boolean => {
 });
 
 function exit() {
-  useCookie('token').value = '';
+  useCookie('tokens').value = '';
   status.value = 'EXITED';
   user.value = undefined;
   const url = `/${locale.value}`;

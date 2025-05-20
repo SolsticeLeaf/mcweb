@@ -28,6 +28,7 @@
   "cookies_button_accept": "OK",
   "cookies_button_info": "More",
   "back": "Back",
+  "error": "Error",
   "faq_qa": "Questins and answers",
   "faq_docs": "Documents",
   "faq_cookie": "Use of Cookies on the Website",
@@ -74,5 +75,7 @@
   "channeling": "Channeling",
   "multishot": "Multishot",
   "quick_charge": "Quick Charge",
-  "piercing": "Piercing"
+  "piercing": "Piercing",
+  "RU": "RU",
+  "EN": "EN"
 }

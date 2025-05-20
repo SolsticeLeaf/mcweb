@@ -27,4 +27,4 @@ mongoose.connection.on('disconnected', () => {
   isConnected = false;
 });
 
-export { connectDB, mongoose };
+export { connectDB, mongoose, isConnected };

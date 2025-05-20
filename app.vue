@@ -2,7 +2,6 @@
 import Navigation from '~/components/navigation/Navigation.vue';
 import BackgroundWords from '~/components/utilities/other/BackgroundWords.vue';
 import CookieBanner from '~/components/utilities/other/CookieBanner.vue';
-import { ClientOnly } from '#components';
 
 const { tm } = useI18n();
 
@@ -66,8 +65,13 @@ onMounted(async () => {
   bottom: 1rem;
   right: 1rem;
 
-  @media screen and (max-width: $screen-sm) {
+  @media screen and (max-width: $screen-md) {
+    bottom: 0.5rem;
     right: auto;
+  }
+
+  @media screen and (max-width: $screen-sm) {
+    width: 90%;
   }
 }
 

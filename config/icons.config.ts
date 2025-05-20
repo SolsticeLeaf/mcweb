@@ -21,4 +21,5 @@ export default {
   gold: 'mdi:gold',
   accept: 'pixelarticons:check',
   info: 'pixelarticons:info-box',
+  home: 'pixelarticons:home',
 };
