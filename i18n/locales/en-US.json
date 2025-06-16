@@ -76,6 +76,8 @@
   "multishot": "Multishot",
   "quick_charge": "Quick Charge",
   "piercing": "Piercing",
+  "orebreaker": "Destroys an entire ore vein",
+  "treebreaker": "Destroys the entire tree",
   "RU": "RU",
   "EN": "EN"
 }

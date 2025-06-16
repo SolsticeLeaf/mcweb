@@ -27,7 +27,7 @@ const getLocalizedName = (): string => {
 const getEnchants = (): string => {
   let string = '';
   props.item.enchants.forEach((enchant) => {
-    string = `${string}${string.length > 0 ? '\n' : ''}${t(enchant.name.toLowerCase().replaceAll(' ', ''))} ${enchant.level}`;
+    string = `${string}${string.length > 0 ? '\n' : ''}${t(enchant.name.toLowerCase().replaceAll(' ', ''))}${enchant.level > 0 ? ` ${enchant.level}` : ''}`;
   });
   return string;
 };
