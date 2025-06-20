@@ -4,10 +4,6 @@ import BackgroundWords from '~/components/utilities/other/BackgroundWords.vue';
 import CookieBanner from '~/components/utilities/other/CookieBanner.vue';
 
 const { tm } = useI18n();
-
-onMounted(async () => {
-  umTrackView();
-});
 </script>
 
 <template>
