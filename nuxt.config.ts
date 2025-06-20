@@ -9,6 +9,13 @@ export default defineNuxtConfig({
       htmlAttrs: {
         lang: 'en',
       },
+      script: [
+        {
+          src: 'https://metrics.sleaf.dev/api/script.js',
+          'data-site-id': '3',
+          defer: true,
+        },
+      ],
       meta: [
         { charset: 'utf-8' },
         {
@@ -37,7 +44,7 @@ export default defineNuxtConfig({
   sourcemap: true,
   compatibilityDate: '2025-01-29',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/i18n', '@nuxtjs/device', '@nuxt/icon', '@nuxt/fonts', '@nuxt/image', 'nuxt-umami', '@nuxtjs/color-mode'],
+  modules: ['@nuxtjs/i18n', '@nuxtjs/device', '@nuxt/icon', '@nuxt/fonts', '@nuxt/image', '@nuxtjs/color-mode'],
   icon: {
     serverBundle: {
       collections: ['pixelarticons', 'pixel', 'mdi'],
@@ -76,18 +83,10 @@ export default defineNuxtConfig({
     port: 4440,
   },
   css: ['@/assets/scss/global.scss', '@/assets/scss/screens.scss'],
-  umami: {
-    id: process.env.UMAMI_ID,
-    host: process.env.UMAMI_HOST,
-    autoTrack: true,
-    enabled: false, // TODO: Enable
-  },
   runtimeConfig: {
     public: {
       DATABASE_NAME: process.env.DATABASE_NAME,
       DATABASE_URL: process.env.DATABASE_URL,
-      UMAMI_ID: process.env.UMAMI_ID,
-      UMAMI_HOST: process.env.UMAMI_HOST,
       DOMAIN: process.env.DOMAIN,
       AUTH_DOMAIN: process.env.AUTH_DOMAIN,
       MC_SKIN_HEAD: process.env.MC_SKIN_HEAD,

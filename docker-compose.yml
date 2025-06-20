@@ -9,8 +9,6 @@ services:
       - PORT=4440
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_URL=${DATABASE_URL}
-      - UMAMI_ID=${UMAMI_ID}
-      - UMAMI_HOST=${UMAMI_HOST}
       - DOMAIN=${DOMAIN}
       - AUTH_DOMAIN=${AUTH_DOMAIN}
       - MC_SKIN_HEAD=${MC_SKIN_HEAD}
