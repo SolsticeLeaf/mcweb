@@ -72,8 +72,6 @@ deploy-mais:
     - export PORT=4440
     - export DATABASE_NAME="$DATABASE_NAME"
     - export DATABASE_URL="$DATABASE_URL"
-    - export UMAMI_ID="$UMAMI_ID"
-    - export UMAMI_HOST="$UMAMI_HOST"
     - export DOMAIN="$DOMAIN"
     - export AUTH_DOMAIN="$AUTH_DOMAIN"
     - export MC_SKIN_HEAD="$MC_SKIN_HEAD"
