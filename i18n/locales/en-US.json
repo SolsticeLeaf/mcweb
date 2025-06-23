@@ -79,5 +79,11 @@
   "orebreaker": "Destroys an entire ore vein",
   "treebreaker": "Destroys the entire tree",
   "RU": "RU",
-  "EN": "EN"
+  "EN": "EN",
+  "server_ip": "IP:",
+  "server_online": "Online:",
+  "server_java": "Java:",
+  "server_bedrock": "Bedrock:",
+  "server_motd": "MOTD:",
+  "server_offline": "Server is offline"
 }

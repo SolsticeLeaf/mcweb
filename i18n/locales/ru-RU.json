@@ -79,5 +79,11 @@
   "orebreaker": "Разрушает всю жилу руды",
   "treebreaker": "Разрушает всё дерево",
   "RU": "RU",
-  "EN": "EN"
+  "EN": "EN",
+  "server_ip": "IP:",
+  "server_online": "Онлайн:",
+  "server_java": "Java:",
+  "server_bedrock": "Bedrock:",
+  "server_motd": "MOTD:",
+  "server_offline": "Сервер оффлайн"
 }
