@@ -31,7 +31,7 @@ const { tm } = useI18n();
             </Suspense>
           </ClientOnly>
         </div>
-        <div class="footer__blank" />
+        <div class="blank-nav" />
         <Suspense>
           <NuxtPage />
         </Suspense>

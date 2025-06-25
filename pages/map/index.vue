@@ -87,26 +87,22 @@ const changeServer = (server: Server) => {
   display: flex;
   flex-direction: column;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   align-items: center;
+  overflow: hidden;
   gap: 1rem;
 }
 
 .map {
-  width: 99%;
-  height: 95%;
-  border-radius: 2rem;
+  width: 98%;
+  height: 100%;
+  align-items: center;
 
   &__frame {
     width: 100%;
-    height: 100%;
+    height: 98%;
     border-color: transparent;
     border-radius: 2rem;
-  }
-
-  @media screen and (max-width: $screen-lg) {
-    width: 98%;
-    height: 92%;
   }
 }
 

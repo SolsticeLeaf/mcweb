@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const cache: Record<string, { data: any; timestamp: number }> = {};
-const CACHE_TTL = 60 * 1000; // 1 минута
+const CACHE_TTL = 60 * 1000;
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);

@@ -81,7 +81,7 @@ function isActive(path: string): boolean {
       color: #2c2044;
 
       &__label {
-        @media screen and (max-width: $screen-sm) {
+        @media screen and (max-width: $screen-md) {
           display: none;
         }
       }
@@ -96,7 +96,9 @@ function isActive(path: string): boolean {
         }
 
         @media screen and (max-width: $screen-sm) {
-          padding: 0 1rem;
+          width: 1rem;
+          height: 1rem;
+          padding: 0;
         }
       }
     }

@@ -4,7 +4,7 @@ import iconsConfig from '~/config/icons.config';
 import NavItems from './NavItems.vue';
 import NavUser from './NavUser.vue';
 
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 const colorMode = useColorMode();
 const route = useRoute();
 
@@ -146,6 +146,7 @@ const links = computed((): any => {
     <Suspense>
       <NuxtLink :to="homePath" class="logo">
         <h1 class="logo__name">{{ initialConfig.siteName }}</h1>
+        <p style="color: red">{{ t('development') }}</p>
       </NuxtLink>
     </Suspense>
     <div v-if="isLoaded" class="nav">
@@ -186,9 +187,9 @@ nav {
   user-select: none;
   justify-content: space-between;
 
-  @media screen and (max-width: $screen-sm) {
+  @media screen and (max-width: $screen-md) {
     padding: 0;
-    justify-content: center;
+    justify-content: space-evenly;
   }
 
   .nav {

@@ -62,16 +62,6 @@ const changeServer = async (server: Server) => {
   selectedServer.value = server;
   await getServerinfo(selectedServer.value?.ip);
 };
-
-const getDescription = (sort: any): string | undefined => {
-  const descriptions = selectedServer.value?.description;
-  if (descriptions != undefined) {
-    if (locale.value in descriptions) {
-      return sort.name[locale.value as keyof LocalizationString];
-    }
-    return sort.name.en;
-  }
-};
 </script>
 
 <template>
@@ -86,7 +76,7 @@ const getDescription = (sort: any): string | undefined => {
         <Suspense>
           <KeepAlive>
             <div v-if="isServerJavaInfoLoaded && isServerBedrockInfoLoaded">
-              <div v-if="serverJavaInfo && serverJavaInfo.online == true" class="info-wrapper">
+              <div v-if="selectedServer && serverJavaInfo && serverJavaInfo.online == true" class="info-wrapper">
                 <div class="info-description blur__glass">
                   <h1>{{ selectedServer?.name }}</h1>
                   <div class="ip-block">
@@ -133,6 +123,8 @@ const getDescription = (sort: any): string | undefined => {
 </template>
 
 <style scoped lang="scss">
+@use '/assets/scss/screens.scss' as *;
+
 .body {
   display: flex;
   flex-direction: column;
@@ -145,8 +137,8 @@ const getDescription = (sort: any): string | undefined => {
 .info-wrapper {
   display: flex;
   flex-direction: row;
-  width: 80vw;
-  max-width: 90vw;
+  width: 100%;
+  max-width: 100%;
   align-items: stretch;
   gap: 2rem;
   margin: 2rem auto;

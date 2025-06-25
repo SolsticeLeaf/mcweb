@@ -22,4 +22,5 @@ export default {
   accept: 'pixelarticons:check',
   info: 'pixelarticons:info-box',
   home: 'pixelarticons:home',
+  code: 'pixelarticons:code',
 };

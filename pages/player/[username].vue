@@ -108,8 +108,8 @@ const changeServer = (server: Server) => {
 .body {
   display: flex;
   flex-direction: column;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   align-items: center;
 }
 
@@ -160,7 +160,7 @@ const changeServer = (server: Server) => {
 
       &__img {
         display: flex;
-        width: fit-content;
+        width: auto;
         height: 100%;
       }
     }

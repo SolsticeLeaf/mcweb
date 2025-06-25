@@ -278,12 +278,13 @@ const getItemName = (type: ShopItem): string => {
 .body {
   display: flex;
   flex-direction: column;
-  position: absolute;
-  top: 5.5rem;
   max-height: fit-content;
   align-items: center;
   width: 100vw;
   gap: 1rem;
+  z-index: 20;
+  position: absolute;
+  top: 6rem;
 }
 
 .wrapper {

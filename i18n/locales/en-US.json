@@ -85,5 +85,6 @@
   "server_java": "Java:",
   "server_bedrock": "Bedrock:",
   "server_motd": "MOTD:",
-  "server_offline": "Server is offline"
+  "server_offline": "Server is offline",
+  "development": "Site under developing!"
 }

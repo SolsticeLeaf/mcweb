@@ -77,8 +77,6 @@ function getLocaleObjects(): any[] {
 .body {
   display: flex;
   flex-direction: column;
-  position: absolute;
-  top: 6rem;
   max-height: fit-content;
   align-items: center;
   width: 100vw;

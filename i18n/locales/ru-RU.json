@@ -85,5 +85,6 @@
   "server_java": "Java:",
   "server_bedrock": "Bedrock:",
   "server_motd": "MOTD:",
-  "server_offline": "Сервер оффлайн"
+  "server_offline": "Сервер оффлайн",
+  "development": "Сайт находится в разработке!"
 }

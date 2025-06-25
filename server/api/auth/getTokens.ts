@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
       return { status: 'NO_CLIENT_ID' };
     }
     const tokens = await axios
-      .put(`${authDomain}/api/getToken`, {
+      .put(`${authDomain}/api/tokens/getToken`, {
         serviceCode: serviceCode,
         clientId: clientId,
       })

@@ -38,6 +38,8 @@ const getSortName = (sort: any): string => {
 
   &__selector {
     background: transparent;
+    appearance: none;
+    -webkit-appearance: none;
     color: #2c2044;
   }
 

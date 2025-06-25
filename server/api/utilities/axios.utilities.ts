@@ -6,7 +6,7 @@ const authDomain = process.env.AUTH_DOMAIN || 'https://auth.sleaf.dev';
 
 export async function getDataWithPlayerCreate(event: any, token: Token): Promise<any> {
   const response = await axios
-    .get(`${authDomain}/api/getUserData`, {
+    .get(`${authDomain}/api/user/getUserData`, {
       headers: { authorization: `Bearer ${token.accessToken}` },
     })
     .catch((error) => {
@@ -34,7 +34,7 @@ export async function refreshToken(event: any, token: Token): Promise<Token | un
   try {
     const response = await axios
       .put(
-        `${authDomain}/api/refreshToken`,
+        `${authDomain}/api/tokens/refreshToken`,
         { refreshToken: token.refreshToken },
         {
           headers: { authorization: `Bearer ${token.accessToken}` },
