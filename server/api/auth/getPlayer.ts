@@ -8,10 +8,11 @@ export default defineEventHandler(async (event) => {
     await connectDB();
     const date = new Date();
     let token: Token = { accessToken: '', refreshToken: '', accessExpire: date, refreshExpire: date };
+    const tokensCookie = getCookie(event, 'tokens')?.toString() || '';
     try {
-      token = JSON.parse(getCookie(event, 'tokens')?.toString() || '');
+      token = JSON.parse(tokensCookie);
     } catch (err) {
-      console.error('❌ Failed to parse tokens from cookie:', err);
+      console.error(`❌ Failed to parse tokens from cookie (${tokensCookie}) [getPlayer]:`, err);
     }
     if (token.accessToken.length <= 0 || token.refreshToken.length <= 0) {
       return { status: 'NOT_AUTHORIZED', player: {} };
