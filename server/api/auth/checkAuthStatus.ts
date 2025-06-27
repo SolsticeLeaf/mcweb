@@ -10,9 +10,7 @@ export default defineEventHandler(async (event) => {
     const tokensCookie = getCookie(event, 'tokens')?.toString() || '';
     try {
       token = JSON.parse(tokensCookie);
-    } catch (err) {
-      console.error(`❌ Failed to parse tokens from cookie (${tokensCookie}) [checkAuthStatus]:`, err);
-    }
+    } catch (err) {}
     if (token.accessToken.length <= 0 || token.refreshToken.length <= 0) {
       return { status: 'NOT_AUTHORIZED', user: {} };
     }
