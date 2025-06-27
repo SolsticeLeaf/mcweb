@@ -46,20 +46,25 @@ const PlayerModel = mongoose.model<Player>('players', schema);
 export async function hasPlayer(id: string): Promise<boolean> {
   try {
     return (await PlayerModel.find({ _id: id })).length > 0;
-  } catch {
+  } catch (error) {
+    console.error('❌ Error in hasPlayer:', error);
     return false;
   }
 }
 
 export async function createPlayer(id: string, username: string): Promise<void> {
-  await PlayerModel.create({
-    _id: id,
-    username: username,
-    role: 'USER',
-    lastServer: 'undefined',
-    money: 0,
-    stats: [],
-  });
+  try {
+    await PlayerModel.create({
+      _id: id,
+      username: username,
+      role: 'USER',
+      lastServer: 'undefined',
+      money: 0,
+      stats: [],
+    });
+  } catch (error) {
+    console.error('❌ Error in createPlayer:', error);
+  }
 }
 
 export async function getPlayerByUsername(username: string): Promise<PlayerData | undefined> {
@@ -69,7 +74,8 @@ export async function getPlayerByUsername(username: string): Promise<PlayerData 
       return getPlayerData(players[0]);
     }
     return undefined;
-  } catch {
+  } catch (error) {
+    console.error('❌ Error in getPlayerByUsername:', error);
     return undefined;
   }
 }
@@ -81,7 +87,8 @@ export async function getPlayerById(id: string): Promise<PlayerData | undefined>
       return getPlayerData(players[0]);
     }
     return undefined;
-  } catch {
+  } catch (error) {
+    console.error('❌ Error in getPlayerById:', error);
     return undefined;
   }
 }

@@ -6,6 +6,7 @@ export default defineEventHandler(async (event) => {
     await connectDB();
     return { questions: await getQa() };
   } catch (error) {
+    console.error('❗️Error in getQa endpoint:', error);
     return { questions: [] };
   }
 });

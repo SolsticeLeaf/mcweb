@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     setCookie(event, 'clientId', clientId);
     return { status: 'OK', clientId: clientId };
   } catch (error) {
-    console.log('Error on getting clientId:', error);
+    console.log('🚨 Error while getting clientId:', error);
     return { status: 'ERR', clientId: '' };
   }
 });

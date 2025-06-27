@@ -22,7 +22,16 @@ export default defineEventHandler(async (event) => {
     cache[ip] = { data, timestamp: now };
     return data;
   } catch (error: any) {
-    console.log(error);
+    console.error('❌ Error fetching server info:', error);
+    if (error.response) {
+      console.error('🔎 Response data:', error.response.data);
+      console.error('🔎 Response status:', error.response.status);
+      console.error('🔎 Response headers:', error.response.headers);
+    } else if (error.request) {
+      console.error('📡 No response received:', error.request);
+    } else {
+      console.error('⚠️ Error setting up request:', error.message);
+    }
     return { error: error.message || 'Failed to fetch server info' };
   }
 });

@@ -17,7 +17,7 @@ const connectDB = async () => {
     isConnected = true;
     console.info(`✅ Successfully connected to database ${dbName}!`);
   } catch (error) {
-    console.error('🚨 Error connecting to database: ', error);
+    console.error('🚨 Error connecting to database:', error);
     process.exit(1);
   }
 };

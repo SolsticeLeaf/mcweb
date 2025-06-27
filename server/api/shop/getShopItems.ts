@@ -6,6 +6,7 @@ export default defineEventHandler(async (event) => {
     await connectDB();
     return { items: await getAllItems() };
   } catch (error) {
+    console.error('🛒❌ Error while getting shop items:', error);
     return { items: [] };
   }
 });

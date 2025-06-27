@@ -6,7 +6,9 @@ const startTime = new Date();
 export default defineEventHandler(async () => {
   try {
     await connectDB();
-  } catch {}
+  } catch (error) {
+    console.error('🚨 Error during healthcheck database connection:', error);
+  }
   return {
     status: isConnected ? 'success' : 'fail',
     uptime: process.uptime(),

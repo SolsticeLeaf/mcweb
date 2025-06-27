@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
     }
     return { status: 'OK', docs: docs };
   } catch (error) {
+    console.error('📄❌ Error while fetching docs:', error);
     return { status: 'ERR', docs: {} };
   }
 });

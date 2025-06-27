@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
       )}`,
     };
   } catch (error) {
-    console.log('Error on getting auth link:', error);
+    console.error('🔗❌ Error while generating auth link:', error);
     return { status: 'ERR', link: '' };
   }
 });

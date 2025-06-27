@@ -10,7 +10,9 @@ export default defineEventHandler(async (event) => {
     let token: Token = { accessToken: '', refreshToken: '', accessExpire: date, refreshExpire: date };
     try {
       token = JSON.parse(getCookie(event, 'tokens')?.toString() || '');
-    } catch {}
+    } catch (err) {
+      console.error('❌ Failed to parse tokens from cookie:', err);
+    }
     if (token.accessToken.length <= 0 || token.refreshToken.length <= 0) {
       return { status: 'NOT_AUTHORIZED', player: {} };
     }
@@ -22,7 +24,7 @@ export default defineEventHandler(async (event) => {
       player: await getPlayerById(data.userId),
     };
   } catch (error) {
-    console.log('Error on checking auth status:', error);
+    console.error('🚨 Error on checking auth status:', error);
     return { player: {} };
   }
 });

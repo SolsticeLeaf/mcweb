@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
   try {
     let clientId = getCookie(event, 'clientId')?.toString();
     if (!clientId) {
+      console.error('❌ [Tokens] No clientId found in cookies.');
       return { status: 'NO_CLIENT_ID' };
     }
     const tokens = await axios
@@ -17,16 +18,19 @@ export default defineEventHandler(async (event) => {
         clientId: clientId,
       })
       .catch((error) => {
+        console.error('🚨 [Tokens] Error while requesting token from auth service:', error?.response?.data || error.message || error);
         return error.response;
       });
     const tokensData: Token = tokens.data.token;
     if (tokensData) {
       setCookie(event, 'tokens', JSON.stringify(tokensData));
       deleteCookie(event, 'clientId');
+    } else {
+      console.error('⚠️ [Tokens] No token data received from auth service.');
     }
     return { status: 'OK' };
   } catch (error) {
-    console.log('Error on getting tokens:', error);
+    console.error('🔥 [Tokens] Unexpected error on getting tokens:', error);
     return { status: 'ERR' };
   }
 });

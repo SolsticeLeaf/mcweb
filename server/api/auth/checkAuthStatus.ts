@@ -9,12 +9,15 @@ export default defineEventHandler(async (event) => {
     let token: Token = { accessToken: '', refreshToken: '', accessExpire: date, refreshExpire: date };
     try {
       token = JSON.parse(getCookie(event, 'tokens')?.toString() || '');
-    } catch {}
+    } catch (err) {
+      console.error('❌ Failed to parse tokens cookie:', err);
+    }
     if (token.accessToken.length <= 0 || token.refreshToken.length <= 0) {
       return { status: 'NOT_AUTHORIZED', user: {} };
     }
     const data = await getDataWithPlayerCreate(event, token);
     if (data === undefined) {
+      console.error('⚠️ No data returned from getDataWithPlayerCreate, user is not authorized.');
       return { status: 'NOT_AUTHORIZED', user: {} };
     }
     return {
@@ -22,7 +25,7 @@ export default defineEventHandler(async (event) => {
       user: data as Object,
     };
   } catch (error) {
-    console.log('Error on checking auth status:', error);
+    console.error('🔥 Error on checking auth status:', error);
     return { status: 'NOT_AUTHORIZED', user: {} };
   }
 });

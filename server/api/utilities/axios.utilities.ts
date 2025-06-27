@@ -10,6 +10,7 @@ export async function getDataWithPlayerCreate(event: any, token: Token): Promise
       headers: { authorization: `Bearer ${token.accessToken}` },
     })
     .catch((error) => {
+      console.error('📩❌ Error while fetching user data:', error?.response?.data || error.message || error);
       return error.response;
     });
   const data: { status: string; account: Object } = response.data;
@@ -50,6 +51,7 @@ export async function refreshToken(event: any, token: Token): Promise<Token | un
     setCookie(event, 'tokens', JSON.stringify(data.token));
     return data.token;
   } catch (error) {
+    console.error('⚠️❌ Unexpected error while refreshing token:', error);
     return undefined;
   }
 }

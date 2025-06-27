@@ -6,6 +6,7 @@ export default defineEventHandler(async (event) => {
     await connectDB();
     return { servers: await getServers() };
   } catch (error) {
+    console.error('❌ Error fetching servers:', error);
     return { servers: [] };
   }
 });

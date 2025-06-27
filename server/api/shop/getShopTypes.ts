@@ -6,6 +6,7 @@ export default defineEventHandler(async (event) => {
     await connectDB();
     return { types: await getAllTypes() };
   } catch (error) {
+    console.error('❌ Error fetching shop types:', error);
     return { types: [] };
   }
 });

@@ -18,7 +18,8 @@ const QaModel = mongoose.model<Qa>('qa', schema);
 export async function getQa(): Promise<Qa[]> {
   try {
     return await QaModel.find();
-  } catch {
+  } catch (error) {
+    console.error('❌ Error fetching Q&A from database:', error);
     return [];
   }
 }

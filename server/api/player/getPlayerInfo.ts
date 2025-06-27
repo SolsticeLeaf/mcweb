@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
     returnPlayer.money = 0;
     return { status: 'OK', player: returnPlayer };
   } catch (error) {
+    console.error('❌ Error fetching player info:', error);
     return { status: 'ERR', player: {} };
   }
 });
