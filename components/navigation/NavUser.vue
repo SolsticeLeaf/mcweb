@@ -150,7 +150,7 @@ const getAlternateLocale = computed(() => {
     border-radius: 2rem;
     padding: 0.5rem;
     border: 1px solid rgba(44, 32, 68, 0.2);
-    background: rgba(44, 32, 68, 0.05);
+    background: rgba(237, 237, 237, 0.96);
   }
 
   .dark &__box {

@@ -86,5 +86,9 @@
   "server_bedrock": "Bedrock:",
   "server_motd": "MOTD:",
   "server_offline": "Сервер оффлайн",
-  "development": "Сайт находится в разработке!"
+  "development": "Сайт находится в разработке!",
+  "server_version": "Версия:",
+  "loading": "Загрузка...",
+  "open_map": "Открыть карту сервера",
+  "open_shop": "Открыть магазин сервера"
 }

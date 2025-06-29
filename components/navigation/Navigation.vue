@@ -186,7 +186,7 @@ nav {
   -ms-user-select: none;
   user-select: none;
   justify-content: space-between;
-  z-index: 150;
+  z-index: 200;
 
   @media screen and (max-width: $screen-md) {
     padding: 0;

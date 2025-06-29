@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import ServerSelector from '~/components/utilities/selectors/ServerSelector.vue';
-import { type LocalizationString } from '~/utilities/shopitem.interface';
+import ActionButton from '../../components/utilities/buttons/ActionButton.vue';
+import iconsConfig from '~/config/icons.config';
 import { type Server } from '~/utilities/server.interface';
+import { getDefaultTextColor } from '~/utilities/colors.utils';
 const { t, locale } = useI18n();
 const route = useRoute();
+const theme = useColorMode();
 const router = useRouter();
 
 const servers = ref<Server[]>([]);
@@ -62,6 +65,22 @@ const changeServer = async (server: Server) => {
   selectedServer.value = server;
   await getServerinfo(selectedServer.value?.ip);
 };
+
+const openServerMap = (server: Server) => {
+  const url = `/${locale.value}/map?server=${server._id}`;
+  window.location.assign(url);
+  window.open(url, '_self');
+};
+
+const openServerShop = (server: Server) => {
+  const url = `/${locale.value}/shop?server=${server._id}&type=all&sort=alphabet_plus&page=1`;
+  window.location.assign(url);
+  window.open(url, '_self');
+};
+
+const copyServerIp = (server: Server) => {
+  navigator.clipboard.writeText(server.ip);
+};
 </script>
 
 <template>
@@ -77,40 +96,60 @@ const changeServer = async (server: Server) => {
           <KeepAlive>
             <div v-if="isServerJavaInfoLoaded && isServerBedrockInfoLoaded">
               <div v-if="selectedServer && serverJavaInfo && serverJavaInfo.online == true" class="info-wrapper">
-                <div class="info-description blur__glass">
-                  <h1>{{ selectedServer?.name }}</h1>
-                  <div class="ip-block">
-                    <span class="ip-label">{{ t('server_ip') }}</span>
-                    <span class="ip-value">{{ selectedServer?.ip }}</span>
+                <div class="info-wrapper__row">
+                  <div class="info-description blur__glass">
+                    <h1>{{ selectedServer?.name }}</h1>
+                    <div class="ip-block">
+                      <span class="ip-label">{{ t('server_ip') }}</span>
+                      <span class="ip-value blur__glass" @click="copyServerIp(selectedServer)">{{ selectedServer?.ip }}</span>
+                    </div>
+                    <div class="desc-text" v-html="selectedServer?.description[locale] || selectedServer?.description.en"></div>
+                    <div v-if="selectedServer?.tags && (selectedServer?.tags[locale] || selectedServer?.tags.en)" class="tags-row">
+                      <span
+                        v-for="tag in selectedServer?.tags[locale] || selectedServer?.tags.en"
+                        :key="tag.tag"
+                        class="tag-pill"
+                        :style="{ background: tag.color, color: tag.textColor }">
+                        <Icon :name="tag.icon" class="tag-icon" />
+                        <span class="tag-label">{{ tag.tag }}</span>
+                      </span>
+                    </div>
                   </div>
-                  <div class="desc-text" v-html="selectedServer?.description[locale] || selectedServer?.description.en"></div>
-                  <div v-if="selectedServer?.tags && (selectedServer?.tags[locale] || selectedServer?.tags.en)" class="tags-row">
-                    <span
-                      v-for="tag in selectedServer?.tags[locale] || selectedServer?.tags.en"
-                      :key="tag.tag"
-                      class="tag-pill"
-                      :style="{ background: tag.color, color: tag.textColor }">
-                      <Icon :name="tag.icon" class="tag-icon" />
-                      <span class="tag-label">{{ tag.tag }}</span>
-                    </span>
+                  <div class="info-server blur__glass">
+                    <div class="icon-block" v-if="serverJavaInfo.icon">
+                      <img :src="serverJavaInfo.icon" alt="Server Icon" class="server-icon" />
+                    </div>
+                    <div class="players-block">
+                      <span class="players-label">{{ t('server_online') }}</span>
+                      <span class="players-value blur__glass">{{ serverJavaInfo.players?.online }}/{{ serverJavaInfo.players?.max }}</span>
+                    </div>
+                    <div class="version-block">
+                      <span class="version-label">{{ t('server_java') }}</span>
+                      <span class="version-value blur__glass">{{ serverJavaInfo.version }}</span>
+                    </div>
+                    <div class="version-block">
+                      <span class="version-label">{{ t('server_bedrock') }}</span>
+                      <span class="version-value blur__glass">{{ serverBedrockInfo.version }}</span>
+                    </div>
                   </div>
                 </div>
-                <div class="info-server blur__glass">
-                  <div class="icon-block" v-if="serverJavaInfo.icon">
-                    <img :src="serverJavaInfo.icon" alt="Server Icon" class="server-icon" />
-                  </div>
-                  <div class="players-block">
-                    <span class="players-label">{{ t('server_online') }}</span>
-                    <span class="players-value">{{ serverJavaInfo.players?.online }}/{{ serverJavaInfo.players?.max }}</span>
-                  </div>
-                  <div class="version-block">
-                    <span class="version-label">{{ t('server_java') }}</span>
-                    <span class="version-value">{{ serverJavaInfo.version }}</span>
-                  </div>
-                  <div class="version-block">
-                    <span class="version-label">{{ t('server_bedrock') }}</span>
-                    <span class="version-value">{{ serverBedrockInfo.version }}</span>
-                  </div>
+                <div class="servers-buttons">
+                  <ActionButton
+                    :text="t(`open_map`)"
+                    class="server-button"
+                    :text-color="getDefaultTextColor(theme.value)"
+                    align="start"
+                    :icon="iconsConfig.nav_map"
+                    color="transparent"
+                    @click="openServerMap(selectedServer)" />
+                  <ActionButton
+                    :text="t(`open_shop`)"
+                    class="server-button"
+                    :text-color="getDefaultTextColor(theme.value)"
+                    align="start"
+                    :icon="iconsConfig.nav_shop"
+                    color="transparent"
+                    @click="openServerShop(selectedServer)" />
                 </div>
               </div>
               <div v-else class="offline-block blur__glass">{{ t('server_offline') }}</div>
@@ -136,21 +175,51 @@ const changeServer = async (server: Server) => {
 
 .info-wrapper {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
   max-width: 100%;
   align-items: stretch;
-  gap: 2rem;
-  margin: 2rem auto;
-  border-radius: 2rem;
-  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+
+  &__row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: stretch;
+    gap: 1rem;
+    justify-content: center;
+  }
+}
+
+.servers-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.server-button {
+  filter: none !important;
+  -webkit-filter: none !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-radius: 3rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(44, 32, 68, 0.2) !important;
+  background: rgba(44, 32, 68, 0.05) !important;
+  width: fit-content;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+  }
 }
 
 .info-description {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 50%;
   padding: 2rem;
   gap: 1.5rem;
 }
@@ -171,6 +240,10 @@ const changeServer = async (server: Server) => {
   padding: 0.2rem 0.5rem;
   border-radius: 0.4rem;
   margin-left: 0.5rem;
+
+  &:hover {
+    cursor: copy;
+  }
 }
 
 .info-server {
@@ -204,6 +277,9 @@ const changeServer = async (server: Server) => {
 
 .players-value,
 .version-value {
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.4rem;
   margin-left: 0.5rem;
 }
 

@@ -172,7 +172,7 @@ const sortItems = () => {
 };
 
 const changeServer = async (server: Server) => {
-  changeType(shopTypes.value.filter((type) => type._id === 'all')[0]);
+  changeType(shopTypes.value.filter((type) => type._id === 'all')[0]); // Исправить
   router.push({ query: { server: server._id, type: selectedType.value?._id, sort: selectedSort.value.type, page: 1 } });
   selectedServer.value = server;
   filterShopTypes();
@@ -282,7 +282,7 @@ const getItemName = (type: ShopItem): string => {
   align-items: center;
   width: 100vw;
   gap: 1rem;
-  z-index: 20;
+  z-index: 10;
   position: absolute;
   top: 6rem;
 }

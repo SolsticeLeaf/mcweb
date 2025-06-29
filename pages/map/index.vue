@@ -67,7 +67,7 @@ const changeServer = (server: Server) => {
               <iframe
                 v-if="status === 'OK'"
                 class="map__frame blur__glass"
-                :src="selectedServer.map"
+                :src="selectedServer.map + `&zoom=5`"
                 :style="colorMode.value === 'dark' ? 'mix-blend-mode: lighten' : ''" />
               <div v-else class="transparent__glass">
                 <p>{{ t('authorize_to_view') }}</p>

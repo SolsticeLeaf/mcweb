@@ -86,5 +86,9 @@
   "server_bedrock": "Bedrock:",
   "server_motd": "MOTD:",
   "server_offline": "Server is offline",
-  "development": "Site under developing!"
+  "development": "Site under developing!",
+  "server_version": "Version:",
+  "loading": "Loading...",
+  "open_map": "Open server map",
+  "open_shop": "Open server shop"
 }
