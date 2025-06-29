@@ -122,11 +122,15 @@ const copyServerIp = (server: Server) => {
 </template>
 
 <style scoped lang="scss">
+@use '/assets/scss/screens.scss' as *;
+
 .body {
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100vh;
+  top: 6rem;
+  position: absolute;
   max-height: fit-content;
   justify-content: center;
   align-items: center;
@@ -136,7 +140,8 @@ const copyServerIp = (server: Server) => {
 .body-row {
   display: flex;
   flex-direction: row;
-  height: 70%;
+  height: fit-content;
+  border: 1px green solid;
   width: 98%;
 }
 
@@ -153,7 +158,7 @@ const copyServerIp = (server: Server) => {
   flex-direction: column;
   border: 1px green solid;
   width: 100%;
-  height: 100%;
+  height: fit-content;
 }
 
 .blur__glass {
@@ -165,10 +170,19 @@ const copyServerIp = (server: Server) => {
   flex-direction: column;
   width: 20%;
   height: fit-content;
+  top: 6rem;
   position: sticky;
   padding: 1rem;
   gap: 1rem;
   overflow-y: auto;
+
+  @media screen and (max-width: $screen-lg) {
+    width: 30%;
+  }
+
+  @media screen and (max-width: $screen-mb) {
+    width: 40%;
+  }
 
   .blur__glass {
     border-radius: 1rem;
