@@ -14,6 +14,7 @@ export interface ServersData {
   serverId: string;
   health: number;
   food: number;
+  inventory: Array<object>;
 }
 
 export interface PlayerData {
@@ -95,7 +96,7 @@ export async function getPlayerById(id: string): Promise<PlayerData | undefined>
   }
 }
 
-export async function setPlayersData(username: string, server: any, food: number, health: number): Promise<void> {
+export async function setPlayersData(username: string, server: any, food: number, health: number, inventory: Array<object>): Promise<void> {
   try {
     await setPlayerLastServer(username, server);
     const player = await PlayerModel.findOne({ username: username });
@@ -104,11 +105,13 @@ export async function setPlayersData(username: string, server: any, food: number
       if (serverDataIndex > -1) {
         player.serversData[serverDataIndex].food = food;
         player.serversData[serverDataIndex].health = health;
+        player.serversData[serverDataIndex].inventory = inventory;
       } else {
         player.serversData.push({
           serverId: server._id,
           health: health,
           food: food,
+          inventory: [],
         });
       }
       await player.save();

@@ -6,6 +6,7 @@ export interface Data {
   username: string;
   health: number;
   food: number;
+  inventory: Array<object>;
 }
 
 export default defineEventHandler(async (event) => {
@@ -21,7 +22,7 @@ export default defineEventHandler(async (event) => {
     }
     await Promise.all(
       data.map((player: Data) =>
-        setPlayersData(player.username, server, player.food, player.health).catch((error) => {
+        setPlayersData(player.username, server, player.food, player.health, player.inventory).catch((error) => {
           console.error(`🖥️❌ Error on setPlayersData on ${player.username}:`, error);
         })
       )
