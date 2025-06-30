@@ -53,7 +53,7 @@ onBeforeMount(async () => {
   } finally {
     isServersLoaded.value = true;
     await updatePlayerData();
-    updateInterval = setInterval(updatePlayerData, 300000);
+    updateInterval = setInterval(updatePlayerData, 2 * 60 * 1000);
   }
 });
 

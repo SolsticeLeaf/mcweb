@@ -50,7 +50,7 @@ const resetServerRefreshInterval = () => {
   }
   serverRefreshInterval = setInterval(() => {
     getServerinfo(selectedServer.value?.ip);
-  }, 300000);
+  }, 2 * 60 * 1000);
 };
 
 onMounted(() => {

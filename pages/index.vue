@@ -69,7 +69,7 @@ onMounted(() => {
   const interval = setInterval(() => {
     fetchServers();
     fetchUserAndPlayer();
-  }, 5 * 60 * 1000);
+  }, 2 * 60 * 1000);
 
   onUnmounted(() => {
     clearInterval(interval);

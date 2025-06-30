@@ -36,7 +36,7 @@ const fetchPlayer = async () => {
 
 onMounted(() => {
   fetchPlayer();
-  updateInterval = setInterval(fetchPlayer, 5 * 60 * 1000);
+  updateInterval = setInterval(fetchPlayer, 2 * 60 * 1000);
 });
 
 onUnmounted(() => {
