@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
       return { status: 'INVALID_TOKEN' };
     }
     await Promise.all(
-      data.array.map((player: Data) =>
+      data.map((player: Data) =>
         setPlayersData(player.username, server, player.food, player.health).catch((error) => {
           console.error(`🖥️❌ Error on setPlayersData on ${player.username}:`, error);
         })
@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
     setResponseStatus(event, 200);
     return { status: 'OK' };
   } catch (error) {
-    console.error(`🖥️❌ Error on settings players data:`, error);
+    console.error(`🖥️❌ Error on setting players data:`, error);
     setResponseStatus(event, 500);
     return { status: 'ERROR' };
   }

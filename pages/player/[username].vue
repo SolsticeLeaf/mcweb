@@ -79,9 +79,9 @@ const changeServer = (server: Server) => {
                   <h2>{{ t('name') }}: {{ player.username }}</h2>
                   <h5>{{ t('role') }}: {{ player.role }}</h5>
                   <!-- TODO: Роль в зависимости от сервера -->
-                  <h5>{{ t('last_server') }}: {{ player.lastServer }}</h5>
-                  <h5>HEARTS</h5>
-                  <h5>FOOD</h5>
+                  <h5>{{ t('last_server') }}: {{ player.lastServer.name | '?????' }}</h5>
+                  <h5>{{ player.serversData[selectedServer._id].health | 100 }}</h5>
+                  <h5>{{ player.serversData[selectedServer._id].food | 100 }}</h5>
                 </div>
               </div>
             </div>

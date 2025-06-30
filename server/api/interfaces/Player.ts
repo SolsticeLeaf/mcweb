@@ -20,7 +20,7 @@ export interface PlayerData {
   _id: string;
   username: string;
   role: string;
-  lastServer: string;
+  lastServer: Object;
   serversData: Array<ServersData>;
   money: number;
   skin: Skin;
@@ -30,7 +30,7 @@ export interface Player extends Document {
   _id: string;
   username: string;
   role: string;
-  lastServer: string;
+  lastServer: Object;
   serversData: Array<ServersData>;
   money: number;
 }
@@ -40,7 +40,7 @@ const schema: Schema = new Schema(
     _id: { type: String },
     username: { type: String, required: true },
     role: { type: String, required: true },
-    lastServer: { type: String, required: true },
+    lastServer: { type: Object, required: true },
     serversData: { type: Array, required: true },
     money: { type: Number, required: true },
   },
@@ -99,7 +99,7 @@ export async function getPlayerById(id: string): Promise<PlayerData | undefined>
   }
 }
 
-export async function setPlayerLastServer(username: string, lastServer: string): Promise<void> {
+export async function setPlayerLastServer(username: string, lastServer: object): Promise<void> {
   try {
     await PlayerModel.findOneAndUpdate({ username: username }, { lastServer: lastServer });
   } catch (error) {

@@ -28,6 +28,19 @@ const schema: Schema = new Schema(
 
 const ServerModel = mongoose.model<Server>('servers', schema);
 
+export async function getServer(serverId: string): Promise<Server | undefined> {
+  try {
+    const players = await ServerModel.find({ _id: serverId });
+    if (players.length > 0) {
+      return players[0];
+    }
+    return undefined;
+  } catch (error) {
+    console.error('❌ Error in getServer:', error);
+    return undefined;
+  }
+}
+
 export async function getServers(): Promise<Server[]> {
   return ServerModel.find();
 }
