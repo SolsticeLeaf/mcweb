@@ -8,10 +8,8 @@ const servers = ref<Server[]>([]);
 const isServersLoaded = ref(false);
 
 const status = ref('');
-const user = ref();
+const player = ref();
 const isLoaded = ref(false);
-
-const player = ref({});
 
 const fetchServers = async () => {
   try {
@@ -29,7 +27,7 @@ const fetchServers = async () => {
 
 const fetchUserAndPlayer = async () => {
   try {
-    const { status: response_status, user: response_data } = await $fetch('/api/auth/checkAuthStatus', {
+    const { status: response_status, player: response_data } = await $fetch('/api/auth/getPlayer', {
       default: () => [],
       cache: 'no-cache',
       server: false,
@@ -37,27 +35,9 @@ const fetchUserAndPlayer = async () => {
       body: {},
     });
     status.value = response_status;
-    user.value = response_data;
+    player.value = response_data;
   } finally {
     isLoaded.value = true;
-    if (isLoaded.value && status.value === 'OK') {
-      try {
-        const { status: response_status, player: response_player } = await $fetch('/api/player/getPlayerInfo', {
-          default: () => [],
-          cache: 'no-cache',
-          server: false,
-          method: 'POST',
-          body: {
-            player: user.value.username,
-          },
-        });
-        player.value = response_player;
-      } catch (error) {
-        console.log('❌ Error on getting player data:', error);
-      }
-    } else {
-      player.value = {};
-    }
   }
 };
 

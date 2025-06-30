@@ -9,6 +9,7 @@ const router = useRouter();
 const isLoaded = ref(false);
 const status = ref('');
 const player = ref<any>();
+
 const servers = ref<Server[]>([]);
 const isServersLoaded = ref(false);
 const selectedServer = ref<Server>();
@@ -17,17 +18,15 @@ let updateInterval: any = null;
 
 const updatePlayerData = async () => {
   try {
-    const { status: response_status, player: response_player } = await $fetch('/api/player/getPlayerInfo', {
+    const { status: response_status, player: response_data } = await $fetch('/api/auth/getPlayer', {
       default: () => [],
       cache: 'no-cache',
       server: false,
       method: 'POST',
-      body: {
-        player: route.params.username,
-      },
+      body: {},
     });
     status.value = response_status;
-    player.value = response_player;
+    player.value = response_data;
   } finally {
     isLoaded.value = true;
   }
@@ -68,7 +67,7 @@ const changeServer = (server: Server) => {
 
 const getServerData = computed(() => {
   try {
-    const filtered = player.value.serversData.filter((server) => server.serverId === selectedServer.value._id);
+    const filtered = player.value.serversData.filter((server: any) => server.serverId === selectedServer?.value?._id);
     if (filtered.length > 0) {
       return filtered[0];
     }
@@ -83,14 +82,14 @@ const getServerData = computed(() => {
 <template>
   <ClientOnly>
     <KeepAlive>
-      <div class="body">
-        <div v-if="isLoaded" class="wrapper">
-          <Suspense>
-            <KeepAlive>
-              <ServerSelector v-if="isServersLoaded && servers.length > 1" v-model="selectedServer" :servers="servers" :changed="changeServer" />
-            </KeepAlive>
-          </Suspense>
-          <div v-if="status === 'OK'" class="main">
+      <div v-if="isLoaded && status === 'OK'" class="body">
+        <Suspense>
+          <KeepAlive>
+            <ServerSelector v-if="isServersLoaded && servers.length > 1" v-model="selectedServer" :servers="servers" :changed="changeServer" />
+          </KeepAlive>
+        </Suspense>
+        <div class="wrapper">
+          <div class="main">
             <div class="info blur__glass">
               <div class="info__user">
                 <div class="info__user__skin">
@@ -115,10 +114,10 @@ const getServerData = computed(() => {
               <h2>{{ t('statistic') }}</h2>
             </div>
           </div>
-          <div v-else>
-            <h5>{{ t('player_not_found') }}</h5>
-          </div>
         </div>
+      </div>
+      <div v-else class="wrapper">
+        <h5>{{ t('authorize_to_view') }}</h5>
       </div>
     </KeepAlive>
   </ClientOnly>

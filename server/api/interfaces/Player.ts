@@ -82,19 +82,6 @@ export async function createPlayer(id: string, username: string): Promise<void> 
   }
 }
 
-export async function getPlayerByUsername(username: string): Promise<PlayerData | undefined> {
-  try {
-    const players = await PlayerModel.find({ username: username });
-    if (players.length > 0) {
-      return getPlayerData(players[0]);
-    }
-    return undefined;
-  } catch (error) {
-    console.error('❌ Error in getPlayerByUsername:', error);
-    return undefined;
-  }
-}
-
 export async function getPlayerById(id: string): Promise<PlayerData | undefined> {
   try {
     const players = await PlayerModel.find({ _id: id });
@@ -108,25 +95,18 @@ export async function getPlayerById(id: string): Promise<PlayerData | undefined>
   }
 }
 
-export async function setPlayerLastServer(username: string, lastServer: object): Promise<void> {
+export async function setPlayersData(username: string, server: any, food: number, health: number): Promise<void> {
   try {
-    await PlayerModel.findOneAndUpdate({ username: username }, { lastServer: lastServer });
-  } catch (error) {
-    console.error('❌ Error in setPlayerLastServer:', error);
-  }
-}
-
-export async function setPlayersData(username: string, server: string, food: number, health: number): Promise<void> {
-  try {
+    await setPlayerLastServer(username, server);
     const player = await PlayerModel.findOne({ username: username });
     if (player) {
-      const serverDataIndex = player.serversData.findIndex((data) => data.serverId === server);
+      const serverDataIndex = player.serversData.findIndex((data) => data.serverId === server._id);
       if (serverDataIndex > -1) {
         player.serversData[serverDataIndex].food = food;
         player.serversData[serverDataIndex].health = health;
       } else {
         player.serversData.push({
-          serverId: server,
+          serverId: server._id,
           health: health,
           food: food,
         });
@@ -135,6 +115,14 @@ export async function setPlayersData(username: string, server: string, food: num
     }
   } catch (error) {
     console.error('❌ Error in setPlayersData:', error);
+  }
+}
+
+async function setPlayerLastServer(username: string, lastServer: object): Promise<void> {
+  try {
+    await PlayerModel.findOneAndUpdate({ username: username }, { lastServer: lastServer });
+  } catch (error) {
+    console.error('❌ Error in setPlayerLastServer:', error);
   }
 }
 

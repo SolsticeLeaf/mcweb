@@ -1,6 +1,6 @@
 import { connectDB } from '~/server/api/database/MongoDB';
-import { hasToken } from '../interfaces/ServerToken';
 import { setPlayersData } from '../interfaces/Player';
+import { getServerByToken } from '../interfaces/Server';
 
 export interface Data {
   username: string;
@@ -10,11 +10,12 @@ export interface Data {
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const { server, data } = body;
+  const { data } = body;
   const token = getRequestHeader(event, 'authorization');
   try {
     await connectDB();
-    if (!(await hasToken(token))) {
+    const server = await getServerByToken(token);
+    if (server === null) {
       setResponseStatus(event, 500);
       return { status: 'INVALID_TOKEN' };
     }

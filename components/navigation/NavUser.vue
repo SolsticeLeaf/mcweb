@@ -20,7 +20,7 @@ let updateInterval: ReturnType<typeof setInterval>;
 const fetchPlayer = async () => {
   if (props.authStatus === 'OK') {
     try {
-      const { player: response_data } = await $fetch('/api/auth/getPlayer', {
+      const { status: response_status, player: response_data } = await $fetch('/api/auth/getPlayer', {
         default: () => [],
         cache: 'no-cache',
         server: false,

@@ -17,13 +17,14 @@ export default defineEventHandler(async (event) => {
     }
     const data = await getDataWithPlayerCreate(event, token);
     if (data === undefined) {
-      return { player: {} };
+      return { status: 'NOT_FOUND', player: {} };
     }
     return {
+      status: 'OK',
       player: await getPlayerById(data.userId),
     };
   } catch (error) {
     console.error('🚨 Error on checking auth status:', error);
-    return { player: {} };
+    return { status: 'ERROR', player: {} };
   }
 });
