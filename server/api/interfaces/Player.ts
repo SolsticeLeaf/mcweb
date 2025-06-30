@@ -14,7 +14,7 @@ export interface ServersData {
   serverId: string;
   health: number;
   food: number;
-  inventory: Array<object>;
+  inventory: Array<Object>;
 }
 
 export interface PlayerData {
@@ -41,6 +41,7 @@ const ServersDataSchema: Schema = new Schema(
     serverId: { type: String, required: true },
     health: { type: Number, required: true },
     food: { type: Number, required: true },
+    inventory: { type: Array<Object>, required: true },
   },
   { _id: false }
 );
@@ -96,7 +97,7 @@ export async function getPlayerById(id: string): Promise<PlayerData | undefined>
   }
 }
 
-export async function setPlayersData(username: string, server: any, food: number, health: number, inventory: Array<object>): Promise<void> {
+export async function setPlayersData(username: string, server: any, food: number, health: number, inventory: Array<any>): Promise<void> {
   try {
     await setPlayerLastServer(username, server);
     const player = await PlayerModel.findOne({ username: username });
