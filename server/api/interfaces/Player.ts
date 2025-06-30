@@ -10,13 +10,19 @@ export interface Skin {
   full: string;
 }
 
+export interface ServersData {
+  serverId: string;
+  health: number;
+  food: number;
+}
+
 export interface PlayerData {
   _id: string;
   username: string;
   role: string;
   lastServer: string;
+  serversData: Array<ServersData>;
   money: number;
-  stats: Array<Object>;
   skin: Skin;
 }
 
@@ -25,8 +31,8 @@ export interface Player extends Document {
   username: string;
   role: string;
   lastServer: string;
+  serversData: Array<ServersData>;
   money: number;
-  stats: Array<Object>;
 }
 
 const schema: Schema = new Schema(
@@ -35,8 +41,8 @@ const schema: Schema = new Schema(
     username: { type: String, required: true },
     role: { type: String, required: true },
     lastServer: { type: String, required: true },
+    serversData: { type: Array, required: true },
     money: { type: Number, required: true },
-    stats: { type: Array, required: true },
   },
   { collection: 'players' }
 );
@@ -59,8 +65,8 @@ export async function createPlayer(id: string, username: string): Promise<void> 
       username: username,
       role: 'USER',
       lastServer: 'undefined',
+      serversData: [],
       money: 0,
-      stats: [],
     });
   } catch (error) {
     console.error('❌ Error in createPlayer:', error);
@@ -93,6 +99,36 @@ export async function getPlayerById(id: string): Promise<PlayerData | undefined>
   }
 }
 
+export async function setPlayerLastServer(username: string, lastServer: string): Promise<void> {
+  try {
+    await PlayerModel.findOneAndUpdate({ username: username }, { lastServer: lastServer });
+  } catch (error) {
+    console.error('❌ Error in setPlayerLastServer:', error);
+  }
+}
+
+export async function setPlayersData(username: string, server: string, food: number, health: number): Promise<void> {
+  try {
+    const player = await PlayerModel.findOne({ username: username });
+    if (player) {
+      const serverDataIndex = player.serversData.findIndex((data) => data.serverId === server);
+      if (serverDataIndex > -1) {
+        player.serversData[serverDataIndex].food = food;
+        player.serversData[serverDataIndex].health = health;
+      } else {
+        player.serversData.push({
+          serverId: server,
+          health: health,
+          food: food,
+        });
+      }
+      await player.save();
+    }
+  } catch (error) {
+    console.error('❌ Error in setPlayersData:', error);
+  }
+}
+
 function getPlayerData(player: Player): PlayerData {
   const username = player.username;
   return {
@@ -101,7 +137,7 @@ function getPlayerData(player: Player): PlayerData {
     role: player.role,
     lastServer: player.lastServer,
     money: player.money,
-    stats: player.stats,
+    serversData: player.serversData,
     skin: {
       head: replaceName(headSkinUrl, username),
       bust: replaceName(bustSkinUrl, username),
