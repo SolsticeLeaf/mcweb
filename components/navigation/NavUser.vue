@@ -15,8 +15,9 @@ const props = defineProps<{
 
 const isLoaded = ref(false);
 const player = ref<any>();
+let updateInterval: ReturnType<typeof setInterval>;
 
-onBeforeMount(async () => {
+const fetchPlayer = async () => {
   if (props.authStatus === 'OK') {
     try {
       const { player: response_data } = await $fetch('/api/auth/getPlayer', {
@@ -31,6 +32,15 @@ onBeforeMount(async () => {
       isLoaded.value = true;
     }
   }
+};
+
+onMounted(() => {
+  fetchPlayer();
+  updateInterval = setInterval(fetchPlayer, 5 * 60 * 1000);
+});
+
+onUnmounted(() => {
+  clearInterval(updateInterval);
 });
 
 const getSystemTheme = (): string => {

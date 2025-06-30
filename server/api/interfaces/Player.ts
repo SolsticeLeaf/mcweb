@@ -35,13 +35,22 @@ export interface Player extends Document {
   money: number;
 }
 
+const ServersDataSchema: Schema = new Schema(
+  {
+    serverId: { type: String, required: true },
+    health: { type: Number, required: true },
+    food: { type: Number, required: true },
+  },
+  { _id: false }
+);
+
 const schema: Schema = new Schema(
   {
     _id: { type: String },
     username: { type: String, required: true },
     role: { type: String, required: true },
     lastServer: { type: Object, required: true },
-    serversData: { type: Array, required: true },
+    serversData: { type: [ServersDataSchema], required: true },
     money: { type: Number, required: true },
   },
   { collection: 'players' }

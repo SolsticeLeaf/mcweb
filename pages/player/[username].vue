@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ServerSelector from '~/components/utilities/selectors/ServerSelector.vue';
+import StatusBar from '~/components/player/StatusBar.vue';
 import { type Server } from '~/utilities/server.interface';
 const { t } = useI18n();
 const route = useRoute();
@@ -11,6 +12,26 @@ const player = ref<any>();
 const servers = ref<Server[]>([]);
 const isServersLoaded = ref(false);
 const selectedServer = ref<Server>();
+
+let updateInterval: any = null;
+
+const updatePlayerData = async () => {
+  try {
+    const { status: response_status, player: response_player } = await $fetch('/api/player/getPlayerInfo', {
+      default: () => [],
+      cache: 'no-cache',
+      server: false,
+      method: 'POST',
+      body: {
+        player: route.params.username,
+      },
+    });
+    status.value = response_status;
+    player.value = response_player;
+  } finally {
+    isLoaded.value = true;
+  }
+};
 
 onBeforeMount(async () => {
   try {
@@ -31,28 +52,32 @@ onBeforeMount(async () => {
     }
   } finally {
     isServersLoaded.value = true;
-    try {
-      const { status: response_status, player: response_player } = await $fetch('/api/player/getPlayerInfo', {
-        default: () => [],
-        cache: 'no-cache',
-        server: false,
-        method: 'POST',
-        body: {
-          player: route.params.username,
-        },
-      });
-      status.value = response_status;
-      player.value = response_player;
-    } finally {
-      isLoaded.value = true;
-    }
+    await updatePlayerData();
+    updateInterval = setInterval(updatePlayerData, 300000);
   }
+});
+
+onUnmounted(() => {
+  clearInterval(updateInterval);
 });
 
 const changeServer = (server: Server) => {
   router.push({ query: { server: server._id } });
   selectedServer.value = server;
 };
+
+const getServerData = computed(() => {
+  try {
+    const filtered = player.value.serversData.filter((server) => server.serverId === selectedServer.value._id);
+    if (filtered.length > 0) {
+      return filtered[0];
+    }
+    return {};
+  } catch (error) {
+    console.log(error);
+    return {};
+  }
+});
 </script>
 
 <template>
@@ -78,10 +103,11 @@ const changeServer = (server: Server) => {
                 <div class="info__user__personal">
                   <h2>{{ t('name') }}: {{ player.username }}</h2>
                   <h5>{{ t('role') }}: {{ player.role }}</h5>
-                  <!-- TODO: Роль в зависимости от сервера -->
-                  <h5>{{ t('last_server') }}: {{ player.lastServer.name | '?????' }}</h5>
-                  <h5>{{ player.serversData[selectedServer._id].health | 100 }}</h5>
-                  <h5>{{ player.serversData[selectedServer._id].food | 100 }}</h5>
+                  <h5>{{ t('last_server') }}: {{ player.lastServer?.name || '¯\\_(ツ)_/¯' }}</h5>
+                  <div class="info__user__personal__bar">
+                    <StatusBar :value="getServerData.health || 20" type="health" :inverted="false" />
+                    <StatusBar :value="getServerData.food || 20" type="hunger" :inverted="false" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -170,6 +196,14 @@ const changeServer = (server: Server) => {
       flex-direction: column;
       text-align: start;
       height: 50%;
+      gap: 0.5rem;
+
+      &__bar {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+      }
     }
   }
 }

@@ -19,6 +19,8 @@ const isServerJavaInfoLoaded = ref(false);
 const serverBedrockInfo = ref<any>({});
 const isServerBedrockInfoLoaded = ref(false);
 
+let serverRefreshInterval: NodeJS.Timeout | null = null;
+
 onBeforeMount(async () => {
   try {
     const { servers: response_servers } = await $fetch('/api/server/getServers', {
@@ -39,6 +41,25 @@ onBeforeMount(async () => {
   } finally {
     isServersLoaded.value = true;
     await getServerinfo(selectedServer.value?.ip);
+  }
+});
+
+const resetServerRefreshInterval = () => {
+  if (serverRefreshInterval) {
+    clearInterval(serverRefreshInterval);
+  }
+  serverRefreshInterval = setInterval(() => {
+    getServerinfo(selectedServer.value?.ip);
+  }, 300000);
+};
+
+onMounted(() => {
+  resetServerRefreshInterval();
+});
+
+onUnmounted(() => {
+  if (serverRefreshInterval) {
+    clearInterval(serverRefreshInterval);
   }
 });
 
@@ -64,6 +85,7 @@ const changeServer = async (server: Server) => {
   router.push({ query: { server: server._id } });
   selectedServer.value = server;
   await getServerinfo(selectedServer.value?.ip);
+  resetServerRefreshInterval();
 };
 
 const openServerMap = (server: Server) => {
