@@ -4,6 +4,8 @@ import ActionButton from '../../components/utilities/buttons/ActionButton.vue';
 import iconsConfig from '~/config/icons.config';
 import { type Server } from '~/utilities/server.interface';
 import { getDefaultTextColor } from '~/utilities/colors.utils';
+import PlayerAvatar from '~/components/player/PlayerAvatar.vue';
+import LoadingSpinner from '~/components/utilities/other/LoadingSpinner.vue';
 const { t, locale } = useI18n();
 const route = useRoute();
 const theme = useColorMode();
@@ -14,10 +16,8 @@ const selectedServer = ref<Server>();
 const isServersLoaded = ref(false);
 
 const serverJavaInfo = ref<any>({});
-const isServerJavaInfoLoaded = ref(false);
-
 const serverBedrockInfo = ref<any>({});
-const isServerBedrockInfoLoaded = ref(false);
+const isServerInfoLoaded = ref(false);
 
 let serverRefreshInterval: NodeJS.Timeout | null = null;
 
@@ -75,8 +75,7 @@ const getServerinfo = async (ip: string | undefined): Promise<void> => {
       serverJavaInfo.value = response.java;
       serverBedrockInfo.value = response.bedrock;
     } finally {
-      isServerJavaInfoLoaded.value = true;
-      isServerBedrockInfoLoaded.value = true;
+      isServerInfoLoaded.value = true;
     }
   }
 };
@@ -103,6 +102,10 @@ const openServerShop = (server: Server) => {
 const copyServerIp = (server: Server) => {
   navigator.clipboard.writeText(server.ip);
 };
+
+const getJavaVersion = (version: string) => {
+  return version.split(' ')[1] || version;
+};
 </script>
 
 <template>
@@ -111,13 +114,13 @@ const copyServerIp = (server: Server) => {
       <div class="body" v-if="isServersLoaded">
         <Suspense>
           <KeepAlive>
-            <ServerSelector v-if="isServersLoaded && servers.length > 1" v-model="selectedServer" :servers="servers" :changed="changeServer" />
+            <ServerSelector v-if="servers.length > 1" v-model="selectedServer" :servers="servers" :changed="changeServer" />
           </KeepAlive>
         </Suspense>
         <Suspense>
           <KeepAlive>
-            <div v-if="isServerJavaInfoLoaded && isServerBedrockInfoLoaded">
-              <div v-if="selectedServer && serverJavaInfo && serverJavaInfo.online == true" class="info-wrapper">
+            <div v-if="isServerInfoLoaded">
+              <div v-if="selectedServer && serverJavaInfo.online == true" class="info-wrapper">
                 <div class="info-wrapper__row">
                   <div class="info-description blur__glass">
                     <h1>{{ selectedServer?.name }}</h1>
@@ -139,7 +142,10 @@ const copyServerIp = (server: Server) => {
                   </div>
                   <div class="info-server blur__glass">
                     <div class="icon-block" v-if="serverJavaInfo.icon">
-                      <img :src="serverJavaInfo.icon" alt="Server Icon" class="server-icon" />
+                      <NuxtImg :src="serverJavaInfo.icon" alt="Server Icon" class="server-icon" :custom="true" v-slot="{ imgAttrs, isLoaded }">
+                        <LoadingSpinner v-if="!isLoaded" class="server-icon" />
+                        <img v-else v-bind="imgAttrs" class="server-icon" />
+                      </NuxtImg>
                     </div>
                     <div class="players-block">
                       <span class="players-label">{{ t('server_online') }}</span>
@@ -147,11 +153,11 @@ const copyServerIp = (server: Server) => {
                     </div>
                     <div class="version-block">
                       <span class="version-label">{{ t('server_java') }}</span>
-                      <span class="version-value blur__glass">{{ serverJavaInfo.version }}</span>
+                      <span class="version-value blur__glass">{{ getJavaVersion(serverJavaInfo.version.name_clean) }}</span>
                     </div>
                     <div class="version-block">
                       <span class="version-label">{{ t('server_bedrock') }}</span>
-                      <span class="version-value blur__glass">{{ serverBedrockInfo.version }}</span>
+                      <span class="version-value blur__glass">{{ serverBedrockInfo.version.name }}</span>
                     </div>
                   </div>
                 </div>
@@ -173,11 +179,23 @@ const copyServerIp = (server: Server) => {
                     color="transparent"
                     @click="openServerShop(selectedServer)" />
                 </div>
+                <h5>{{ t('players_online') }}</h5>
+                <div class="players-list" v-if="serverJavaInfo.players?.list.length > 0">
+                  <div v-for="player in serverJavaInfo.players?.list" :key="player.uuid">
+                    <PlayerAvatar :playerName="player.name_clean" alt="Steve" />
+                  </div>
+                </div>
+                <div v-else>
+                  <label>{{ t('nobody_here') }}</label>
+                </div>
               </div>
               <div v-else class="offline-block blur__glass">{{ t('server_offline') }}</div>
             </div>
           </KeepAlive>
         </Suspense>
+      </div>
+      <div class="body__loading" v-else>
+        <h6>{{ t('loading') }}</h6>
       </div>
     </KeepAlive>
   </ClientOnly>
@@ -192,15 +210,26 @@ const copyServerIp = (server: Server) => {
   width: 100vw;
   height: 100vh;
   align-items: center;
+  align-content: center;
   gap: 1rem;
+
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    vertical-align: middle;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+  }
 }
 
 .info-wrapper {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 100%;
-  align-items: stretch;
   gap: 1rem;
   align-items: center;
 
@@ -236,6 +265,17 @@ const copyServerIp = (server: Server) => {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     cursor: pointer;
   }
+}
+
+.players-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 50%;
+  height: fit-content;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .info-description {

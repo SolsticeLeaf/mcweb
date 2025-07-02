@@ -74,9 +74,6 @@ deploy-mais:
     - export DATABASE_URL="$DATABASE_URL"
     - export DOMAIN="$DOMAIN"
     - export AUTH_DOMAIN="$AUTH_DOMAIN"
-    - export MC_SKIN_HEAD="$MC_SKIN_HEAD"
-    - export MC_SKIN_BUST="$MC_SKIN_BUST"
-    - export MC_SKIN_FULL="$MC_SKIN_FULL"
   script:
     - docker compose up --detach --build
 
@@ -94,8 +91,5 @@ deploy-res-6:
     - export DATABASE_URL="$DATABASE_URL"
     - export DOMAIN="$DOMAIN"
     - export AUTH_DOMAIN="$AUTH_DOMAIN"
-    - export MC_SKIN_HEAD="$MC_SKIN_HEAD"
-    - export MC_SKIN_BUST="$MC_SKIN_BUST"
-    - export MC_SKIN_FULL="$MC_SKIN_FULL"
   script:
     - docker compose up --detach --build

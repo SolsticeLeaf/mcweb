@@ -9,7 +9,26 @@ export interface PlayerData {
 }
 
 export interface Skin {
-  head: string;
-  bust: string;
-  full: string;
+  default: {
+    full: string;
+    bust: string;
+    face: string;
+  };
+  isometric: {
+    full: string;
+    bust: string;
+    face: string;
+  };
+  mojavatar: {
+    full: string;
+    face: string;
+  };
+  walking: {
+    full: string;
+    bust: string;
+    face: string;
+  };
+  head: {
+    full: string;
+  };
 }

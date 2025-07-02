@@ -3,6 +3,7 @@ import iconsConfig from '~/config/icons.config';
 import FlexButton from '../utilities/buttons/FlexButton.vue';
 import ActionButton from '../utilities/buttons/ActionButton.vue';
 import { getDefaultTextColor } from '~/utilities/colors.utils';
+import LoadingSpinner from '../utilities/other/LoadingSpinner.vue';
 
 const { t, locale } = useI18n();
 const route = useRoute();
@@ -16,6 +17,9 @@ const props = defineProps<{
 const isLoaded = ref(false);
 const player = ref<any>();
 let updateInterval: ReturnType<typeof setInterval>;
+const navSkinSrc = ref('');
+const navSkinRetryCount = ref(0);
+const MAX_NAV_SKIN_RETRIES = 3;
 
 const fetchPlayer = async () => {
   if (props.authStatus === 'OK') {
@@ -74,21 +78,49 @@ const getAlternateLocale = computed(() => {
   const alternateLocale = currentLocale === 'en' ? 'ru' : 'en';
   return route.path.replace(`/${currentLocale}`, `/${alternateLocale}`);
 });
+
+watch(
+  () => player.value?.skin?.isometric?.bust,
+  (newSrc) => {
+    if (newSrc) {
+      navSkinSrc.value = newSrc;
+      navSkinRetryCount.value = 0;
+    }
+  },
+  { immediate: true }
+);
+
+function onNavSkinError() {
+  if (navSkinRetryCount.value < MAX_NAV_SKIN_RETRIES) {
+    navSkinRetryCount.value++;
+    navSkinSrc.value = player.value.skin.isometric.bust + '?retry=' + navSkinRetryCount.value + '&t=' + Date.now();
+  }
+}
 </script>
 
 <template>
-  <div class="nav__userbox">
+  <div class="userbox">
     <div v-if="authStatus === 'OK'">
-      <div v-if="isLoaded" class="nav__userbox__userinfo">
-        <div class="nav__userbox__userinfo__money">
+      <div v-if="isLoaded" class="userbox__userinfo">
+        <div class="userbox__userinfo__money">
           <Icon :name="iconsConfig.gold" :style="`color: ${getDefaultTextColor(theme.value)}`" />
           <h6>{{ player.money }}</h6>
           <ActionButton text="" :text-bold="true" :text-color="getDefaultTextColor(theme.value)" :icon="iconsConfig.plus" :disableBackground="true" />
         </div>
-        <div class="nav__userbox__userinfo__user">
-          <NuxtLink class="nav__userbox__userinfo__user__info transparent__glass" :to="`/${locale}/player/${player.username}`">
+        <div class="userbox__userinfo__user">
+          <NuxtLink class="userbox__userinfo__user__info transparent__glass" :to="`/${locale}/player/${player.username}`">
             <h6>{{ player.username }}</h6>
-            <NuxtImg class="nav__userbox__userinfo__user__img" :src="player.skin.bust" />
+            <NuxtImg
+              :src="navSkinSrc"
+              :alt="player.username"
+              loading="lazy"
+              decoding="async"
+              :custom="true"
+              @error="onNavSkinError"
+              v-slot="{ imgAttrs, isLoaded }">
+              <LoadingSpinner v-if="!isLoaded" class="userbox__userinfo__user__img" />
+              <img v-else v-bind="imgAttrs" class="userbox__userinfo__user__img" />
+            </NuxtImg>
           </NuxtLink>
           <div class="user__content">
             <div class="user__content__box">
@@ -137,6 +169,10 @@ const getAlternateLocale = computed(() => {
 <style scoped lang="scss">
 @use '/assets/scss/screens.scss' as *;
 
+// * {
+//   border: 1px white solid;
+// }
+
 .user__content {
   opacity: 0;
   pointer-events: none;
@@ -148,6 +184,7 @@ const getAlternateLocale = computed(() => {
   max-width: 100%;
   z-index: 300;
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  height: 100%;
 
   &__box {
     display: flex;
@@ -169,83 +206,87 @@ const getAlternateLocale = computed(() => {
   }
 }
 
-.nav {
-  width: fit-content;
+.userbox {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  height: 50%;
   justify-content: center;
-  align-items: center;
-  height: 100%;
-  gap: 1.2rem;
 
-  &__userbox {
-    &__userinfo {
+  &__userinfo {
+    display: flex;
+    height: 100%;
+    max-height: 100%;
+    flex-direction: row;
+    gap: 0.5rem;
+
+    &__money {
+      display: flex;
+      height: 100%;
+      max-height: 100%;
+      flex-direction: row;
+      justify-content: center;
+      align-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      filter: none !important;
+      -webkit-filter: none !important;
+      border-radius: 3rem;
+      padding: 0 0.5rem;
+      border: 1px solid rgba(44, 32, 68, 0.2);
+      background: -webkit-linear-gradient(0deg, rgba(255, 221, 0, 0.737), rgba(81, 209, 255, 0.761)) !important;
+    }
+
+    .dark &__money {
+      border: 1px solid rgba(210, 210, 210, 0.2);
+      background: -webkit-linear-gradient(0deg, rgb(24, 130, 0), rgb(30, 126, 161)) !important;
+    }
+
+    &__user {
+      position: relative;
+      height: 100%;
+      max-height: 100%;
       display: flex;
       flex-direction: row;
-      gap: 0.5rem;
+      justify-content: center;
+      align-content: center;
+      align-items: center;
 
-      &__money {
+      &__info {
+        text-decoration: none;
+        height: 100%;
+        max-height: 100%;
+        color: #2c2044;
         display: flex;
         flex-direction: row;
         justify-content: center;
         align-content: center;
         align-items: center;
         gap: 0.5rem;
-        filter: none !important;
-        -webkit-filter: none !important;
-        border-radius: 3rem;
-        padding: 0 0.5rem;
-        border: 1px solid rgba(44, 32, 68, 0.2);
-        background: -webkit-linear-gradient(0deg, rgba(255, 221, 0, 0.737), rgba(81, 209, 255, 0.761)) !important;
       }
 
-      .dark &__money {
-        border: 1px solid rgba(210, 210, 210, 0.2);
-        background: -webkit-linear-gradient(0deg, rgb(24, 130, 0), rgb(30, 126, 161)) !important;
+      .dark &__info {
+        color: #ffffff;
       }
 
-      &__user {
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-content: center;
-        align-items: center;
-
-        &__info {
-          text-decoration: none;
-          color: #2c2044;
-          display: flex;
-          flex-direction: row;
-          justify-content: center;
-          align-content: center;
-          align-items: center;
-        }
-
-        .dark &__info {
-          color: #ffffff;
-        }
-
-        &__img {
-          width: 2.5rem;
-          height: auto;
-        }
-      }
-
-      &__user:hover {
-        cursor: pointer;
-      }
-
-      &__user:hover .user__content {
-        opacity: 1;
-        pointer-events: auto;
-        transform: translateY(0);
+      &__img {
+        width: 2rem;
+        height: auto;
       }
     }
 
-    .transparent__glass {
-      padding: 0 0.8rem;
+    &__user:hover {
+      cursor: pointer;
     }
+
+    &__user:hover .user__content {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+  }
+
+  .transparent__glass {
+    padding: 0 0.8rem;
   }
 }
 </style>

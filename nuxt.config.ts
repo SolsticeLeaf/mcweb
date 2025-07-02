@@ -89,9 +89,6 @@ export default defineNuxtConfig({
       DATABASE_URL: process.env.DATABASE_URL,
       DOMAIN: process.env.DOMAIN,
       AUTH_DOMAIN: process.env.AUTH_DOMAIN,
-      MC_SKIN_HEAD: process.env.MC_SKIN_HEAD,
-      MC_SKIN_BUST: process.env.MC_SKIN_BUST,
-      MC_SKIN_FULL: process.env.MC_SKIN_FULL,
     },
   },
 });

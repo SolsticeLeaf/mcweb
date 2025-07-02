@@ -1,13 +1,31 @@
+import initialConfig from '~/config/initial.config';
 import mongoose, { Schema, Document } from 'mongoose';
 
-const headSkinUrl = process.env.MC_SKIN_HEAD || 'https://vzge.me/head/256/{name}?y=70&no=shadow';
-const bustSkinUrl = process.env.MC_SKIN_BUST || 'https://vzge.me/bust/256/{name}';
-const fullSkinUrl = process.env.MC_SKIN_FULL || 'https://vzge.me/full/256/{name}?no=shadow';
+const skinRenderApi = initialConfig.skinRenderApi;
 
 export interface Skin {
-  head: string;
-  bust: string;
-  full: string;
+  default: {
+    full: string;
+    bust: string;
+    face: string;
+  };
+  isometric: {
+    full: string;
+    bust: string;
+    face: string;
+  };
+  mojavatar: {
+    full: string;
+    face: string;
+  };
+  walking: {
+    full: string;
+    bust: string;
+    face: string;
+  };
+  head: {
+    full: string;
+  };
 }
 
 export interface ServersData {
@@ -140,13 +158,28 @@ function getPlayerData(player: Player): PlayerData {
     money: player.money,
     serversData: player.serversData,
     skin: {
-      head: replaceName(headSkinUrl, username),
-      bust: replaceName(bustSkinUrl, username),
-      full: replaceName(fullSkinUrl, username),
+      default: {
+        full: `${skinRenderApi}/default/${username}/full`,
+        bust: `${skinRenderApi}/default/${username}/bust`,
+        face: `${skinRenderApi}/default/${username}/face`,
+      },
+      isometric: {
+        full: `${skinRenderApi}/isometric/${username}/full`,
+        bust: `${skinRenderApi}/isometric/${username}/bust`,
+        face: `${skinRenderApi}/isometric/${username}/face`,
+      },
+      mojavatar: {
+        full: `${skinRenderApi}/mojavatar/${username}/full`,
+        face: `${skinRenderApi}/mojavatar/${username}/face`,
+      },
+      walking: {
+        full: `${skinRenderApi}/walking/${username}/full`,
+        bust: `${skinRenderApi}/walking/${username}/bust`,
+        face: `${skinRenderApi}/walking/${username}/face`,
+      },
+      head: {
+        full: `${skinRenderApi}/head/${username}/full`,
+      },
     },
   };
-}
-
-function replaceName(url: string, name: string): string {
-  return url.replace('{name}', name);
 }

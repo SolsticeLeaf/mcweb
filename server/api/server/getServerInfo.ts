@@ -1,7 +1,34 @@
-import axios from 'axios';
+import mcs from 'node-mcstatus';
+import { connectDB } from '../database/MongoDB';
+import { getServers } from '../interfaces/Server';
 
 const cache: Record<string, { data: any; timestamp: number }> = {};
-const CACHE_TTL = 60 * 1000;
+const CACHE_TTL = 10 * 1000;
+
+async function backgroundUpdateCache() {
+  try {
+    await connectDB();
+    const servers = await getServers();
+    for (const server of servers) {
+      const ip = server.ip;
+      if (!ip) continue;
+      const splitIp = ip.split(':');
+      try {
+        const [java, bedrock] = await Promise.all([
+          mcs.statusJava(splitIp[0] || ip, Number(splitIp[1] || '25565')).catch(() => ({ online: false })),
+          mcs.statusBedrock(splitIp[0] || ip, Number(splitIp[1] || '25565')).catch(() => ({ online: false })),
+        ]);
+        const data = { java, bedrock };
+        cache[ip] = { data, timestamp: Date.now() };
+      } catch (error) {
+        console.error(`❌ Error fetching server "${server.name}" info:`, error);
+      }
+    }
+  } catch (error) {
+    console.error('❌ Error on background fetching servers info:', error);
+  }
+}
+setInterval(backgroundUpdateCache, CACHE_TTL);
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
@@ -9,29 +36,26 @@ export default defineEventHandler(async (event) => {
   if (!ip) {
     return { error: 'No IP provided' };
   }
-  const now = Date.now();
-  if (cache[ip] && now - cache[ip].timestamp < CACHE_TTL) {
+  if (cache[ip]) {
     return cache[ip].data;
   }
   try {
-    const [javaRes, bedrockRes] = await Promise.all([axios.get(`https://api.mcsrvstat.us/3/${ip}`), axios.get(`https://api.mcsrvstat.us/bedrock/3/${ip}`)]);
-    const data = {
-      java: javaRes.data,
-      bedrock: bedrockRes.data,
-    };
-    cache[ip] = { data, timestamp: now };
+    const splitIp = ip.split(':');
+    const [java, bedrock] = await Promise.all([
+      mcs.statusJava(splitIp[0] || ip, Number(splitIp[1] || '25565')).catch((error) => {
+        console.error(`🛑 Error fetching Java server ${ip} info:`, error);
+        return { online: false };
+      }),
+      mcs.statusBedrock(splitIp[0] || ip, Number(splitIp[1] || '25565')).catch((error) => {
+        console.error(`🛑 Error fetching Bedrock server ${ip} info:`, error);
+        return { online: false };
+      }),
+    ]);
+    const data = { java, bedrock };
+    cache[ip] = { data, timestamp: Date.now() };
     return data;
-  } catch (error: any) {
-    console.error('❌ Error fetching server info:', error);
-    if (error.response) {
-      console.error('🔎 Response data:', error.response.data);
-      console.error('🔎 Response status:', error.response.status);
-      console.error('🔎 Response headers:', error.response.headers);
-    } else if (error.request) {
-      console.error('📡 No response received:', error.request);
-    } else {
-      console.error('⚠️ Error setting up request:', error.message);
-    }
-    return { error: error.message || 'Failed to fetch server info' };
+  } catch (error) {
+    console.error('❌ Unexpected error fetching server info:', error);
+    return { error: (error as any).message || 'Failed to fetch server info' };
   }
 });

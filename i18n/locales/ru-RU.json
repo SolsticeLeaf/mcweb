@@ -37,8 +37,8 @@
   "faq_terms-of-use": "Условия использования сайта",
   "faq_privacy-policy": "Политика конфиденциальности",
   "faq_personal-data": "Обработка персональных данных",
-  "statistic": "Статистика",
-  "last_server": "Последний сервер",
+  "inventory": "Инвентарь",
+  "last_join": "Последний вход",
   "protection": "Защита",
   "fire_protection": "Защита от огня",
   "feather_falling": "Плавное падение",
@@ -90,5 +90,7 @@
   "server_version": "Версия:",
   "loading": "Загрузка...",
   "open_map": "Открыть карту сервера",
-  "open_shop": "Открыть магазин сервера"
+  "open_shop": "Открыть магазин сервера",
+  "players_online": "Игроки онлайн",
+  "nobody_here": "Никого пока нет..."
 }

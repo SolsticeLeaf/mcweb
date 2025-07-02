@@ -37,8 +37,8 @@
   "faq_terms-of-use": "Terms of Use",
   "faq_privacy-policy": "Privacy Policy",
   "faq_personal-data": "Personal Data Processing",
-  "statistic": "Statistic",
-  "last_server": "Last server",
+  "inventory": "Inventory",
+  "last_join": "Last join",
   "protection": "Protection",
   "fire_protection": "Fire Protection",
   "feather_falling": "Feather Falling",
@@ -90,5 +90,7 @@
   "server_version": "Version:",
   "loading": "Loading...",
   "open_map": "Open server map",
-  "open_shop": "Open server shop"
+  "open_shop": "Open server shop",
+  "players_online": "Players online",
+  "nobody_here": "No one online..."
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ServerSelector from '~/components/utilities/selectors/ServerSelector.vue';
 import StatusBar from '~/components/player/StatusBar.vue';
+import Inventory from '~/components/player/Inventory.vue';
 import { type Server } from '~/utilities/server.interface';
 const { t } = useI18n();
 const route = useRoute();
@@ -15,6 +16,28 @@ const isServersLoaded = ref(false);
 const selectedServer = ref<Server>();
 
 let updateInterval: any = null;
+
+const skinSrc = ref('');
+const skinRetryCount = ref(0);
+const MAX_SKIN_RETRIES = 3;
+
+watch(
+  () => player.value?.skin?.walking?.full,
+  (newSrc) => {
+    if (newSrc) {
+      skinSrc.value = newSrc;
+      skinRetryCount.value = 0;
+    }
+  },
+  { immediate: true }
+);
+
+function onSkinError(_payload: string | Event) {
+  if (skinRetryCount.value < MAX_SKIN_RETRIES) {
+    skinRetryCount.value++;
+    skinSrc.value = player.value.skin.walking.full + '?retry=' + skinRetryCount.value + '&t=' + Date.now();
+  }
+}
 
 const updatePlayerData = async () => {
   try {
@@ -82,42 +105,44 @@ const getServerData = computed(() => {
 <template>
   <ClientOnly>
     <KeepAlive>
-      <div v-if="isLoaded && status === 'OK'" class="body">
-        <Suspense>
-          <KeepAlive>
-            <ServerSelector v-if="isServersLoaded && servers.length > 1" v-model="selectedServer" :servers="servers" :changed="changeServer" />
-          </KeepAlive>
-        </Suspense>
-        <div class="wrapper">
-          <div class="main">
-            <div class="info blur__glass">
-              <div class="info__user">
-                <div class="info__user__skin">
-                  <Suspense>
-                    <KeepAlive KeepAlive>
-                      <NuxtImg class="info__user__skin__img" :src="player.skin.full" />
-                    </KeepAlive>
-                  </Suspense>
-                </div>
-                <div class="info__user__personal">
-                  <h2>{{ t('name') }}: {{ player.username }}</h2>
-                  <h5>{{ t('role') }}: {{ player.role }}</h5>
-                  <h5>{{ t('last_server') }}: {{ player.lastServer?.name || '¯\\_(ツ)_/¯' }}</h5>
-                  <div class="info__user__personal__bar">
-                    <StatusBar :value="getServerData.health || 20" type="health" :inverted="false" />
-                    <StatusBar :value="getServerData.food || 20" type="hunger" :inverted="false" />
+      <div v-if="isLoaded" class="body">
+        <div v-if="status === 'OK'" class="container">
+          <Suspense>
+            <KeepAlive>
+              <ServerSelector v-if="isServersLoaded && servers.length > 1" v-model="selectedServer" :servers="servers" :changed="changeServer" />
+            </KeepAlive>
+          </Suspense>
+          <div class="wrapper">
+            <div class="main">
+              <div class="info blur__glass">
+                <div class="info__user">
+                  <div class="info__user__skin">
+                    <Suspense>
+                      <KeepAlive KeepAlive>
+                        <NuxtImg class="info__user__skin__img" :src="skinSrc" @error="onSkinError" />
+                      </KeepAlive>
+                    </Suspense>
+                  </div>
+                  <div class="info__user__personal">
+                    <h5>{{ t('name') }}: {{ player.username }}</h5>
+                    <h5>{{ t('role') }}: {{ player.role }}</h5>
+                    <h5>{{ t('last_join') }}: {{ player.lastServer?.name || '¯\\_(ツ)_/¯' }}</h5>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="data blur__glass">
-              <h2>{{ t('statistic') }}</h2>
+              <div class="data blur__glass">
+                <Inventory class="data__inventory" v-if="getServerData.inventory" :inventory="getServerData.inventory" />
+                <div class="data__bar">
+                  <StatusBar :value="getServerData.health || 20" type="health" :inverted="false" />
+                  <StatusBar :value="getServerData.food || 20" type="hunger" :inverted="true" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div v-else class="wrapper">
-        <h5>{{ t('authorize_to_view') }}</h5>
+        <div v-else class="container">
+          <h5>{{ t('authorize_to_view') }}</h5>
+        </div>
       </div>
     </KeepAlive>
   </ClientOnly>
@@ -138,6 +163,15 @@ const getServerData = computed(() => {
   align-items: center;
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 90%;
+  align-items: center;
+  gap: 1rem;
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -147,22 +181,15 @@ const getServerData = computed(() => {
   text-align: center;
   overflow-y: visible;
   width: 100%;
-  height: 100%;
-  padding: 0;
+  height: fit-content;
 }
 
 .main {
   display: flex;
   flex-direction: row;
-  width: 70%;
-  height: 70%;
-  padding: 1rem 2rem;
   gap: 1rem;
-
-  @media screen and (max-width: $screen-lg) {
-    width: 90%;
-    height: 85%;
-  }
+  width: 95%;
+  height: fit-content;
 }
 
 .info {
@@ -193,16 +220,10 @@ const getServerData = computed(() => {
     &__personal {
       display: flex;
       flex-direction: column;
+      justify-content: center;
       text-align: start;
       height: 50%;
       gap: 0.5rem;
-
-      &__bar {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        gap: 1rem;
-      }
     }
   }
 }
@@ -211,7 +232,20 @@ const getServerData = computed(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.5rem 2rem;
+  padding: 2rem 1rem;
+  gap: 1rem;
   width: 70%;
+
+  &__inventory {
+    width: 100%;
+    height: fit-content;
+  }
+
+  &__bar {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 1rem;
+  }
 }
 </style>

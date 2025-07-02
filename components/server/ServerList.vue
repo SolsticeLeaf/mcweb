@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { type Server } from '~/utilities/server.interface';
-import { type Player } from '~/utilities/player.interface';
 import StatusBar from '~/components/player/StatusBar.vue';
+import LoadingSpinner from '~/components/utilities/other/LoadingSpinner.vue';
 const { t, locale } = useI18n();
 
 const props = defineProps<{
   servers: Server[];
   isServersLoaded: boolean;
-  player: Player;
+  player: any;
 }>();
 
 const serverInfo = ref<Record<string, any>>({});
@@ -66,13 +66,13 @@ const copyServerIp = (server: Server) => {
   }
 };
 
-const isPlayerAuthorized = (player: Player) => {
-  return props.player.username !== undefined;
+const isPlayerAuthorized = () => {
+  return props.player?.username !== undefined;
 };
 
 const getPlayerData = (playerServer: Server) => {
   try {
-    const filtered = props.player.serversData.filter((server) => server.serverId === playerServer._id);
+    const filtered = props.player.serversData.filter((server: any) => server.serverId === playerServer._id);
     if (filtered.length > 0) {
       return filtered[0];
     }
@@ -81,6 +81,10 @@ const getPlayerData = (playerServer: Server) => {
     console.log(error);
     return {};
   }
+};
+
+const getJavaVersion = (version: string) => {
+  return version.split(' ')[1] || version;
 };
 </script>
 
@@ -92,8 +96,16 @@ const getPlayerData = (playerServer: Server) => {
         <div v-if="getOnlineServer(server.ip)" class="servers__container">
           <div class="servers__container__row">
             <div class="servers__icon">
-              <img v-if="getOnlineServer(server.ip)?.java.icon" :src="getOnlineServer(server.ip)?.java.icon" :alt="server.name" class="servers__icon__img" />
-              <div v-else class="servers__icon__placeholder">🎮</div>
+              <NuxtImg
+                v-if="getOnlineServer(server.ip)?.java.icon"
+                :src="getOnlineServer(server.ip)?.java.icon"
+                :alt="server.name"
+                class="servers__icon__img"
+                :custom="true"
+                v-slot="{ imgAttrs, isLoaded }">
+                <LoadingSpinner v-if="!isLoaded" class="servers__icon__img" />
+                <img v-else v-bind="imgAttrs" class="servers__icon__img" />
+              </NuxtImg>
             </div>
             <div class="servers__info">
               <div class="servers__info__column">
@@ -105,7 +117,7 @@ const getPlayerData = (playerServer: Server) => {
                   {{ `${t('server_online')} ${getOnlineServer(server.ip)?.java.players?.online || 0}/${getOnlineServer(server.ip)?.java.players?.max || 0}` }}
                 </p>
                 <p>
-                  {{ `${t('server_version')} ${getOnlineServer(server.ip)?.java.version || 0}` }}
+                  {{ `${t('server_version')} ${getJavaVersion(getOnlineServer(server.ip)?.java.version.name_clean)}` }}
                 </p>
               </div>
             </div>
