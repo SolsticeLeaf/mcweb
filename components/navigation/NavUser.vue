@@ -160,10 +160,6 @@ const getAlternateLocale = computed(() => {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
-    filter: none !important;
-    -webkit-filter: none !important;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border-radius: 2rem;
     padding: 0.5rem;
     border: 1px solid rgba(44, 32, 68, 0.2);
@@ -172,7 +168,7 @@ const getAlternateLocale = computed(() => {
 
   .dark &__box {
     border: 1px solid rgba(210, 210, 210, 0.2);
-    background: rgba(143, 143, 143, 0.1);
+    background: rgba(28, 19, 35, 0.96);
   }
 }
 
