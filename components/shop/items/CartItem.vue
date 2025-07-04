@@ -93,6 +93,7 @@ const parseNumber = (numb: number): string => {
       <div class="item__count">
         <ActionButton
           text=""
+          class="item__count__button"
           :text-bold="true"
           :text-color="getDefaultTextColor(theme.value)"
           :icon="iconsConfig.arrow_left"
@@ -105,6 +106,7 @@ const parseNumber = (numb: number): string => {
         </div>
         <ActionButton
           text=""
+          class="item__count__button"
           :text-color="getDefaultTextColor(theme.value)"
           :icon="iconsConfig.arrow_right"
           :disabled="value >= item.max"

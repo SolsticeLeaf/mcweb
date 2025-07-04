@@ -55,7 +55,7 @@ const props = defineProps({
 
 const buttonStyle = computed(() => ({
   backgroundColor: props.outline ? 'transparent' : props.color,
-  padding: props.disableBackground ? '0' : '0.5rem 1rem',
+  padding: props.disableBackground ? 'auto' : '0.5rem 1rem',
   filter: props.disabled ? '' : 'none',
   justifyContent: props.align,
   border: `2px solid ${props.color}`,

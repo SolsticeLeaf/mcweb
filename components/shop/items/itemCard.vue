@@ -146,7 +146,6 @@ onBeforeMount(async () => {
           :icon="iconsConfig.shop_cart"
           color="#00a6ac"
           @click="addToCart()"
-          class="main__content__button__btn"
           :outline="false" />
       </div>
     </div>
@@ -314,14 +313,6 @@ onBeforeMount(async () => {
     flex-direction: column;
     padding-top: 0.5rem;
     width: 90%;
-
-    .button {
-      padding: 0.1rem !important;
-
-      @media screen and (max-width: $screen-sm) {
-        padding: 0.4rem !important;
-      }
-    }
 
     &__cart {
       display: flex;

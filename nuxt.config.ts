@@ -29,7 +29,7 @@ export default defineNuxtConfig({
         {
           rel: 'icon',
           type: 'image/x-icon',
-          href: 'https://0af29f8f-sleaf.s3.twcstorage.ru/mcweb/mc-gold-block.webp',
+          href: 'https://s3.sleaf.dev/mcweb/mc-gold-block.webp',
         },
       ],
     },
