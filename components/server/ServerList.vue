@@ -96,13 +96,7 @@ const getJavaVersion = (version: string) => {
         <div v-if="getOnlineServer(server.ip)" class="servers__container">
           <div class="servers__container__row">
             <div class="servers__icon">
-              <NuxtImg
-                v-if="getOnlineServer(server.ip)?.java.icon"
-                :src="getOnlineServer(server.ip)?.java.icon"
-                :alt="server.name"
-                class="servers__icon__img"
-                :custom="true"
-                v-slot="{ imgAttrs, isLoaded }">
+              <NuxtImg v-if="server.icon" :src="server.icon" :alt="server.name" class="servers__icon__img" :custom="true" v-slot="{ imgAttrs, isLoaded }">
                 <LoadingSpinner v-if="!isLoaded" class="servers__icon__img" />
                 <img v-else v-bind="imgAttrs" class="servers__icon__img" />
               </NuxtImg>
@@ -128,7 +122,10 @@ const getJavaVersion = (version: string) => {
           </div>
         </div>
         <div v-else class="servers__container servers__container__offline">
-          <div class="servers__icon__placeholder">🔴</div>
+          <NuxtImg v-if="server.icon" :src="server.icon" :alt="server.name" class="servers__icon__img" :custom="true" v-slot="{ imgAttrs, isLoaded }">
+            <LoadingSpinner v-if="!isLoaded" class="servers__icon__img" />
+            <img v-else v-bind="imgAttrs" class="servers__icon__img" />
+          </NuxtImg>
           <div class="servers__info">
             <h6>{{ server.name }}</h6>
             <p>{{ t('server_offline') }}</p>
@@ -185,28 +182,16 @@ const getJavaVersion = (version: string) => {
   }
 
   &__icon {
-    width: 48px;
-    height: 48px;
+    display: flex;
     border-radius: 8px;
     overflow: hidden;
     flex-shrink: 0;
+    justify-content: center;
 
     &__img {
-      width: 100%;
-      height: 100%;
+      width: 3rem;
       object-fit: cover;
       image-rendering: pixelated;
-    }
-
-    &__placeholder {
-      width: 4rem;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.1);
-      font-size: 1.5rem;
-      border-radius: 1rem;
     }
   }
 

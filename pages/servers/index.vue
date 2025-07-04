@@ -4,7 +4,7 @@ import ActionButton from '../../components/utilities/buttons/ActionButton.vue';
 import iconsConfig from '~/config/icons.config';
 import { type Server } from '~/utilities/server.interface';
 import { getDefaultTextColor } from '~/utilities/colors.utils';
-import PlayerAvatar from '~/components/player/PlayerAvatar.vue';
+import Player from '~/components/player/Player.vue';
 import LoadingSpinner from '~/components/utilities/other/LoadingSpinner.vue';
 const { t, locale } = useI18n();
 const route = useRoute();
@@ -142,8 +142,8 @@ const getJavaVersion = (version: string) => {
                   </div>
                   <div class="info-server blur__glass">
                     <div class="icon-block" v-if="serverJavaInfo.icon">
-                      <NuxtImg :src="serverJavaInfo.icon" alt="Server Icon" class="server-icon" :custom="true" v-slot="{ imgAttrs, isLoaded }">
-                        <LoadingSpinner v-if="!isLoaded" class="server-icon" />
+                      <NuxtImg :src="selectedServer.icon" alt="Server Icon" class="server-icon" :custom="true" v-slot="{ imgAttrs, isLoaded }">
+                        <LoadingSpinner v-if="!isLoaded" class="server-icon__spinner" />
                         <img v-else v-bind="imgAttrs" class="server-icon" />
                       </NuxtImg>
                     </div>
@@ -182,7 +182,7 @@ const getJavaVersion = (version: string) => {
                 <h5>{{ t('players_online') }}</h5>
                 <div class="players-list" v-if="serverJavaInfo.players?.list.length > 0">
                   <div v-for="player in serverJavaInfo.players?.list" :key="player.uuid">
-                    <PlayerAvatar :playerName="player.name_clean" alt="Steve" />
+                    <Player :playerName="player.name_clean" />
                   </div>
                 </div>
                 <div v-else>
@@ -323,6 +323,11 @@ const getJavaVersion = (version: string) => {
   height: 10rem;
   border-radius: 1.2rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+
+  &__spinner {
+    width: 2rem;
+    height: 2rem;
+  }
 }
 
 .players-block,

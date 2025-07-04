@@ -17,28 +17,6 @@ const selectedServer = ref<Server>();
 
 let updateInterval: any = null;
 
-const skinSrc = ref('');
-const skinRetryCount = ref(0);
-const MAX_SKIN_RETRIES = 3;
-
-watch(
-  () => player.value?.skin?.walking?.full,
-  (newSrc) => {
-    if (newSrc) {
-      skinSrc.value = newSrc;
-      skinRetryCount.value = 0;
-    }
-  },
-  { immediate: true }
-);
-
-function onSkinError(_payload: string | Event) {
-  if (skinRetryCount.value < MAX_SKIN_RETRIES) {
-    skinRetryCount.value++;
-    skinSrc.value = player.value.skin.walking.full + '?retry=' + skinRetryCount.value + '&t=' + Date.now();
-  }
-}
-
 const updatePlayerData = async () => {
   try {
     const { status: response_status, player: response_data } = await $fetch('/api/auth/getPlayer', {
@@ -118,8 +96,8 @@ const getServerData = computed(() => {
                 <div class="info__user">
                   <div class="info__user__skin">
                     <Suspense>
-                      <KeepAlive KeepAlive>
-                        <NuxtImg class="info__user__skin__img" :src="skinSrc" @error="onSkinError" />
+                      <KeepAlive>
+                        <PlayerSkin :player="player.username" render="walking" type="full" />
                       </KeepAlive>
                     </Suspense>
                   </div>

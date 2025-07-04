@@ -11,6 +11,8 @@
     "postinstall": "nuxi prepare"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.842.0",
+    "@aws-sdk/s3-request-presigner": "^3.842.0",
     "@nuxt/fonts": "0.11.1",
     "@nuxt/icon": "1.11.0",
     "@nuxt/image": "1.10.0",

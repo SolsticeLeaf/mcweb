@@ -2,6 +2,7 @@
 import iconsConfig from '~/config/icons.config';
 import FlexButton from '../utilities/buttons/FlexButton.vue';
 import ActionButton from '../utilities/buttons/ActionButton.vue';
+import PlayerSkin from '../player/PlayerSkin.vue';
 import { getDefaultTextColor } from '~/utilities/colors.utils';
 import LoadingSpinner from '../utilities/other/LoadingSpinner.vue';
 
@@ -17,9 +18,6 @@ const props = defineProps<{
 const isLoaded = ref(false);
 const player = ref<any>();
 let updateInterval: ReturnType<typeof setInterval>;
-const navSkinSrc = ref('');
-const navSkinRetryCount = ref(0);
-const MAX_NAV_SKIN_RETRIES = 3;
 
 const fetchPlayer = async () => {
   if (props.authStatus === 'OK') {
@@ -78,24 +76,6 @@ const getAlternateLocale = computed(() => {
   const alternateLocale = currentLocale === 'en' ? 'ru' : 'en';
   return route.path.replace(`/${currentLocale}`, `/${alternateLocale}`);
 });
-
-watch(
-  () => player.value?.skin?.isometric?.bust,
-  (newSrc) => {
-    if (newSrc) {
-      navSkinSrc.value = newSrc;
-      navSkinRetryCount.value = 0;
-    }
-  },
-  { immediate: true }
-);
-
-function onNavSkinError() {
-  if (navSkinRetryCount.value < MAX_NAV_SKIN_RETRIES) {
-    navSkinRetryCount.value++;
-    navSkinSrc.value = player.value.skin.isometric.bust + '?retry=' + navSkinRetryCount.value + '&t=' + Date.now();
-  }
-}
 </script>
 
 <template>
@@ -110,17 +90,7 @@ function onNavSkinError() {
         <div class="userbox__userinfo__user">
           <NuxtLink class="userbox__userinfo__user__info transparent__glass" :to="`/${locale}/player/${player.username}`">
             <h6>{{ player.username }}</h6>
-            <NuxtImg
-              :src="navSkinSrc"
-              :alt="player.username"
-              loading="lazy"
-              decoding="async"
-              :custom="true"
-              @error="onNavSkinError"
-              v-slot="{ imgAttrs, isLoaded }">
-              <LoadingSpinner v-if="!isLoaded" class="userbox__userinfo__user__img" />
-              <img v-else v-bind="imgAttrs" class="userbox__userinfo__user__img" />
-            </NuxtImg>
+            <PlayerSkin class="userbox__userinfo__user__img" :player="player.username" render="isometric" type="bust" />
           </NuxtLink>
           <div class="user__content">
             <div class="user__content__box">

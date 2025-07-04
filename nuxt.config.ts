@@ -89,6 +89,11 @@ export default defineNuxtConfig({
       DATABASE_URL: process.env.DATABASE_URL,
       DOMAIN: process.env.DOMAIN,
       AUTH_DOMAIN: process.env.AUTH_DOMAIN,
+      S3_ENDPOINT: process.env.S3_ENDPOINT,
+      S3_REGION: process.env.S3_REGION,
+      S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,
+      S3_SECRET_KEY: process.env.S3_SECRET_KEY,
+      S3_BUCKET: process.env.S3_BUCKET,
     },
   },
 });

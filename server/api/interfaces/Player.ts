@@ -3,31 +3,6 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 const skinRenderApi = initialConfig.skinRenderApi;
 
-export interface Skin {
-  default: {
-    full: string;
-    bust: string;
-    face: string;
-  };
-  isometric: {
-    full: string;
-    bust: string;
-    face: string;
-  };
-  mojavatar: {
-    full: string;
-    face: string;
-  };
-  walking: {
-    full: string;
-    bust: string;
-    face: string;
-  };
-  head: {
-    full: string;
-  };
-}
-
 export interface ServersData {
   serverId: string;
   health: number;
@@ -42,7 +17,6 @@ export interface PlayerData {
   lastServer: Object;
   serversData: Array<ServersData>;
   money: number;
-  skin: Skin;
 }
 
 export interface Player extends Document {
@@ -157,29 +131,5 @@ function getPlayerData(player: Player): PlayerData {
     lastServer: player.lastServer,
     money: player.money,
     serversData: player.serversData,
-    skin: {
-      default: {
-        full: `${skinRenderApi}/default/${username}/full`,
-        bust: `${skinRenderApi}/default/${username}/bust`,
-        face: `${skinRenderApi}/default/${username}/face`,
-      },
-      isometric: {
-        full: `${skinRenderApi}/isometric/${username}/full`,
-        bust: `${skinRenderApi}/isometric/${username}/bust`,
-        face: `${skinRenderApi}/isometric/${username}/face`,
-      },
-      mojavatar: {
-        full: `${skinRenderApi}/mojavatar/${username}/full`,
-        face: `${skinRenderApi}/mojavatar/${username}/face`,
-      },
-      walking: {
-        full: `${skinRenderApi}/walking/${username}/full`,
-        bust: `${skinRenderApi}/walking/${username}/bust`,
-        face: `${skinRenderApi}/walking/${username}/face`,
-      },
-      head: {
-        full: `${skinRenderApi}/head/${username}/full`,
-      },
-    },
   };
 }
