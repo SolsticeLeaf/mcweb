@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     pageTransition: false,
     layoutTransition: false,
     head: {
-      title: 'MineZone',
+      title: 'MCWeb',
       htmlAttrs: {
         lang: 'en',
       },
@@ -29,7 +29,7 @@ export default defineNuxtConfig({
         {
           rel: 'icon',
           type: 'image/x-icon',
-          href: 'https://ik.imagekit.io/kiinse/icons/icon.svg?updatedAt=1740170186956',
+          href: 'https://0af29f8f-sleaf.s3.twcstorage.ru/mcweb/mc-gold-block.webp',
         },
       ],
     },
