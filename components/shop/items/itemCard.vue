@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { type ShopItem, type LocalizationString } from '~/utilities/shopitem.interface';
 import { getDefaultTextColor } from '~/utilities/colors.utils';
+import MinecraftItem from '~/components/utilities/other/MinecraftItem.vue';
+import initialConfig from '~/config/initial.config';
 import iconsConfig from '~/config/icons.config';
 import ActionButton from '~/components/utilities/buttons/ActionButton.vue';
 
@@ -103,7 +105,11 @@ onBeforeMount(async () => {
   <ClientOnly>
     <div class="card blur__glass">
       <div class="card__image">
-        <nuxt-img loading="lazy" class="card__image__content" :src="item.image" />
+        <MinecraftItem
+          class="card__image__content"
+          :key="`${item.image}-${item.server}-${item.type}`"
+          :version="initialConfig.lastVersion"
+          :item="item.image" />
       </div>
       <div class="card__info">
         <div class="card__info__title">

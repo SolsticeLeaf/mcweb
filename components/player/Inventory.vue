@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import MinecraftItem from '~/components/utilities/other/MinecraftItem.vue';
+
 const { t } = useI18n();
 
 const props = defineProps<{
+  serverVersion: string;
   inventory: { item: string; amount: number }[];
 }>();
 
@@ -15,8 +18,6 @@ const getItemByIndex = (idx: number) => {
   return item && item.amount > 0 ? item : { item: 'air', amount: 0 };
 };
 
-const getItemImage = (item: string) => `https://mc.nerothe.com/img/1.21.5/minecraft_${item.toLowerCase()}.png`;
-
 const armorSlotNames = ['helmet', 'chestplate', 'leggings', 'boots'];
 </script>
 
@@ -27,7 +28,11 @@ const armorSlotNames = ['helmet', 'chestplate', 'leggings', 'boots'];
         <template v-for="row in 4" :key="'row-' + row">
           <div class="inventory-slot armor">
             <template v-if="getItemByIndex(ARMOR_INDEXES[row - 1])">
-              <NuxtImg class="img" :src="getItemImage(getItemByIndex(ARMOR_INDEXES[row - 1]).item)" :alt="getItemByIndex(ARMOR_INDEXES[row - 1]).item" />
+              <MinecraftItem
+                :key="serverVersion + '-' + getItemByIndex(ARMOR_INDEXES[row - 1]).item + '-' + getItemByIndex(ARMOR_INDEXES[row - 1]).amount"
+                class="img"
+                :version="serverVersion"
+                :item="getItemByIndex(ARMOR_INDEXES[row - 1]).item.toLocaleLowerCase()" />
               <span v-if="getItemByIndex(ARMOR_INDEXES[row - 1]).amount > 1" class="amount">{{ getItemByIndex(ARMOR_INDEXES[row - 1]).amount }}</span>
             </template>
             <template v-else>
@@ -42,10 +47,17 @@ const armorSlotNames = ['helmet', 'chestplate', 'leggings', 'boots'];
               <div v-else class="empty-slot" />
             </template>
             <template v-else-if="getItemByIndex(MAIN_INDEXES[(row - 2) * 9 + (col - 1)])">
-              <NuxtImg
+              <MinecraftItem
+                :key="
+                  serverVersion +
+                  '-' +
+                  getItemByIndex(MAIN_INDEXES[(row - 2) * 9 + (col - 1)]).item +
+                  '-' +
+                  getItemByIndex(MAIN_INDEXES[(row - 2) * 9 + (col - 1)]).amount
+                "
                 class="img"
-                :src="getItemImage(getItemByIndex(MAIN_INDEXES[(row - 2) * 9 + (col - 1)]).item)"
-                :alt="getItemByIndex(MAIN_INDEXES[(row - 2) * 9 + (col - 1)]).item" />
+                :version="serverVersion"
+                :item="getItemByIndex(MAIN_INDEXES[(row - 2) * 9 + (col - 1)]).item.toLocaleLowerCase()" />
               <span v-if="getItemByIndex(MAIN_INDEXES[(row - 2) * 9 + (col - 1)]).amount > 1" class="amount">{{
                 getItemByIndex(MAIN_INDEXES[(row - 2) * 9 + (col - 1)]).amount
               }}</span>
@@ -59,7 +71,11 @@ const armorSlotNames = ['helmet', 'chestplate', 'leggings', 'boots'];
       <div class="inventory-hotbar-grid">
         <div class="inventory-slot offhand">
           <template v-if="getItemByIndex(OFFHAND_INDEX)">
-            <NuxtImg class="img" :src="getItemImage(getItemByIndex(OFFHAND_INDEX).item)" :alt="getItemByIndex(OFFHAND_INDEX).item" />
+            <MinecraftItem
+              :key="serverVersion + '-' + getItemByIndex(OFFHAND_INDEX).item + '-' + getItemByIndex(OFFHAND_INDEX).amount"
+              class="img"
+              :version="serverVersion"
+              :item="getItemByIndex(OFFHAND_INDEX).item.toLocaleLowerCase()" />
             <span v-if="getItemByIndex(OFFHAND_INDEX).amount > 1" class="amount">{{ getItemByIndex(OFFHAND_INDEX).amount }}</span>
           </template>
           <template v-else>
@@ -68,7 +84,11 @@ const armorSlotNames = ['helmet', 'chestplate', 'leggings', 'boots'];
         </div>
         <div v-for="idx in HOTBAR_INDEXES" :key="idx" class="inventory-slot hotbar">
           <template v-if="getItemByIndex(idx)">
-            <NuxtImg class="img" :src="getItemImage(getItemByIndex(idx).item)" :alt="getItemByIndex(idx).item" />
+            <MinecraftItem
+              :key="serverVersion + '-' + getItemByIndex(idx).item + '-' + getItemByIndex(idx).amount"
+              class="img"
+              :version="serverVersion"
+              :item="getItemByIndex(idx).item.toLocaleLowerCase()" />
             <span v-if="getItemByIndex(idx).amount > 1" class="amount">{{ getItemByIndex(idx).amount }}</span>
           </template>
           <template v-else>
@@ -134,12 +154,14 @@ const armorSlotNames = ['helmet', 'chestplate', 'leggings', 'boots'];
   overflow: hidden;
   min-width: 0;
   min-height: 0;
+
   .img {
     width: 70%;
     height: 70%;
     object-fit: contain;
     pointer-events: none;
   }
+
   .amount {
     position: absolute;
     right: 6%;
@@ -152,6 +174,7 @@ const armorSlotNames = ['helmet', 'chestplate', 'leggings', 'boots'];
     border-radius: 0.2em;
     padding: 0 2px;
   }
+
   .empty-slot {
     width: 100%;
     height: 100%;

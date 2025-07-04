@@ -8,13 +8,13 @@ defineProps<{
 </script>
 
 <template>
-  <div class="items" v-if="paginatedItems">
+  <TransitionGroup name="fade-slide" tag="div" class="items" v-if="paginatedItems">
     <div class="items__card" v-for="item in paginatedItems" :key="item._id">
       <Suspense>
         <ShopitemCard v-bind:item="item" />
       </Suspense>
     </div>
-  </div>
+  </TransitionGroup>
 </template>
 
 <style scoped lang="scss">
@@ -31,5 +31,20 @@ defineProps<{
   &__card {
     min-width: 14rem;
   }
+}
+
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.fade-slide-leave-from,
+.fade-slide-enter-to {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>

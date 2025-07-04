@@ -1,29 +1,24 @@
 <script setup lang="ts">
-const props = defineProps({
-  value: {
-    type: Number,
-    required: true,
-  },
-  inverted: {
-    type: Boolean,
-    required: true,
-  },
-  type: {
-    type: String,
-    required: true,
-  },
-});
+import initialConfig from '~/config/initial.config';
+
+type StatusType = 'health' | 'hunger';
+
+const props = defineProps<{
+  value: number;
+  inverted: boolean;
+  type: StatusType;
+}>();
 
 const config = {
   health: {
-    full: '/images/Heart.webp',
-    half: '/images/Half_Heart.webp',
-    empty: '/images/Empty_Heart.webp',
+    full: `${initialConfig.s3Link}/mcweb/Heart.webp`,
+    half: `${initialConfig.s3Link}/mcweb/Half_Heart.webp`,
+    empty: `${initialConfig.s3Link}/mcweb/Empty_Heart.webp`,
   },
   hunger: {
-    full: '/images/Hunger.webp',
-    half: '/images/Half_Hunger.webp',
-    empty: '/images/Empty_Hunger.webp',
+    full: `${initialConfig.s3Link}/mcweb/Hunger.webp`,
+    half: `${initialConfig.s3Link}/mcweb/Half_Hunger.webp`,
+    empty: `${initialConfig.s3Link}/mcweb/Empty_Hunger.webp`,
   },
 };
 
@@ -50,14 +45,14 @@ const icons = computed(() => getIconCount(props.value));
 
 <template>
   <div class="status-bar" v-if="inverted">
-    <img v-for="i in icons.empty" :key="`empty-${i}`" :src="images.empty" />
-    <img v-if="icons.half" :src="images.half" />
-    <img v-for="i in icons.full" :key="`full-${i}`" :src="images.full" />
+    <NuxtImg v-for="i in icons.empty" :key="`empty-${i}`" :src="images.empty" />
+    <NuxtImg v-if="icons.half" :src="images.half" />
+    <NuxtImg v-for="i in icons.full" :key="`full-${i}`" :src="images.full" />
   </div>
   <div class="status-bar" v-else>
     <img v-for="i in icons.full" :key="`full-${i}`" :src="images.full" />
-    <img v-if="icons.half" :src="images.half" />
-    <img v-for="i in icons.empty" :key="`empty-${i}`" :src="images.empty" />
+    <NuxtImg v-if="icons.half" :src="images.half" />
+    <NuxtImg v-for="i in icons.empty" :key="`empty-${i}`" :src="images.empty" />
   </div>
 </template>
 

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { type ShopItem, type LocalizationString } from '~/utilities/shopitem.interface';
 import { getDefaultTextColor } from '~/utilities/colors.utils';
+import MinecraftItem from '~/components/utilities/other/MinecraftItem.vue';
+import initialConfig from '~/config/initial.config';
 import iconsConfig from '~/config/icons.config';
 import ActionButton from '~/components/utilities/buttons/ActionButton.vue';
 
@@ -82,7 +84,7 @@ const parseNumber = (numb: number): string => {
   <ClientOnly>
     <div class="item blur__glass">
       <div class="item__info">
-        <nuxt-img loading="lazy" class="item__info__image" :src="item.image" />
+        <MinecraftItem class="item__info__image" :key="`${item.image}-${item.server}-${item.type}`" :version="initialConfig.lastVersion" :item="item.image" />
         <p :class="getNameColor()">{{ getLocalizedName() }}{{ hasEnchants ? '*' : '' }}</p>
         <p v-if="hasEnchants" class="item__info__enchants-box blur__glass">
           {{ getEnchants() }}
@@ -159,6 +161,7 @@ const parseNumber = (numb: number): string => {
 
     &__image {
       height: 1.5rem;
+      width: auto;
     }
 
     &__enchants {

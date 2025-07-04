@@ -19,6 +19,8 @@ const isLoaded = ref(false);
 const player = ref<any>();
 let updateInterval: ReturnType<typeof setInterval>;
 
+const showUserInfo = ref(false);
+
 const fetchPlayer = async () => {
   if (props.authStatus === 'OK') {
     try {
@@ -35,6 +37,14 @@ const fetchPlayer = async () => {
     }
   }
 };
+
+watch(isLoaded, (val) => {
+  if (val) {
+    setTimeout(() => {
+      showUserInfo.value = true;
+    }, 50);
+  }
+});
 
 onMounted(() => {
   fetchPlayer();
@@ -81,48 +91,56 @@ const getAlternateLocale = computed(() => {
 <template>
   <div class="userbox">
     <div v-if="authStatus === 'OK'">
-      <div v-if="isLoaded" class="userbox__userinfo">
-        <div class="userbox__userinfo__money">
-          <Icon :name="iconsConfig.gold" :style="`color: ${getDefaultTextColor(theme.value)}`" />
-          <h6>{{ player.money }}</h6>
-          <ActionButton text="" :text-bold="true" :text-color="getDefaultTextColor(theme.value)" :icon="iconsConfig.plus" :disableBackground="true" />
-        </div>
-        <div class="userbox__userinfo__user">
-          <NuxtLink class="userbox__userinfo__user__info transparent__glass" :to="`/${locale}/player/${player.username}`">
-            <h6>{{ player.username }}</h6>
-            <PlayerSkin class="userbox__userinfo__user__img" :player="player.username" render="isometric" type="bust" />
-          </NuxtLink>
-          <div class="user__content">
-            <div class="user__content__box">
-              <FlexButton
-                :text="t('settings')"
-                :text-color="getDefaultTextColor(theme.value)"
-                align="start"
-                :icon="iconsConfig.settings"
-                color="transparent"
-                :transparent="true"
-                :link="`/${locale}/settings`" />
-              <ActionButton
-                :text="t(`theme_${theme.preference}`)"
-                :text-color="getDefaultTextColor(theme.value)"
-                align="start"
-                :icon="themeIcon"
-                color="transparent"
-                :transparent="true"
-                @click="toggleTheme()" />
-              <FlexButton
-                :text="locale.toUpperCase()"
-                :text-color="getDefaultTextColor(theme.value)"
-                align="start"
-                :icon="iconsConfig.nav_lang"
-                color="transparent"
-                :transparent="true"
-                :link="getAlternateLocale" />
-              <ActionButton :text="t('button_signout')" align="start" :icon="iconsConfig.button_logout" color="#c71700" text-color="#ffffff" @click="onExit" />
+      <transition name="slide-userinfo">
+        <div v-if="showUserInfo" class="userbox__userinfo">
+          <div class="userbox__userinfo__money">
+            <Icon :name="iconsConfig.gold" :style="`color: ${getDefaultTextColor(theme.value)}`" />
+            <h6>{{ player.money }}</h6>
+            <ActionButton text="" :text-bold="true" :text-color="getDefaultTextColor(theme.value)" :icon="iconsConfig.plus" :disableBackground="true" />
+          </div>
+          <div class="userbox__userinfo__user">
+            <NuxtLink class="userbox__userinfo__user__info transparent__glass" :to="`/${locale}/player/${player.username}`">
+              <h6>{{ player.username }}</h6>
+              <PlayerSkin class="userbox__userinfo__user__img" :player="player.username" render="isometric" type="bust" />
+            </NuxtLink>
+            <div class="user__content">
+              <div class="user__content__box">
+                <FlexButton
+                  :text="t('settings')"
+                  :text-color="getDefaultTextColor(theme.value)"
+                  align="start"
+                  :icon="iconsConfig.settings"
+                  color="transparent"
+                  :transparent="true"
+                  :link="`/${locale}/settings`" />
+                <ActionButton
+                  :text="t(`theme_${theme.preference}`)"
+                  :text-color="getDefaultTextColor(theme.value)"
+                  align="start"
+                  :icon="themeIcon"
+                  color="transparent"
+                  :transparent="true"
+                  @click="toggleTheme()" />
+                <FlexButton
+                  :text="locale.toUpperCase()"
+                  :text-color="getDefaultTextColor(theme.value)"
+                  align="start"
+                  :icon="iconsConfig.nav_lang"
+                  color="transparent"
+                  :transparent="true"
+                  :link="getAlternateLocale" />
+                <ActionButton
+                  :text="t('button_signout')"
+                  align="start"
+                  :icon="iconsConfig.button_logout"
+                  color="#c71700"
+                  text-color="#ffffff"
+                  @click="onExit" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition>
     </div>
     <div v-else>
       <FlexButton
@@ -138,10 +156,6 @@ const getAlternateLocale = computed(() => {
 
 <style scoped lang="scss">
 @use '/assets/scss/screens.scss' as *;
-
-// * {
-//   border: 1px white solid;
-// }
 
 .user__content {
   opacity: 0;
@@ -254,5 +268,28 @@ const getAlternateLocale = computed(() => {
   .transparent__glass {
     padding: 0 0.8rem;
   }
+}
+
+.slide-userinfo-enter-from {
+  opacity: 0;
+  transform: translateX(100%);
+}
+.slide-userinfo-enter-active {
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-userinfo-enter-to {
+  opacity: 1;
+  transform: translateX(0);
+}
+.slide-userinfo-leave-from {
+  opacity: 1;
+  transform: translateX(0);
+}
+.slide-userinfo-leave-active {
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-userinfo-leave-to {
+  opacity: 0;
+  transform: translateX(100%);
 }
 </style>

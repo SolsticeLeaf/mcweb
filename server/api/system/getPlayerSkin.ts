@@ -12,7 +12,7 @@ const bucket = process.env.S3_BUCKET || 'null';
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000;
-const CACHE_TTL = 60 * 60 * 1000;
+const CACHE_TTL = 12 * 60 * 60 * 1000;
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));

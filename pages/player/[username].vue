@@ -3,6 +3,7 @@ import ServerSelector from '~/components/utilities/selectors/ServerSelector.vue'
 import StatusBar from '~/components/player/StatusBar.vue';
 import Inventory from '~/components/player/Inventory.vue';
 import { type Server } from '~/utilities/server.interface';
+import initialConfig from '~/config/initial.config';
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
@@ -14,6 +15,7 @@ const player = ref<any>();
 const servers = ref<Server[]>([]);
 const isServersLoaded = ref(false);
 const selectedServer = ref<Server>();
+const animationDirection = ref<'left' | 'right'>('right');
 
 let updateInterval: any = null;
 
@@ -62,6 +64,11 @@ onUnmounted(() => {
 });
 
 const changeServer = (server: Server) => {
+  if (selectedServer.value) {
+    const currentIndex = servers.value.findIndex((s) => s._id === selectedServer.value?._id);
+    const nextIndex = servers.value.findIndex((s) => s._id === server._id);
+    animationDirection.value = nextIndex > currentIndex ? 'right' : 'left';
+  }
   router.push({ query: { server: server._id } });
   selectedServer.value = server;
 };
@@ -108,13 +115,19 @@ const getServerData = computed(() => {
                   </div>
                 </div>
               </div>
-              <div class="data blur__glass">
-                <Inventory class="data__inventory" v-if="getServerData.inventory" :inventory="getServerData.inventory" />
-                <div class="data__bar">
-                  <StatusBar :value="getServerData.health || 20" type="health" :inverted="false" />
-                  <StatusBar :value="getServerData.food || 20" type="hunger" :inverted="true" />
+              <Transition :name="`fade-data-${animationDirection}`" mode="out-in">
+                <div class="data blur__glass" :key="selectedServer?._id">
+                  <Inventory
+                    class="data__inventory"
+                    v-if="getServerData.inventory"
+                    :server-version="selectedServer?.version || initialConfig.lastVersion"
+                    :inventory="getServerData.inventory" />
+                  <div class="data__bar">
+                    <StatusBar :value="getServerData.health || 20" type="health" :inverted="false" />
+                    <StatusBar :value="getServerData.food || 20" type="hunger" :inverted="true" />
+                  </div>
                 </div>
-              </div>
+              </Transition>
             </div>
           </div>
         </div>
@@ -225,5 +238,41 @@ const getServerData = computed(() => {
     width: 100%;
     gap: 1rem;
   }
+}
+
+.fade-data-left-enter-active,
+.fade-data-left-leave-active {
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fade-data-left-enter-from {
+  opacity: 0;
+  transform: translateX(-20px) scale(0.98);
+}
+.fade-data-left-leave-to {
+  opacity: 0;
+  transform: translateX(20px) scale(0.98);
+}
+.fade-data-left-enter-to,
+.fade-data-left-leave-from {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+.fade-data-right-enter-active,
+.fade-data-right-leave-active {
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fade-data-right-enter-from {
+  opacity: 0;
+  transform: translateX(20px) scale(0.98);
+}
+.fade-data-right-leave-to {
+  opacity: 0;
+  transform: translateX(-20px) scale(0.98);
+}
+.fade-data-right-enter-to,
+.fade-data-right-leave-from {
+  opacity: 1;
+  transform: translateX(0) scale(1);
 }
 </style>

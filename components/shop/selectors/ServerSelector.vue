@@ -38,6 +38,8 @@ const getShopCart = (server: Server) => {
   &__default {
     font-weight: normal;
     color: #2c2044;
+    transition: color 0.3s, border-bottom-color 0.3s;
+    position: relative;
   }
 
   .dark &__default {
@@ -56,11 +58,27 @@ const getShopCart = (server: Server) => {
   &__active {
     color: #502da1 !important;
     font-weight: bold;
-    border-bottom: 1px solid;
+    border-bottom: 2px solid;
+    border-bottom-color: #502da1;
+    transition: color 0.3s, border-bottom-color 0.3s;
+    position: relative;
+    animation: underline-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark &__active {
     color: #fcf58d !important;
+    border-bottom-color: #fcf58d;
+  }
+}
+
+@keyframes underline-in {
+  from {
+    border-bottom-width: 0;
+    border-bottom-color: transparent;
+  }
+  to {
+    border-bottom-width: 2px;
+    border-bottom-color: inherit;
   }
 }
 </style>

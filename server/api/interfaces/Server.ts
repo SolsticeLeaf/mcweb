@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface Server extends Document {
   _id: string;
   name: string;
+  version: string;
   icon: string;
   tags: object;
   description: LocalizationString;
@@ -19,6 +20,7 @@ const schema: Schema = new Schema(
   {
     _id: { type: String },
     name: { type: String, required: true },
+    version: { type: String, required: true },
     icon: { type: String, required: true },
     tags: { type: Object, required: true },
     description: { type: Object, required: true },

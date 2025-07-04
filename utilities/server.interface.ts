@@ -2,6 +2,7 @@ export interface Server {
   _id: string;
   name: string;
   icon: string;
+  version: string;
   description: LocalizationString;
   map: string;
   ip: string;

@@ -41,6 +41,23 @@ const getSortName = (sort: any): string => {
     appearance: none;
     -webkit-appearance: none;
     color: #2c2044;
+    transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, color 0.2s;
+    outline: none;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: 0 0 0 2px #a58fff44;
+      border-color: #a58fff;
+    }
+    &:active {
+      box-shadow: 0 0 0 2px #7c5fd1aa;
+      border-color: #7c5fd1;
+      color: #4b2e83;
+    }
+    &:focus {
+      box-shadow: 0 0 0 2px #a58fff;
+      border-color: #a58fff;
+    }
   }
 
   .dark &__selector {

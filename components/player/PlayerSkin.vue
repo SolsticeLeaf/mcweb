@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, nextTick, onMounted } from 'vue';
 import LoadingSpinner from '~/components/utilities/other/LoadingSpinner.vue';
 
 const props = defineProps<{
@@ -11,10 +11,12 @@ const props = defineProps<{
 const skinUrl = ref<string | null>(null);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
+const imgVisible = ref(false);
 
 watchEffect(async () => {
   isLoading.value = true;
   error.value = null;
+  imgVisible.value = false;
   if (!props.player || !props.render || !props.type) {
     skinUrl.value = null;
     isLoading.value = false;
@@ -31,6 +33,8 @@ watchEffect(async () => {
     const res = response as { url?: string; error?: string };
     if (res.url) {
       skinUrl.value = res.url;
+      await nextTick();
+      imgVisible.value = true;
     } else {
       error.value = res.error || 'undefined';
       skinUrl.value = null;
@@ -51,7 +55,7 @@ watchEffect(async () => {
         <LoadingSpinner class="skin-spinner" />
       </template>
       <template v-else-if="skinUrl">
-        <NuxtImg :src="skinUrl" :alt="props.player" class="skin-img" loading="lazy" decoding="async" />
+        <NuxtImg :src="skinUrl" :alt="props.player" class="skin-img" :class="{ 'skin-img--visible': imgVisible }" loading="lazy" decoding="async" />
       </template>
       <template v-else>
         <div class="skin-error">🔴</div>
@@ -74,6 +78,13 @@ watchEffect(async () => {
   max-height: 100%;
   object-fit: contain;
   border-radius: 0.5rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.skin-img.skin-img--visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 .skin-spinner {
   width: 1rem;

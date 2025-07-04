@@ -37,11 +37,13 @@ const getShopCart = (server: Server) => {
       <h5>{{ t('cart') }}</h5>
       <div class="cart__items" v-for="server in servers">
         <h5 v-if="getShopCart(server).length > 0">{{ server.name }}</h5>
-        <div class="cart__items__card" v-for="item in getShopCart(server)" :key="item.item._id">
-          <Suspense>
-            <CartItem v-bind:item="item.item" v-bind:value="item.value" />
-          </Suspense>
-        </div>
+        <transition-group name="cart-fade" tag="div" class="cart__items__card-group">
+          <div class="cart__items__card" v-for="item in getShopCart(server)" :key="item.item._id">
+            <Suspense>
+              <CartItem v-bind:item="item.item" v-bind:value="item.value" />
+            </Suspense>
+          </div>
+        </transition-group>
       </div>
     </div>
     <div class="cart__buttons">
@@ -88,5 +90,26 @@ const getShopCart = (server: Server) => {
       width: 100%;
     }
   }
+}
+
+.cart-fade-enter-active,
+.cart-fade-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.cart-fade-enter-from,
+.cart-fade-leave-to {
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+}
+.cart-fade-enter-to,
+.cart-fade-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.cart__items__card-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 </style>

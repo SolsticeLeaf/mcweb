@@ -34,6 +34,9 @@ const isServersLoaded = ref(false);
 const selectedServer = ref<Server>();
 const selectedSort = ref(sortTypes[0]);
 
+const pageAnimationDirection = ref<'left' | 'right' | 'none'>('none');
+let lastPage = ref(1);
+
 onBeforeMount(async () => {
   window.addEventListener('cart-changed', updateCart);
   window.addEventListener('cart-cleared', updateCart);
@@ -182,8 +185,17 @@ const changeServer = async (server: Server) => {
 
 const changeSort = async () => {
   sortItems();
-  changePage(1);
+  changePageNoAnimation(1);
 };
+
+function changePageNoAnimation(page: number) {
+  if (page >= 1 && page <= totalPages.value) {
+    pageAnimationDirection.value = 'none';
+    lastPage.value = page;
+    currentPage.value = page;
+    router.push({ query: { server: selectedServer.value?._id, type: selectedType.value?._id, sort: selectedSort.value.type, page: page } });
+  }
+}
 
 const paginatedItems = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
@@ -195,6 +207,8 @@ const totalPages = computed(() => Math.ceil(filteredItems.value.length / itemsPe
 
 const changePage = (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
+    pageAnimationDirection.value = page > currentPage.value ? 'right' : 'left';
+    lastPage.value = page;
     currentPage.value = page;
     router.push({ query: { server: selectedServer.value?._id, type: selectedType.value?._id, sort: selectedSort.value.type, page: page } });
   }
@@ -229,32 +243,31 @@ const getItemName = (type: ShopItem): string => {
   <ClientOnly>
     <KeepAlive>
       <div v-if="isLoaded" class="body">
-        <ServerSelector v-if="isServersLoaded && servers.length > 1" v-model="selectedServer" :cart="cart" :servers="servers" :changed="changeServer" />
-        <TypeSelector
-          v-if="isTypesLoaded && filteredShopTypes.length > 2"
-          v-model="selectedType"
-          :changed="changeType"
-          :filtered-shop-types="filteredShopTypes" />
+        <Transition name="fade-slide-block" mode="out-in">
+          <ServerSelector v-if="isServersLoaded && servers.length > 1" v-model="selectedServer" :cart="cart" :servers="servers" :changed="changeServer" />
+        </Transition>
+        <Transition name="fade-slide-block" mode="out-in">
+          <TypeSelector
+            v-if="isTypesLoaded && filteredShopTypes.length > 2"
+            v-model="selectedType"
+            :changed="changeType"
+            :filtered-shop-types="filteredShopTypes" />
+        </Transition>
         <div v-if="status === 'OK'" class="wrapper">
           <div class="shop" v-if="isShopLoaded">
+            <Transition name="fade-slide-block" mode="out-in">
+              <Pagination v-if="totalPages > 1" :total-pages="totalPages" :current-page="currentPage" :changed="changePage" />
+            </Transition>
+            <Transition name="fade-slide-block" mode="out-in">
+              <SortSelector v-if="filteredItems.length > 1" v-model="selectedSort" :filteredItems="filteredItems" :changed="changeSort" />
+            </Transition>
             <Suspense>
               <KeepAlive>
-                <Pagination :currentPage="currentPage" :total-pages="totalPages" :changed="changePage" />
-              </KeepAlive>
-            </Suspense>
-            <Suspense>
-              <KeepAlive>
-                <SortSelector v-model="selectedSort" :filtered-items="filteredItems" :changed="changeSort" />
-              </KeepAlive>
-            </Suspense>
-            <Suspense>
-              <KeepAlive>
-                <ItemsList class="shop__items" :paginated-items="paginatedItems" />
-              </KeepAlive>
-            </Suspense>
-            <Suspense>
-              <KeepAlive>
-                <Pagination :currentPage="currentPage" :total-pages="totalPages" :changed="changePage" />
+                <Transition
+                  :name="pageAnimationDirection === 'right' ? 'slide-right' : pageAnimationDirection === 'left' ? 'slide-left' : 'fade-slide-block'"
+                  mode="out-in">
+                  <ItemsList class="shop__items" :paginated-items="paginatedItems" :key="currentPage" />
+                </Transition>
               </KeepAlive>
             </Suspense>
           </div>
@@ -326,5 +339,56 @@ const getItemName = (type: ShopItem): string => {
 
 .transparent__glass {
   padding: 0.5rem;
+}
+
+.fade-slide-block-enter-active,
+.fade-slide-block-leave-active {
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fade-slide-block-enter-from,
+.fade-slide-block-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.fade-slide-block-leave-from,
+.fade-slide-block-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-right-enter-active,
+.slide-right-leave-active,
+.slide-left-enter-active,
+.slide-left-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+}
+
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translateX(100px);
+}
+.slide-right-leave-to {
+  opacity: 0;
+  transform: translateX(-100px);
+}
+.slide-right-enter-to,
+.slide-right-leave-from {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.slide-left-enter-from {
+  opacity: 0;
+  transform: translateX(-100px);
+}
+.slide-left-leave-to {
+  opacity: 0;
+  transform: translateX(100px);
+}
+.slide-left-enter-to,
+.slide-left-leave-from {
+  opacity: 1;
+  transform: translateX(0);
 }
 </style>

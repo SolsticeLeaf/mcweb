@@ -91,52 +91,54 @@ const getJavaVersion = (version: string) => {
 <template>
   <div class="servers">
     <h3>{{ t('nav_servers') }}</h3>
-    <div v-for="server in servers" :key="server._id" class="blur__glass servers__item" @click="openServerPage(server)">
-      <div v-if="isServersLoaded">
-        <div v-if="getOnlineServer(server.ip)" class="servers__container">
-          <div class="servers__container__row">
-            <div class="servers__icon">
-              <NuxtImg v-if="server.icon" :src="server.icon" :alt="server.name" class="servers__icon__img" :custom="true" v-slot="{ imgAttrs, isLoaded }">
-                <LoadingSpinner v-if="!isLoaded" class="servers__icon__img" />
-                <img v-else v-bind="imgAttrs" class="servers__icon__img" />
-              </NuxtImg>
+    <TransitionGroup name="fade-slide-server" class="servers" tag="div">
+      <div v-for="server in servers" :key="server._id" class="blur__glass servers__item" @click="openServerPage(server)">
+        <div v-if="isServersLoaded">
+          <div v-if="getOnlineServer(server.ip)" class="servers__container">
+            <div class="servers__container__row">
+              <div class="servers__icon">
+                <NuxtImg v-if="server.icon" :src="server.icon" :alt="server.name" class="servers__icon__img" :custom="true" v-slot="{ imgAttrs, isLoaded }">
+                  <LoadingSpinner v-if="!isLoaded" class="servers__icon__img" />
+                  <img v-else v-bind="imgAttrs" class="servers__icon__img" />
+                </NuxtImg>
+              </div>
+              <div class="servers__info">
+                <div class="servers__info__column">
+                  <h6>{{ server.name }}</h6>
+                  <p class="servers__info__ip" @click.stop="copyServerIp(server)">{{ server.ip }}</p>
+                </div>
+                <div class="servers__info__column">
+                  <p>
+                    {{ `${t('server_online')} ${getOnlineServer(server.ip)?.java.players?.online || 0}/${getOnlineServer(server.ip)?.java.players?.max || 0}` }}
+                  </p>
+                  <p>
+                    {{ `${t('server_version')} ${getJavaVersion(getOnlineServer(server.ip)?.java.version.name_clean)}` }}
+                  </p>
+                </div>
+              </div>
             </div>
+            <div v-if="isPlayerAuthorized()" class="servers__info__status">
+              <StatusBar :value="getPlayerData(server).health || 20" type="health" :inverted="false" />
+              <StatusBar :value="getPlayerData(server).food || 20" type="hunger" :inverted="true" />
+            </div>
+          </div>
+          <div v-else class="servers__container servers__container__offline">
+            <NuxtImg v-if="server.icon" :src="server.icon" :alt="server.name" class="servers__icon__img" :custom="true" v-slot="{ imgAttrs, isLoaded }">
+              <LoadingSpinner v-if="!isLoaded" class="servers__icon__img" />
+              <img v-else v-bind="imgAttrs" class="servers__icon__img" />
+            </NuxtImg>
             <div class="servers__info">
-              <div class="servers__info__column">
-                <h6>{{ server.name }}</h6>
-                <p class="servers__info__ip" @click.stop="copyServerIp(server)">{{ server.ip }}</p>
-              </div>
-              <div class="servers__info__column">
-                <p>
-                  {{ `${t('server_online')} ${getOnlineServer(server.ip)?.java.players?.online || 0}/${getOnlineServer(server.ip)?.java.players?.max || 0}` }}
-                </p>
-                <p>
-                  {{ `${t('server_version')} ${getJavaVersion(getOnlineServer(server.ip)?.java.version.name_clean)}` }}
-                </p>
-              </div>
+              <h6>{{ server.name }}</h6>
+              <p>{{ t('server_offline') }}</p>
             </div>
           </div>
-          <div v-if="isPlayerAuthorized()" class="servers__info__status">
-            <StatusBar :value="getPlayerData(server).health || 20" type="health" :inverted="false" />
-            <StatusBar :value="getPlayerData(server).food || 20" type="hunger" :inverted="true" />
-          </div>
         </div>
-        <div v-else class="servers__container servers__container__offline">
-          <NuxtImg v-if="server.icon" :src="server.icon" :alt="server.name" class="servers__icon__img" :custom="true" v-slot="{ imgAttrs, isLoaded }">
-            <LoadingSpinner v-if="!isLoaded" class="servers__icon__img" />
-            <img v-else v-bind="imgAttrs" class="servers__icon__img" />
-          </NuxtImg>
-          <div class="servers__info">
-            <h6>{{ server.name }}</h6>
-            <p>{{ t('server_offline') }}</p>
-          </div>
+        <div v-else class="servers__loading">
+          <div class="loading-spinner"></div>
+          <span>{{ t('loading') }}</span>
         </div>
       </div>
-      <div v-else class="servers__loading">
-        <div class="loading-spinner"></div>
-        <span>{{ t('loading') }}</span>
-      </div>
-    </div>
+    </TransitionGroup>
   </div>
 </template>
 
@@ -237,5 +239,20 @@ const getJavaVersion = (version: string) => {
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.6);
   }
+}
+
+.fade-slide-server-enter-active,
+.fade-slide-server-leave-active {
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fade-slide-server-enter-from,
+.fade-slide-server-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.fade-slide-server-leave-from,
+.fade-slide-server-enter-to {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>

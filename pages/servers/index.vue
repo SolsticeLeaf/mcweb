@@ -6,6 +6,7 @@ import { type Server } from '~/utilities/server.interface';
 import { getDefaultTextColor } from '~/utilities/colors.utils';
 import Player from '~/components/player/Player.vue';
 import LoadingSpinner from '~/components/utilities/other/LoadingSpinner.vue';
+import { computed } from 'vue';
 const { t, locale } = useI18n();
 const route = useRoute();
 const theme = useColorMode();
@@ -19,7 +20,13 @@ const serverJavaInfo = ref<any>({});
 const serverBedrockInfo = ref<any>({});
 const isServerInfoLoaded = ref(false);
 
+const previousServerIndex = ref<number | null>(null);
+const direction = ref<'left' | 'right'>('right');
+const transitionName = computed(() => (direction.value === 'left' ? 'slide-left-block' : 'slide-right-block'));
+
 let serverRefreshInterval: NodeJS.Timeout | null = null;
+
+const hasPlayers = computed(() => serverJavaInfo.value.players && serverJavaInfo.value.players.list && serverJavaInfo.value.players.list.length > 0);
 
 onBeforeMount(async () => {
   try {
@@ -81,6 +88,14 @@ const getServerinfo = async (ip: string | undefined): Promise<void> => {
 };
 
 const changeServer = async (server: Server) => {
+  const currentIndex = servers.value.findIndex((s) => s._id === server._id);
+  if (selectedServer.value) {
+    const prevIndex = servers.value.findIndex((s) => s._id === selectedServer.value?._id);
+    if (prevIndex !== -1 && currentIndex !== -1) {
+      direction.value = currentIndex > prevIndex ? 'right' : 'left';
+    }
+  }
+  previousServerIndex.value = currentIndex;
   router.push({ query: { server: server._id } });
   selectedServer.value = server;
   await getServerinfo(selectedServer.value?.ip);
@@ -119,81 +134,91 @@ const getJavaVersion = (version: string) => {
         </Suspense>
         <Suspense>
           <KeepAlive>
-            <div v-if="isServerInfoLoaded">
-              <div v-if="selectedServer && serverJavaInfo.online == true" class="info-wrapper">
-                <div class="info-wrapper__row">
-                  <div class="info-description blur__glass">
-                    <h1>{{ selectedServer?.name }}</h1>
-                    <div class="ip-block">
-                      <span class="ip-label">{{ t('server_ip') }}</span>
-                      <span class="ip-value blur__glass" @click="copyServerIp(selectedServer)">{{ selectedServer?.ip }}</span>
+            <Transition :name="transitionName" mode="out-in">
+              <div v-if="isServerInfoLoaded">
+                <Transition :name="transitionName" mode="out-in">
+                  <div v-if="selectedServer && serverJavaInfo.online == true" class="info-wrapper" :key="selectedServer?._id">
+                    <div class="info-wrapper__row">
+                      <div class="info-description blur__glass">
+                        <h1>{{ selectedServer?.name }}</h1>
+                        <div class="ip-block">
+                          <span class="ip-label">{{ t('server_ip') }}</span>
+                          <span class="ip-value blur__glass" @click="copyServerIp(selectedServer)">{{ selectedServer?.ip }}</span>
+                        </div>
+                        <div class="desc-text" v-html="selectedServer?.description[locale] || selectedServer?.description.en"></div>
+                        <div v-if="selectedServer?.tags && (selectedServer?.tags[locale] || selectedServer?.tags.en)" class="tags-row">
+                          <span
+                            v-for="tag in selectedServer?.tags[locale] || selectedServer?.tags.en"
+                            :key="tag.tag"
+                            class="tag-pill"
+                            :style="{ background: tag.color, color: tag.textColor }">
+                            <Icon :name="tag.icon" class="tag-icon" />
+                            <span class="tag-label">{{ tag.tag }}</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="info-server blur__glass">
+                        <div class="icon-block" v-if="serverJavaInfo.icon">
+                          <NuxtImg :src="selectedServer.icon" alt="Server Icon" class="server-icon" :custom="true" v-slot="{ imgAttrs, isLoaded }">
+                            <LoadingSpinner v-if="!isLoaded" class="server-icon__spinner" />
+                            <img v-else v-bind="imgAttrs" class="server-icon" />
+                          </NuxtImg>
+                        </div>
+                        <div class="players-block">
+                          <span class="players-label">{{ t('server_online') }}</span>
+                          <span class="players-value blur__glass">{{ serverJavaInfo.players?.online }}/{{ serverJavaInfo.players?.max }}</span>
+                        </div>
+                        <div class="version-block">
+                          <span class="version-label">{{ t('server_java') }}</span>
+                          <span class="version-value blur__glass">{{ getJavaVersion(serverJavaInfo.version.name_clean) }}</span>
+                        </div>
+                        <div class="version-block">
+                          <span class="version-label">{{ t('server_bedrock') }}</span>
+                          <span class="version-value blur__glass">{{ serverBedrockInfo.version.name }}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div class="desc-text" v-html="selectedServer?.description[locale] || selectedServer?.description.en"></div>
-                    <div v-if="selectedServer?.tags && (selectedServer?.tags[locale] || selectedServer?.tags.en)" class="tags-row">
-                      <span
-                        v-for="tag in selectedServer?.tags[locale] || selectedServer?.tags.en"
-                        :key="tag.tag"
-                        class="tag-pill"
-                        :style="{ background: tag.color, color: tag.textColor }">
-                        <Icon :name="tag.icon" class="tag-icon" />
-                        <span class="tag-label">{{ tag.tag }}</span>
-                      </span>
+                    <div class="servers-buttons">
+                      <ActionButton
+                        :text="t(`open_map`)"
+                        class="server-button"
+                        :text-color="getDefaultTextColor(theme.value)"
+                        align="start"
+                        :icon="iconsConfig.nav_map"
+                        color="transparent"
+                        @click="openServerMap(selectedServer)" />
+                      <ActionButton
+                        :text="t(`open_shop`)"
+                        class="server-button"
+                        :text-color="getDefaultTextColor(theme.value)"
+                        align="start"
+                        :icon="iconsConfig.nav_shop"
+                        color="transparent"
+                        @click="openServerShop(selectedServer)" />
                     </div>
+                    <h5>{{ t('players_online') }}</h5>
+                    <Transition name="fade-slide-block" mode="out-in">
+                      <div>
+                        <TransitionGroup v-if="hasPlayers" name="fade-slide-player" tag="div" class="players-list">
+                          <div v-for="player in serverJavaInfo.players?.list" :key="player.uuid">
+                            <Player :playerName="player.name_clean" />
+                          </div>
+                        </TransitionGroup>
+                        <div class="players-list-empty" v-if="!hasPlayers">
+                          <label>{{ t('nobody_here') }}</label>
+                        </div>
+                      </div>
+                    </Transition>
                   </div>
-                  <div class="info-server blur__glass">
-                    <div class="icon-block" v-if="serverJavaInfo.icon">
-                      <NuxtImg :src="selectedServer.icon" alt="Server Icon" class="server-icon" :custom="true" v-slot="{ imgAttrs, isLoaded }">
-                        <LoadingSpinner v-if="!isLoaded" class="server-icon__spinner" />
-                        <img v-else v-bind="imgAttrs" class="server-icon" />
-                      </NuxtImg>
-                    </div>
-                    <div class="players-block">
-                      <span class="players-label">{{ t('server_online') }}</span>
-                      <span class="players-value blur__glass">{{ serverJavaInfo.players?.online }}/{{ serverJavaInfo.players?.max }}</span>
-                    </div>
-                    <div class="version-block">
-                      <span class="version-label">{{ t('server_java') }}</span>
-                      <span class="version-value blur__glass">{{ getJavaVersion(serverJavaInfo.version.name_clean) }}</span>
-                    </div>
-                    <div class="version-block">
-                      <span class="version-label">{{ t('server_bedrock') }}</span>
-                      <span class="version-value blur__glass">{{ serverBedrockInfo.version.name }}</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="servers-buttons">
-                  <ActionButton
-                    :text="t(`open_map`)"
-                    class="server-button"
-                    :text-color="getDefaultTextColor(theme.value)"
-                    align="start"
-                    :icon="iconsConfig.nav_map"
-                    color="transparent"
-                    @click="openServerMap(selectedServer)" />
-                  <ActionButton
-                    :text="t(`open_shop`)"
-                    class="server-button"
-                    :text-color="getDefaultTextColor(theme.value)"
-                    align="start"
-                    :icon="iconsConfig.nav_shop"
-                    color="transparent"
-                    @click="openServerShop(selectedServer)" />
-                </div>
-                <h5>{{ t('players_online') }}</h5>
-                <div class="players-list" v-if="serverJavaInfo.players?.list.length > 0">
-                  <div v-for="player in serverJavaInfo.players?.list" :key="player.uuid">
-                    <Player :playerName="player.name_clean" />
-                  </div>
-                </div>
-                <div v-else>
-                  <label>{{ t('nobody_here') }}</label>
-                </div>
+                </Transition>
               </div>
-              <div v-else class="offline-block blur__glass">{{ t('server_offline') }}</div>
-            </div>
+            </Transition>
           </KeepAlive>
         </Suspense>
       </div>
+      <Transition v-else name="fade-slide-block" mode="out-in">
+        <div class="offline-block blur__glass">{{ t('server_offline') }}</div>
+      </Transition>
       <div class="body__loading" v-else>
         <h6>{{ t('loading') }}</h6>
       </div>
@@ -394,5 +419,58 @@ const getJavaVersion = (version: string) => {
 }
 .tag-label {
   vertical-align: middle;
+}
+
+.fade-slide-block-enter-active,
+.fade-slide-block-leave-active {
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fade-slide-block-enter-from,
+.fade-slide-block-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.fade-slide-block-leave-from,
+.fade-slide-block-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fade-slide-player-enter-active,
+.fade-slide-player-leave-active {
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fade-slide-player-enter-from,
+.fade-slide-player-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.fade-slide-player-leave-from,
+.fade-slide-player-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-left-block-enter-active,
+.slide-left-block-leave-active,
+.slide-right-block-enter-active,
+.slide-right-block-leave-active {
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-left-block-enter-from,
+.slide-right-block-leave-to {
+  opacity: 0;
+  transform: translateX(-40px);
+}
+.slide-left-block-leave-to,
+.slide-right-block-enter-from {
+  opacity: 0;
+  transform: translateX(40px);
+}
+.slide-left-block-leave-from,
+.slide-left-block-enter-to,
+.slide-right-block-leave-from,
+.slide-right-block-enter-to {
+  opacity: 1;
+  transform: translateX(0);
 }
 </style>

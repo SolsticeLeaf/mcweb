@@ -12,6 +12,12 @@ const servers = ref<Server[]>([]);
 const isServersLoaded = ref(false);
 
 const selectedServer = ref<Server>();
+const lastServerIndex = ref<number>(0);
+const transitionName = ref('slide-map-right');
+
+const getServerIndex = (serverId: string) => {
+  return servers.value.findIndex((srv) => srv._id === serverId);
+};
 
 onBeforeMount(async () => {
   try {
@@ -47,8 +53,14 @@ onBeforeMount(async () => {
 });
 
 const changeServer = (server: Server) => {
+  const newIndex = getServerIndex(server._id);
+  if (selectedServer.value) {
+    const oldIndex = getServerIndex(selectedServer.value._id);
+    transitionName.value = newIndex > oldIndex ? 'slide-map-right' : 'slide-map-left';
+  }
   router.push({ query: { server: server._id } });
   selectedServer.value = server;
+  lastServerIndex.value = newIndex;
 };
 </script>
 
@@ -63,16 +75,18 @@ const changeServer = (server: Server) => {
         </Suspense>
         <Suspense>
           <KeepAlive>
-            <div v-if="selectedServer" class="map">
-              <iframe
-                v-if="status === 'OK'"
-                class="map__frame blur__glass"
-                :src="selectedServer.map + `&zoom=5`"
-                :style="colorMode.value === 'dark' ? 'mix-blend-mode: lighten' : ''" />
-              <div v-else class="transparent__glass">
-                <p>{{ t('authorize_to_view') }}</p>
+            <Transition :name="transitionName" mode="out-in">
+              <div v-if="selectedServer" :key="selectedServer._id" class="map">
+                <iframe
+                  v-if="status === 'OK'"
+                  class="map__frame blur__glass"
+                  :src="selectedServer.map + `&zoom=5`"
+                  :style="colorMode.value === 'dark' ? 'mix-blend-mode: lighten' : ''" />
+                <div v-else class="transparent__glass">
+                  <p>{{ t('authorize_to_view') }}</p>
+                </div>
               </div>
-            </div>
+            </Transition>
           </KeepAlive>
         </Suspense>
       </div>
@@ -112,5 +126,49 @@ const changeServer = (server: Server) => {
 
 .transparent__glass {
   padding: 0.5rem;
+}
+
+.slide-map-right-enter-active,
+.slide-map-right-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+}
+.slide-map-right-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+}
+.slide-map-right-enter-to {
+  transform: translateX(0);
+  opacity: 1;
+}
+.slide-map-right-leave-from {
+  transform: translateX(0);
+  opacity: 1;
+}
+.slide-map-right-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.slide-map-left-enter-active,
+.slide-map-left-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+}
+.slide-map-left-enter-from {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+.slide-map-left-enter-to {
+  transform: translateX(0);
+  opacity: 1;
+}
+.slide-map-left-leave-from {
+  transform: translateX(0);
+  opacity: 1;
+}
+.slide-map-left-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
 }
 </style>
