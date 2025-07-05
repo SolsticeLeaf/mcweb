@@ -78,7 +78,7 @@ export default defineEventHandler(async (event) => {
     needUpdate = true;
     console.error('❌ S3 HeadObject error:', e);
   }
-  const getUrl = await getSignedUrl(s3, new GetObjectCommand({ Bucket: bucket, Key: key }), { expiresIn: 3600 });
+  const returnUrl = `${initialConfig.s3Link}/${getS3Key(player, render, type)}`;
   if (fileExists && !needUpdate) {
     (async () => {
       if (needUpdate) {
@@ -99,7 +99,7 @@ export default defineEventHandler(async (event) => {
         }
       }
     })();
-    return { url: getUrl };
+    return { url: returnUrl };
   }
   if (needUpdate) {
     const url = `${skinRenderApi}/${render}/${player}/${type}`;
@@ -125,5 +125,5 @@ export default defineEventHandler(async (event) => {
       return { error: 'Failed to upload skin to S3' };
     }
   }
-  return { url: getUrl };
+  return { url: returnUrl };
 });

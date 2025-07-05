@@ -160,8 +160,8 @@ body {
 .blur__glass {
   filter: none !important;
   -webkit-filter: none !important;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
   border-radius: 3rem;
   padding: 0.5rem;
   border: 1px solid rgba(44, 32, 68, 0.2);
