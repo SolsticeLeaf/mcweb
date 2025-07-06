@@ -7,6 +7,7 @@ const route = useRoute();
 const router = useRouter();
 
 const status = ref('');
+const user = ref();
 const isLoaded = ref(false);
 const servers = ref<Server[]>([]);
 const isServersLoaded = ref(false);
@@ -21,13 +22,14 @@ const getServerIndex = (serverId: string) => {
 
 onBeforeMount(async () => {
   try {
-    const { status: response_status } = await $fetch('/api/auth/checkAuthStatus', {
+    const { status: response_status, user: response_user } = await $fetch('/api/auth/checkAuthStatus', {
       default: () => [],
       cache: 'no-cache',
       server: false,
       method: 'GET',
     });
     status.value = response_status;
+    user.value = response_user;
   } finally {
     isLoaded.value = true;
   }
@@ -80,7 +82,7 @@ const changeServer = (server: Server) => {
                 <iframe
                   v-if="status === 'OK'"
                   class="map__frame blur__glass"
-                  :src="selectedServer.map + `&zoom=5`"
+                  :src="selectedServer.map + `&zoom=5${status === 'OK' ? `&playername=${user.username}` : ''}`"
                   :style="colorMode.value === 'dark' ? 'mix-blend-mode: lighten' : ''" />
                 <div v-else class="transparent__glass">
                   <p>{{ t('authorize_to_view') }}</p>

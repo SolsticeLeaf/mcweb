@@ -23,7 +23,13 @@ export default defineEventHandler(async (event) => {
       });
     const tokensData: Token = tokens.data.token;
     if (tokensData) {
-      setCookie(event, 'tokens', JSON.stringify(tokensData));
+      setCookie(event, 'tokens', JSON.stringify(tokensData), {
+        maxAge: 60 * 60 * 24 * 30,
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        path: '/',
+      });
       deleteCookie(event, 'clientId');
     } else {
       console.error('⚠️ [Tokens] No token data received from auth service.');

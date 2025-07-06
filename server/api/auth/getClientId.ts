@@ -6,7 +6,13 @@ export default defineEventHandler(async (event) => {
     if (clientId === undefined || (clientId.length || 0) < 20) {
       clientId = randomUUID().toString();
     }
-    setCookie(event, 'clientId', clientId);
+    setCookie(event, 'clientId', clientId, {
+      maxAge: 60 * 60 * 24 * 10,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
+    });
     return { status: 'OK', clientId: clientId };
   } catch (error) {
     console.log('🚨 Error while getting clientId:', error);

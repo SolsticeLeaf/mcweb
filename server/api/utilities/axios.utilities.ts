@@ -48,7 +48,13 @@ export async function refreshToken(event: any, token: Token): Promise<Token | un
     if (data.status !== 'OK') {
       return undefined;
     }
-    setCookie(event, 'tokens', JSON.stringify(data.token));
+    setCookie(event, 'tokens', JSON.stringify(data.token), {
+      maxAge: 60 * 60 * 24 * 30,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
+    });
     return data.token;
   } catch (error) {
     console.error('⚠️❌ Unexpected error while refreshing token:', error);
