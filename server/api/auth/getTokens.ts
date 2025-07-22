@@ -30,7 +30,6 @@ export default defineEventHandler(async (event) => {
         sameSite: 'strict',
         path: '/',
       });
-      deleteCookie(event, 'clientId');
     } else {
       console.error('⚠️ [Tokens] No token data received from auth service.');
     }

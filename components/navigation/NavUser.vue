@@ -4,7 +4,6 @@ import FlexButton from '../utilities/buttons/FlexButton.vue';
 import ActionButton from '../utilities/buttons/ActionButton.vue';
 import PlayerSkin from '../player/PlayerSkin.vue';
 import { getDefaultTextColor } from '~/utilities/colors.utils';
-import LoadingSpinner from '../utilities/other/LoadingSpinner.vue';
 
 const { t, locale } = useI18n();
 const route = useRoute();

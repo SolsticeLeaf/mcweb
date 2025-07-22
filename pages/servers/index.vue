@@ -172,7 +172,7 @@ const getJavaVersion = (version: string) => {
                           <span class="version-label">{{ t('server_java') }}</span>
                           <span class="version-value blur__glass">{{ getJavaVersion(serverJavaInfo.version.name_clean) }}</span>
                         </div>
-                        <div class="version-block">
+                        <div v-if="serverBedrockInfo.version" class="version-block">
                           <span class="version-label">{{ t('server_bedrock') }}</span>
                           <span class="version-value blur__glass">{{ serverBedrockInfo.version.name }}</span>
                         </div>
@@ -198,7 +198,7 @@ const getJavaVersion = (version: string) => {
                     </div>
                     <h5>{{ t('players_online') }}</h5>
                     <Transition name="fade-slide-block" mode="out-in">
-                      <div>
+                      <div class="players-body">
                         <TransitionGroup v-if="hasPlayers" name="fade-slide-player" tag="div" class="players-list">
                           <div v-for="player in serverJavaInfo.players?.list" :key="player.uuid">
                             <Player :playerName="player.name_clean" />
@@ -210,6 +210,7 @@ const getJavaVersion = (version: string) => {
                       </div>
                     </Transition>
                   </div>
+                  <div v-else class="offline-block blur__glass">{{ t('server_offline') }}</div>
                 </Transition>
               </div>
             </Transition>
@@ -290,6 +291,12 @@ const getJavaVersion = (version: string) => {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     cursor: pointer;
   }
+}
+
+.players-body {
+  display: flex;
+  width: 100%;
+  justify-content: center;
 }
 
 .players-list {

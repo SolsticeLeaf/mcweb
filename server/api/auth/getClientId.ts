@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
       clientId = randomUUID().toString();
     }
     setCookie(event, 'clientId', clientId, {
-      maxAge: 60 * 60 * 24 * 10,
+      maxAge: 60 * 60 * 8,
       httpOnly: true,
       secure: true,
       sameSite: 'strict',

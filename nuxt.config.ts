@@ -38,7 +38,7 @@ export default defineNuxtConfig({
     compressPublicAssets: true,
   },
   experimental: {
-    viewTransition: true,
+    viewTransition: false,
     renderJsonPayloads: true,
   },
   sourcemap: true,
