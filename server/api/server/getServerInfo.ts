@@ -1,6 +1,6 @@
 import mcs from 'node-mcstatus';
 import { connectDB } from '../database/MongoDB';
-import { getServers } from '../interfaces/Server';
+import { getServerByIp, getServers } from '../interfaces/Server';
 
 const cache: Record<string, { data: any; timestamp: number }> = {};
 const CACHE_TTL = 10 * 1000;
@@ -14,11 +14,12 @@ async function backgroundUpdateCache() {
       if (!ip) continue;
       const splitIp = ip.split(':');
       try {
-        const [java, bedrock] = await Promise.all([
+        const [java, bedrock, online] = await Promise.all([
           mcs.statusJava(splitIp[0] || ip, Number(splitIp[1] || '25565')).catch(() => ({ online: false })),
           mcs.statusBedrock(splitIp[0] || ip, Number(splitIp[1] || '25565')).catch(() => ({ online: false })),
+          (await getServerByIp(ip))?.online,
         ]);
-        const data = { java, bedrock };
+        const data = { java, bedrock, online };
         cache[ip] = { data, timestamp: Date.now() };
       } catch (error) {
         console.error(`❌ Error fetching server "${server.name}" info:`, error);
@@ -41,7 +42,7 @@ export default defineEventHandler(async (event) => {
   }
   try {
     const splitIp = ip.split(':');
-    const [java, bedrock] = await Promise.all([
+    const [java, bedrock, online] = await Promise.all([
       mcs.statusJava(splitIp[0] || ip, Number(splitIp[1] || '25565')).catch((error) => {
         console.error(`🛑 Error fetching Java server ${ip} info:`, error);
         return { online: false };
@@ -50,8 +51,9 @@ export default defineEventHandler(async (event) => {
         console.error(`🛑 Error fetching Bedrock server ${ip} info:`, error);
         return { online: false };
       }),
+      (await getServerByIp(ip))?.online,
     ]);
-    const data = { java, bedrock };
+    const data = { java, bedrock, online };
     cache[ip] = { data, timestamp: Date.now() };
     return data;
   } catch (error) {

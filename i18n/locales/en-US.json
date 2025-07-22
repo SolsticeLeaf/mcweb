@@ -218,5 +218,6 @@
   "minecraft_story/smelt_iron": "Acquire Hardware",
   "minecraft_story/upgrade_tools": "Getting an Upgrade",
   "WITHER": "Wither",
-  "ENDER_DRAGON": "Ender dragon"
+  "ENDER_DRAGON": "Ender dragon",
+  "advancements_empty": "Empty..."
 }

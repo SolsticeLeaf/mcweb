@@ -6,6 +6,7 @@ export interface Server {
   description: LocalizationString;
   map: string;
   ip: string;
+  online: Array<string>;
   serverColor: string;
   tags: Record<string, ServerTag[]>;
 }

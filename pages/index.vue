@@ -50,6 +50,8 @@ const fetchUserAndPlayer = async () => {
       method: 'POST',
       body: {
         amount: 30,
+        serverId: '',
+        player: '',
       },
     });
     advStatus.value = response_status;
@@ -82,7 +84,7 @@ onMounted(() => {
         <div class="banners">Тут будут баннеры</div>
         <div class="body-row">
           <div class="advancements">
-            <Advancements v-if="isAdvLoaded && isServersLoaded" class="advancements" :advancements="adv" :servers="servers" />
+            <Advancements v-if="isAdvLoaded && isServersLoaded" class="advancements" :advancements="adv" :servers="servers" :showServerName="true" />
           </div>
           <ServerList class="sidebar" :servers="servers" :is-servers-loaded="isServersLoaded" :player="player" />
         </div>
@@ -128,6 +130,8 @@ onMounted(() => {
   flex-direction: column;
   width: 100%;
   height: fit-content;
+  animation: slideIn 0.5s ease-out forwards;
+  transform: translateX(-100%);
 }
 
 .blur__glass {
@@ -160,6 +164,17 @@ onMounted(() => {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 </style>

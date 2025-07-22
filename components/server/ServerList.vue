@@ -50,6 +50,7 @@ const getOnlineServer = (ip: string) => {
     return {
       java: info.java,
       bedrock: info.bedrock,
+      online: info.online,
     };
   }
   return null;
@@ -109,7 +110,7 @@ const getJavaVersion = (version: string) => {
                 </div>
                 <div class="servers__info__column">
                   <p>
-                    {{ `${t('server_online')} ${getOnlineServer(server.ip)?.java.players?.online || 0}/${getOnlineServer(server.ip)?.java.players?.max || 0}` }}
+                    {{ `${t('server_online')} ${getOnlineServer(server.ip)?.online.length || 0}/${getOnlineServer(server.ip)?.java.players?.max || 0}` }}
                   </p>
                   <p>
                     {{ `${t('server_version')} ${getJavaVersion(getOnlineServer(server.ip)?.java.version.name_clean)}` }}

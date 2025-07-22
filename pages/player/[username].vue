@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ServerSelector from '~/components/utilities/selectors/ServerSelector.vue';
+import Advancements from '~/components/main/Advancements.vue';
 import StatusBar from '~/components/player/StatusBar.vue';
 import Inventory from '~/components/player/Inventory.vue';
 import { type Server } from '~/utilities/server.interface';
@@ -12,6 +13,10 @@ const router = useRouter();
 const isLoaded = ref(false);
 const status = ref('');
 const player = ref<any>();
+
+const advStatus = ref('');
+const adv = ref<any[]>([]);
+const isAdvLoaded = ref(false);
 
 const servers = ref<Server[]>([]);
 const isServersLoaded = ref(false);
@@ -34,6 +39,28 @@ const updatePlayerData = async () => {
   } finally {
     isLoaded.value = true;
   }
+  await getAdvancements();
+};
+
+const getAdvancements = async (): Promise<void> => {
+  try {
+    const { status: response_status, data: response_data } = await $fetch('/api/system/getServerLogs', {
+      default: () => [],
+      cache: 'no-cache',
+      server: false,
+      method: 'POST',
+      body: {
+        amount: 7,
+        serverId: selectedServer.value?._id || '',
+        player: player.value.username,
+      },
+    });
+    advStatus.value = response_status;
+    adv.value = response_data;
+    console.log('ADV', response_data);
+  } finally {
+    isAdvLoaded.value = true;
+  }
 };
 
 onBeforeMount(async () => {
@@ -50,7 +77,7 @@ onBeforeMount(async () => {
       const selected = (route.query.server as string) || serversArray[0]._id;
       const server = serversArray.filter((srv) => srv._id === selected);
       if (server.length > 0) {
-        changeServer(server[0]);
+        await changeServer(server[0]);
       }
     }
   } finally {
@@ -64,7 +91,7 @@ onUnmounted(() => {
   clearInterval(updateInterval);
 });
 
-const changeServer = (server: Server) => {
+const changeServer = async (server: Server) => {
   if (selectedServer.value) {
     const currentIndex = servers.value.findIndex((s) => s._id === selectedServer.value?._id);
     const nextIndex = servers.value.findIndex((s) => s._id === server._id);
@@ -72,6 +99,7 @@ const changeServer = (server: Server) => {
   }
   router.push({ query: { server: server._id } });
   selectedServer.value = server;
+  await getAdvancements();
 };
 
 const getServerData = computed(() => {
@@ -113,6 +141,17 @@ const getServerData = computed(() => {
                     <h5>{{ t('name') }}: {{ player.username }}</h5>
                     <h5>{{ t('role') }}: {{ player.role }}</h5>
                     <h5>{{ t('last_join') }}: {{ player.lastServer?.name || '¯\\_(ツ)_/¯' }}</h5>
+                    <div class="info__user__personaladvancements">
+                      <Advancements
+                        v-if="isAdvLoaded && isServersLoaded"
+                        class="info__user__personaladvancements"
+                        :advancements="adv"
+                        :servers="servers"
+                        :showServerName="false" />
+                      <div v-if="isAdvLoaded && adv.length === 0">
+                        <label>{{ t('advancements_empty') }}</label>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

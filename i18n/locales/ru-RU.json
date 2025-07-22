@@ -218,5 +218,6 @@
   "minecraft_story/smelt_iron": "Железо в деле",
   "minecraft_story/upgrade_tools": "Улучшение",
   "WITHER": "Иссушителя",
-  "ENDER_DRAGON": "Эндер дракона"
+  "ENDER_DRAGON": "Эндер дракона",
+  "advancements_empty": "Пусто..."
 }

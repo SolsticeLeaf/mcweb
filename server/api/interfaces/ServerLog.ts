@@ -1,3 +1,4 @@
+import { Player } from './Player';
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ServersLog extends Document {
@@ -37,6 +38,33 @@ export async function addServerLog(serverId: string, type: string, player: strin
   }
 }
 
-export async function getLogs(amount: number): Promise<ServersLog[]> {
-  return ServersLogModel.find().sort({ $natural: -1 }).limit(amount);
+// export async function getLogs(amount: number): Promise<ServersLog[]> {
+//   return ServersLogModel.find().sort({ $natural: -1 }).limit(amount);
+// }
+
+export async function getLogs(amount: number, serverId: string, player: string): Promise<ServersLog[]> {
+  if (serverId === '') {
+    return await ServersLogModel.find({
+      'data.advancement': { $not: /recipe/ },
+    })
+      .sort({ $natural: -1 })
+      .limit(amount);
+  } else {
+    if (player === '') {
+      return await ServersLogModel.find({
+        serverId: serverId,
+        'data.advancement': { $not: /recipe/ },
+      })
+        .sort({ $natural: -1 })
+        .limit(amount);
+    } else {
+      return await ServersLogModel.find({
+        serverId: serverId,
+        player: player,
+        'data.advancement': { $not: /recipe/ },
+      })
+        .sort({ $natural: -1 })
+        .limit(amount);
+    }
+  }
 }

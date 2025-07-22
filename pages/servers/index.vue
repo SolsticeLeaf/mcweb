@@ -6,6 +6,7 @@ import { type Server } from '~/utilities/server.interface';
 import { getDefaultTextColor } from '~/utilities/colors.utils';
 import Player from '~/components/player/Player.vue';
 import LoadingSpinner from '~/components/utilities/other/LoadingSpinner.vue';
+import Advancements from '~/components/main/Advancements.vue';
 import { computed } from 'vue';
 const { t, locale } = useI18n();
 const route = useRoute();
@@ -16,8 +17,13 @@ const servers = ref<Server[]>([]);
 const selectedServer = ref<Server>();
 const isServersLoaded = ref(false);
 
+const advStatus = ref('');
+const adv = ref<any[]>([]);
+const isAdvLoaded = ref(false);
+
 const serverJavaInfo = ref<any>({});
 const serverBedrockInfo = ref<any>({});
+const serverOnline = ref<any[]>([]);
 const isServerInfoLoaded = ref(false);
 
 const previousServerIndex = ref<number | null>(null);
@@ -26,7 +32,7 @@ const transitionName = computed(() => (direction.value === 'left' ? 'slide-left-
 
 let serverRefreshInterval: NodeJS.Timeout | null = null;
 
-const hasPlayers = computed(() => serverJavaInfo.value.players && serverJavaInfo.value.players.list && serverJavaInfo.value.players.list.length > 0);
+const hasPlayers = computed(() => serverOnline.value.length > 0);
 
 onBeforeMount(async () => {
   try {
@@ -81,9 +87,31 @@ const getServerinfo = async (ip: string | undefined): Promise<void> => {
       });
       serverJavaInfo.value = response.java;
       serverBedrockInfo.value = response.bedrock;
+      serverOnline.value = response.online;
     } finally {
       isServerInfoLoaded.value = true;
     }
+    await getAdvancements();
+  }
+};
+
+const getAdvancements = async (): Promise<void> => {
+  try {
+    const { status: response_status, data: response_data } = await $fetch('/api/system/getServerLogs', {
+      default: () => [],
+      cache: 'no-cache',
+      server: false,
+      method: 'POST',
+      body: {
+        amount: 15,
+        serverId: selectedServer.value?._id || '',
+        player: '',
+      },
+    });
+    advStatus.value = response_status;
+    adv.value = response_data;
+  } finally {
+    isAdvLoaded.value = true;
   }
 };
 
@@ -99,6 +127,7 @@ const changeServer = async (server: Server) => {
   router.push({ query: { server: server._id } });
   selectedServer.value = server;
   await getServerinfo(selectedServer.value?.ip);
+  await getAdvancements();
   resetServerRefreshInterval();
 };
 
@@ -129,7 +158,7 @@ const getJavaVersion = (version: string) => {
       <div class="body" v-if="isServersLoaded">
         <Suspense>
           <KeepAlive>
-            <ServerSelector v-if="servers.length > 1" v-model="selectedServer" :servers="servers" :changed="changeServer" />
+            <ServerSelector class="server-selector" v-if="servers.length > 1" v-model="selectedServer" :servers="servers" :changed="changeServer" />
           </KeepAlive>
         </Suspense>
         <Suspense>
@@ -166,7 +195,7 @@ const getJavaVersion = (version: string) => {
                         </div>
                         <div class="players-block">
                           <span class="players-label">{{ t('server_online') }}</span>
-                          <span class="players-value blur__glass">{{ serverJavaInfo.players?.online }}/{{ serverJavaInfo.players?.max }}</span>
+                          <span class="players-value blur__glass">{{ serverOnline.length }}/{{ serverJavaInfo.players?.max }}</span>
                         </div>
                         <div class="version-block">
                           <span class="version-label">{{ t('server_java') }}</span>
@@ -196,19 +225,34 @@ const getJavaVersion = (version: string) => {
                         color="transparent"
                         @click="openServerShop(selectedServer)" />
                     </div>
-                    <h5>{{ t('players_online') }}</h5>
-                    <Transition name="fade-slide-block" mode="out-in">
-                      <div class="players-body">
-                        <TransitionGroup v-if="hasPlayers" name="fade-slide-player" tag="div" class="players-list">
-                          <div v-for="player in serverJavaInfo.players?.list" :key="player.uuid">
-                            <Player :playerName="player.name_clean" />
-                          </div>
-                        </TransitionGroup>
-                        <div class="players-list-empty" v-if="!hasPlayers">
-                          <label>{{ t('nobody_here') }}</label>
+                    <div class="bottom">
+                      <div class="bottom__advancements">
+                        <Advancements
+                          v-if="isAdvLoaded && isServersLoaded"
+                          class="advancements"
+                          :advancements="adv"
+                          :servers="servers"
+                          :showServerName="false" />
+                        <div v-if="isAdvLoaded && adv.length === 0">
+                          <label>{{ t('advancements_empty') }}</label>
                         </div>
                       </div>
-                    </Transition>
+                      <div class="bottom__players">
+                        <h5>{{ t('players_online') }}</h5>
+                        <Transition name="fade-slide-block" mode="out-in">
+                          <div class="players-body">
+                            <TransitionGroup v-if="hasPlayers" name="fade-slide-player" tag="div" class="players-list">
+                              <div v-for="player in serverOnline" :key="player">
+                                <Player :playerName="player" />
+                              </div>
+                            </TransitionGroup>
+                            <div v-if="!hasPlayers">
+                              <label>{{ t('nobody_here') }}</label>
+                            </div>
+                          </div>
+                        </Transition>
+                      </div>
+                    </div>
                   </div>
                   <div v-else class="offline-block blur__glass">{{ t('server_offline') }}</div>
                 </Transition>
@@ -235,7 +279,6 @@ const getJavaVersion = (version: string) => {
   flex-direction: column;
   width: 100vw;
   height: 100vh;
-  align-items: center;
   align-content: center;
   gap: 1rem;
 
@@ -250,6 +293,12 @@ const getJavaVersion = (version: string) => {
     align-items: center;
     align-content: center;
   }
+}
+
+.server-selector {
+  display: flex;
+  width: 100%;
+  align-items: center;
 }
 
 .info-wrapper {
@@ -293,21 +342,43 @@ const getJavaVersion = (version: string) => {
   }
 }
 
+.bottom {
+  display: flex;
+  flex-direction: row;
+  padding: 0 1rem;
+  width: 60%;
+  gap: 1rem;
+
+  &__advancements {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 50%;
+  }
+
+  &__players {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 50%;
+  }
+}
+
 .players-body {
   display: flex;
   width: 100%;
-  justify-content: center;
+  justify-content: end;
 }
 
 .players-list {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  max-width: 50%;
+  max-width: 100%;
   height: fit-content;
   gap: 0.5rem;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-end;
+  justify-content: end;
 }
 
 .info-description {
@@ -415,15 +486,18 @@ const getJavaVersion = (version: string) => {
   cursor: default;
   user-select: none;
 }
+
 .tag-pill:hover {
   transform: scale(1.04);
   filter: brightness(1.08);
 }
+
 .tag-icon {
   font-size: 1.2em;
   margin-right: 0.4em;
   vertical-align: middle;
 }
+
 .tag-label {
   vertical-align: middle;
 }

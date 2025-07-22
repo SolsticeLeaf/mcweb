@@ -1,10 +1,16 @@
 import { connectDB } from '~/server/api/database/MongoDB';
-import { getServerByToken } from '../interfaces/Server';
-import { addServerLog } from '../interfaces/ServerLog';
+import { getServerByToken, setOnline } from '../interfaces/Server';
+
+export interface Data {
+  username: string;
+  health: number;
+  food: number;
+  inventory: Array<object>;
+}
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const { type, player, data } = body;
+  const { players } = body;
   const token = getRequestHeader(event, 'authorization');
   try {
     await connectDB();
@@ -13,15 +19,11 @@ export default defineEventHandler(async (event) => {
       setResponseStatus(event, 500);
       return { status: 'INVALID_TOKEN' };
     }
-    if (type === 'advancement' && String(data.advancement).includes('recipes/')) {
-      setResponseStatus(event, 200);
-      return { status: 'OK' };
-    }
-    await addServerLog(server.id, type, player, data);
+    await setOnline(server._id, players);
     setResponseStatus(event, 200);
     return { status: 'OK' };
   } catch (error) {
-    console.error(`🖥️❌ Error on adding server logs`, error);
+    console.error(`🖥️❌ Error on setting online players:`, error);
     setResponseStatus(event, 500);
     return { status: 'ERROR' };
   }

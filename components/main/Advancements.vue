@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { type Server } from '~/utilities/server.interface';
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 
 const props = defineProps<{
   advancements: any[];
   servers: Server[];
+  showServerName: boolean;
 }>();
 
 function getServer(serverId: string): Server {
@@ -34,7 +35,7 @@ function getAdvancementClass(adv: string): string {
     <h3>{{ t('last_advancements') }}</h3>
     <div v-for="adv in advancements">
       <div class="log" v-if="!adv?.data?.advancement?.includes('recipes')">
-        <div class="serverName">
+        <div class="serverName" v-if="showServerName">
           [
           <p :style="`color: ${getServer(adv.serverId).serverColor}`">{{ getServer(adv.serverId).name }}</p>
           ]
@@ -62,6 +63,7 @@ function getAdvancementClass(adv: string): string {
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: fit-content;
 }
 
 .serverName {
@@ -161,18 +163,5 @@ function getAdvancementClass(adv: string): string {
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
-  animation: slideIn 0.5s ease-out forwards;
-  transform: translateX(-100%);
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
 }
 </style>
