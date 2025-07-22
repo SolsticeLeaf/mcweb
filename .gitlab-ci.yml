@@ -58,6 +58,8 @@ build:
       - .output/
       - config/
       - i18n/
+      - docker-compose.yml
+      - Dockerfile
     expire_in: 1 hour
 
 deploy-res-6:
