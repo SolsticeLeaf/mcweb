@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { type Server } from '~/utilities/server.interface';
 import ServerList from '~/components/server/ServerList.vue';
-
-const { t, locale } = useI18n();
+import Advancements from '~/components/main/Advancements.vue';
 
 const servers = ref<Server[]>([]);
 const isServersLoaded = ref(false);
@@ -10,6 +9,10 @@ const isServersLoaded = ref(false);
 const status = ref('');
 const player = ref();
 const isLoaded = ref(false);
+
+const advStatus = ref('');
+const adv = ref();
+const isAdvLoaded = ref(false);
 
 const fetchServers = async () => {
   try {
@@ -39,6 +42,21 @@ const fetchUserAndPlayer = async () => {
   } finally {
     isLoaded.value = true;
   }
+  try {
+    const { status: response_status, data: response_data } = await $fetch('/api/system/getServerLogs', {
+      default: () => [],
+      cache: 'no-cache',
+      server: false,
+      method: 'POST',
+      body: {
+        amount: 30,
+      },
+    });
+    advStatus.value = response_status;
+    adv.value = response_data;
+  } finally {
+    isAdvLoaded.value = true;
+  }
 };
 
 onBeforeMount(async () => {
@@ -63,10 +81,10 @@ onMounted(() => {
       <div class="body">
         <div class="banners">Тут будут баннеры</div>
         <div class="body-row">
-          <div class="news">А тут будут новости</div>
-          <div class="sidebar">
-            <ServerList :servers="servers" :is-servers-loaded="isServersLoaded" :player="player" />
+          <div class="advancements">
+            <Advancements v-if="isAdvLoaded && isServersLoaded" class="advancements" :advancements="adv" :servers="servers" />
           </div>
+          <ServerList class="sidebar" :servers="servers" :is-servers-loaded="isServersLoaded" :player="player" />
         </div>
       </div>
     </KeepAlive>
@@ -84,7 +102,6 @@ onMounted(() => {
   top: 6rem;
   position: absolute;
   max-height: fit-content;
-  justify-content: center;
   align-items: center;
   gap: 1rem;
 }
@@ -103,12 +120,12 @@ onMounted(() => {
   border: 1px red solid;
   height: 30%;
   width: 100%;
+  min-height: 30%;
 }
 
-.news {
+.advancements {
   display: flex;
   flex-direction: column;
-  border: 1px green solid;
   width: 100%;
   height: fit-content;
 }

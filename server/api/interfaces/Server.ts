@@ -7,6 +7,7 @@ export interface Server extends Document {
   icon: string;
   tags: object;
   description: LocalizationString;
+  serverColor: string;
   map: string;
   ip: string;
 }
@@ -22,6 +23,7 @@ const schema: Schema = new Schema(
     name: { type: String, required: true },
     version: { type: String, required: true },
     icon: { type: String, required: true },
+    serverColor: { type: String, required: true },
     tags: { type: Object, required: true },
     description: { type: Object, required: true },
     token: { type: String, required: true },

@@ -2,13 +2,6 @@ import { connectDB } from '~/server/api/database/MongoDB';
 import { getServerByToken } from '../interfaces/Server';
 import { addServerLog } from '../interfaces/ServerLog';
 
-export interface Data {
-  username: string;
-  health: number;
-  food: number;
-  inventory: Array<object>;
-}
-
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const { type, player, data } = body;
@@ -24,7 +17,7 @@ export default defineEventHandler(async (event) => {
     setResponseStatus(event, 200);
     return { status: 'OK' };
   } catch (error) {
-    console.error(`🖥️❌ Error on setting players data:`, error);
+    console.error(`🖥️❌ Error on adding server logs`, error);
     setResponseStatus(event, 500);
     return { status: 'ERROR' };
   }

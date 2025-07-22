@@ -20,7 +20,7 @@ let updateInterval: ReturnType<typeof setInterval>;
 
 const showUserInfo = ref(false);
 
-const fetchPlayer = async () => {
+const fetchData = async () => {
   if (props.authStatus === 'OK') {
     try {
       const { status: response_status, player: response_data } = await $fetch('/api/auth/getPlayer', {
@@ -46,8 +46,8 @@ watch(isLoaded, (val) => {
 });
 
 onMounted(() => {
-  fetchPlayer();
-  updateInterval = setInterval(fetchPlayer, 2 * 60 * 1000);
+  fetchData();
+  updateInterval = setInterval(fetchData, 2 * 60 * 1000);
 });
 
 onUnmounted(() => {
