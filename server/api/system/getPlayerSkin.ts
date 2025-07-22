@@ -107,8 +107,11 @@ export default defineEventHandler(async (event) => {
     try {
       imageBuffer = await fetchWithRetry(url);
     } catch (e) {
-      console.error('❌ Failed to fetch skin from render API:', e);
-      return { error: 'Failed to fetch skin from render API' };
+      const message = `❌ Failed to fetch skin from render API: ${e}`;
+      if (!message.includes('HTTP 500')) {
+        console.error(message);
+      }
+      return { error: message };
     }
     try {
       await s3.send(
