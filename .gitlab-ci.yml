@@ -63,8 +63,6 @@ build:
 deploy-res-6:
   stage: deploy
   image: docker:latest
-  services:
-    - docker:dind
   tags:
     - 'res-6'
   dependencies:
