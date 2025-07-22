@@ -58,8 +58,6 @@ build:
       - .output/
       - config/
       - i18n/
-      - docker-compose.yml
-      - Dockerfile
     expire_in: 1 hour
 
 deploy-res-6:
@@ -70,7 +68,7 @@ deploy-res-6:
   dependencies:
     - build
   before_script:
-    - echo "Deploying to helios..."
+    - echo "Deploying..."
     - export PORT=4440
     - export DATABASE_NAME="$DATABASE_NAME"
     - export DATABASE_URL="$DATABASE_URL"
@@ -81,5 +79,6 @@ deploy-res-6:
     - export S3_ACCESS_KEY="$S3_ACCESS_KEY"
     - export S3_SECRET_KEY="$S3_SECRET_KEY"
     - export S3_BUCKET="$S3_BUCKET"
+    - export DOCKER_BUILDKIT=0
   script:
     - docker compose up --detach --build
