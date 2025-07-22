@@ -118,9 +118,9 @@ onMounted(() => {
   display: flex;
   flex-direction: row;
   border: 1px red solid;
-  height: 30%;
+  height: 35%;
   width: 100%;
-  min-height: 30%;
+  min-height: 35%;
 }
 
 .advancements {

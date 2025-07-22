@@ -4,6 +4,7 @@ export default {
   nav_home: 'pixelarticons:home',
   nav_map: 'pixelarticons:map',
   nav_shop: 'pixelarticons:store',
+  nav_news: 'pixel:newspaper',
   nav_servers: 'pixelarticons:server',
   nav_faq: 'pixel:question',
   nav_theme_system: 'pixelarticons:monitor',

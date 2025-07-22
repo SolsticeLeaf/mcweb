@@ -112,6 +112,14 @@ const links = computed((): any => {
       action: `/${currentLocale}/shop`,
     },
     {
+      label: 'nav_news',
+      icon: iconsConfig.nav_news,
+      postfix: '',
+      vif: true,
+      type: 'path',
+      action: `/${currentLocale}/news`,
+    },
+    {
       label: 'nav_faq',
       icon: iconsConfig.nav_faq,
       postfix: '',
