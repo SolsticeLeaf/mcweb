@@ -88,6 +88,7 @@ const getServerinfo = async (ip: string | undefined): Promise<void> => {
       serverJavaInfo.value = response.java;
       serverBedrockInfo.value = response.bedrock;
       serverOnline.value = response.online;
+      console.log(response.online);
     } finally {
       isServerInfoLoaded.value = true;
     }
@@ -307,6 +308,7 @@ const getJavaVersion = (version: string) => {
   width: 100%;
   gap: 1rem;
   align-items: center;
+  padding-bottom: 2rem;
 
   &__row {
     display: flex;
