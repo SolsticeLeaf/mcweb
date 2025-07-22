@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watchEffect, nextTick, onMounted } from 'vue';
+import initialConfig from '~/config/initial.config';
 import LoadingSpinner from '~/components/utilities/other/LoadingSpinner.vue';
 
 const props = defineProps<{
@@ -12,6 +13,8 @@ const skinUrl = ref<string | null>(null);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
 const imgVisible = ref(false);
+
+const deaultSkinUrl = `${initialConfig.s3Link}/skins/${props.render}/Steve/${props.type}.png`;
 
 watchEffect(async () => {
   isLoading.value = true;
@@ -37,12 +40,13 @@ watchEffect(async () => {
       imgVisible.value = true;
     } else {
       error.value = res.error || 'undefined';
-      skinUrl.value = null;
+      skinUrl.value = deaultSkinUrl;
     }
   } catch (e) {
     error.value = 'Error on skin load';
-    skinUrl.value = null;
+    skinUrl.value = deaultSkinUrl;
   } finally {
+    imgVisible.value = true;
     isLoading.value = false;
   }
 });
@@ -58,7 +62,13 @@ watchEffect(async () => {
         <NuxtImg :src="skinUrl" :alt="props.player" class="skin-img" :class="{ 'skin-img--visible': imgVisible }" loading="lazy" decoding="async" />
       </template>
       <template v-else>
-        <div class="skin-error">🔴</div>
+        <NuxtImg
+          :src="`${initialConfig.s3Link}/skins/${render}/Steve/${type}.png`"
+          alt="Steve"
+          class="skin-img"
+          :class="{ 'skin-img--visible': imgVisible }"
+          loading="lazy"
+          decoding="async" />
       </template>
     </div>
   </KeepAlive>
@@ -89,10 +99,5 @@ watchEffect(async () => {
 .skin-spinner {
   width: 1rem;
   height: 1rem;
-}
-.skin-error {
-  color: #c00;
-  font-size: 0.9rem;
-  padding: 0.5rem;
 }
 </style>

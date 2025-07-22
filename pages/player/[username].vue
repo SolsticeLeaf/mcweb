@@ -4,6 +4,7 @@ import StatusBar from '~/components/player/StatusBar.vue';
 import Inventory from '~/components/player/Inventory.vue';
 import { type Server } from '~/utilities/server.interface';
 import initialConfig from '~/config/initial.config';
+import emptyInventory from '~/config/empty.inventory';
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
@@ -119,9 +120,8 @@ const getServerData = computed(() => {
                 <div class="data blur__glass" :key="selectedServer?._id">
                   <Inventory
                     class="data__inventory"
-                    v-if="getServerData.inventory"
                     :server-version="selectedServer?.version || initialConfig.lastVersion"
-                    :inventory="getServerData.inventory" />
+                    :inventory="getServerData?.inventory || emptyInventory.inventory" />
                   <div class="data__bar">
                     <StatusBar :value="getServerData.health || 20" type="health" :inverted="false" />
                     <StatusBar :value="getServerData.food || 20" type="hunger" :inverted="true" />
