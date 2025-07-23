@@ -20,7 +20,7 @@ const getServerIndex = (serverId: string) => {
   return servers.value.findIndex((srv) => srv._id === serverId);
 };
 
-onBeforeMount(async () => {
+const checkAuthStatus = async () => {
   try {
     const { status: response_status, user: response_user } = await $fetch('/api/auth/checkAuthStatus', {
       default: () => [],
@@ -33,6 +33,9 @@ onBeforeMount(async () => {
   } finally {
     isLoaded.value = true;
   }
+};
+
+const getServers = async () => {
   try {
     const { servers: response_servers } = await $fetch('/api/server/getServers', {
       default: () => [],
@@ -52,6 +55,10 @@ onBeforeMount(async () => {
   } finally {
     isServersLoaded.value = true;
   }
+};
+
+onBeforeMount(async () => {
+  await Promise.all([checkAuthStatus(), getServers()]);
 });
 
 const changeServer = (server: Server) => {

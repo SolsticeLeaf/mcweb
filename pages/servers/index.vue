@@ -35,26 +35,7 @@ let serverRefreshInterval: NodeJS.Timeout | null = null;
 const hasPlayers = computed(() => serverOnline.value.length > 0);
 
 onBeforeMount(async () => {
-  try {
-    const { servers: response_servers } = await $fetch('/api/server/getServers', {
-      default: () => [],
-      cache: 'no-cache',
-      server: false,
-      method: 'GET',
-    });
-    servers.value = response_servers as Server[];
-    const serversArray = servers.value;
-    if (serversArray.length > 0) {
-      const selected = (route.query.server as string) || serversArray[0]._id;
-      const server = serversArray.filter((srv) => srv._id === selected);
-      if (server.length > 0) {
-        changeServer(server[0]);
-      }
-    }
-  } finally {
-    isServersLoaded.value = true;
-    await getServerinfo(selectedServer.value?.ip);
-  }
+  await getServers();
 });
 
 const resetServerRefreshInterval = () => {
@@ -75,6 +56,28 @@ onUnmounted(() => {
     clearInterval(serverRefreshInterval);
   }
 });
+
+const getServers = async () => {
+  try {
+    const { servers: response_servers } = await $fetch('/api/server/getServers', {
+      default: () => [],
+      cache: 'no-cache',
+      server: false,
+      method: 'GET',
+    });
+    servers.value = response_servers as Server[];
+    const serversArray = servers.value;
+    if (serversArray.length > 0) {
+      const selected = (route.query.server as string) || serversArray[0]._id;
+      const server = serversArray.filter((srv) => srv._id === selected);
+      if (server.length > 0) {
+        changeServer(server[0]);
+      }
+    }
+  } finally {
+    isServersLoaded.value = true;
+  }
+};
 
 const getServerinfo = async (ip: string | undefined): Promise<void> => {
   if (ip !== undefined) {
@@ -249,7 +252,7 @@ const getJavaVersion = (version: string) => {
                           <div class="players-body">
                             <TransitionGroup v-if="hasPlayers" name="fade-slide-player" tag="div" class="players-list">
                               <div v-for="player in serverOnline" :key="player">
-                                <Player :playerName="player" />
+                                <Player :playerName="player" :online="false" />
                               </div>
                             </TransitionGroup>
                             <div v-if="!hasPlayers">
@@ -318,7 +321,7 @@ const getJavaVersion = (version: string) => {
   &__row {
     display: flex;
     flex-direction: row;
-    width: 100%;
+    width: 60%;
     align-items: stretch;
     gap: 1rem;
     justify-content: center;

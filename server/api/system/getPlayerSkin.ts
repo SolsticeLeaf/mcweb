@@ -1,6 +1,5 @@
 import initialConfig from '~/config/initial.config';
-import { S3Client, HeadObjectCommand, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { S3Client, HeadObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import fetch from 'node-fetch';
 
 const skinRenderApi = initialConfig.skinRenderApi;
@@ -11,7 +10,7 @@ const secretKey = process.env.S3_SECRET_KEY || 'null';
 const bucket = process.env.S3_BUCKET || 'null';
 
 const MAX_RETRIES = 3;
-const RETRY_DELAY = 1000;
+const RETRY_DELAY = 100;
 const CACHE_TTL = 12 * 60 * 60 * 1000;
 
 function sleep(ms: number) {
@@ -76,7 +75,6 @@ export default defineEventHandler(async (event) => {
   } catch (e) {
     fileExists = false;
     needUpdate = true;
-    console.error('❌ S3 HeadObject error:', e);
   }
   const returnUrl = `${initialConfig.s3Link}/${getS3Key(player, render, type)}`;
   if (fileExists && !needUpdate) {
@@ -108,9 +106,6 @@ export default defineEventHandler(async (event) => {
       imageBuffer = await fetchWithRetry(url);
     } catch (e) {
       const message = `❌ Failed to fetch skin from render API: ${e}`;
-      if (!message.includes('HTTP 500')) {
-        console.error(message);
-      }
       return { error: message };
     }
     try {
@@ -124,7 +119,6 @@ export default defineEventHandler(async (event) => {
         })
       );
     } catch (e) {
-      console.error('❌ S3 PutObject error:', e);
       return { error: 'Failed to upload skin to S3' };
     }
   }

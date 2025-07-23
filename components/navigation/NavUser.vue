@@ -95,12 +95,18 @@ const getAlternateLocale = computed(() => {
           <div class="userbox__userinfo__money">
             <Icon :name="iconsConfig.gold" :style="`color: ${getDefaultTextColor(theme.value)}`" />
             <h6>{{ player.money }}</h6>
-            <ActionButton text="" :text-bold="true" :text-color="getDefaultTextColor(theme.value)" :icon="iconsConfig.plus" :disableBackground="true" />
+            <ActionButton
+              class="userbox__userinfo__money__button"
+              text=""
+              :text-bold="true"
+              :text-color="getDefaultTextColor(theme.value)"
+              :icon="iconsConfig.plus"
+              :disableBackground="true" />
           </div>
           <div class="userbox__userinfo__user">
             <NuxtLink class="userbox__userinfo__user__info transparent__glass" :to="`/${locale}/player/${player.username}`">
               <h6>{{ player.username }}</h6>
-              <PlayerSkin class="userbox__userinfo__user__img" :player="player.username" render="isometric" type="bust" />
+              <PlayerSkin class="userbox__userinfo__user__info__img" :player="player.username" render="isometric" type="bust" />
             </NuxtLink>
             <div class="user__content">
               <div class="user__content__box">
@@ -188,23 +194,21 @@ const getAlternateLocale = computed(() => {
 .userbox {
   display: flex;
   flex-direction: column;
-  height: 50%;
+  height: 40%;
   justify-content: center;
 
   &__userinfo {
     display: flex;
     height: 100%;
-    max-height: 100%;
     flex-direction: row;
+    align-items: center;
     gap: 0.5rem;
 
     &__money {
       display: flex;
-      height: 100%;
-      max-height: 100%;
+      height: 65%;
       flex-direction: row;
-      justify-content: center;
-      align-content: center;
+      justify-content: space-between;
       align-items: center;
       gap: 0.5rem;
       filter: none !important;
@@ -213,6 +217,11 @@ const getAlternateLocale = computed(() => {
       padding: 0 0.5rem;
       border: 1px solid rgba(44, 32, 68, 0.2);
       background: -webkit-linear-gradient(0deg, rgba(255, 221, 0, 0.737), rgba(81, 209, 255, 0.761)) !important;
+
+      &__button {
+        padding: 0 !important;
+        overflow: visible;
+      }
     }
 
     .dark &__money {
@@ -222,8 +231,7 @@ const getAlternateLocale = computed(() => {
 
     &__user {
       position: relative;
-      height: 100%;
-      max-height: 100%;
+      height: 65%;
       display: flex;
       flex-direction: row;
       justify-content: center;
@@ -241,15 +249,15 @@ const getAlternateLocale = computed(() => {
         align-content: center;
         align-items: center;
         gap: 0.5rem;
+
+        &__img {
+          width: 2rem;
+          height: 100%;
+        }
       }
 
       .dark &__info {
         color: #ffffff;
-      }
-
-      &__img {
-        width: 2rem;
-        height: auto;
       }
     }
 

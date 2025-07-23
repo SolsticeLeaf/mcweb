@@ -43,6 +43,10 @@ onBeforeMount(async () => {
   const pageFromUrl = parseInt(route.query.page as string) || 1;
   currentPage.value = pageFromUrl;
   selectedSort.value = sortTypes.filter((sort) => sort.type === (route.query.sort as string))[0] || sortTypes[0];
+  await Promise.all([checkAuthStatus(), getServers()]);
+});
+
+const checkAuthStatus = async () => {
   try {
     const { status: response_status } = await $fetch('/api/auth/checkAuthStatus', {
       default: () => [],
@@ -55,6 +59,9 @@ onBeforeMount(async () => {
   } finally {
     isLoaded.value = true;
   }
+};
+
+const getServers = async () => {
   try {
     const { servers: response_servers } = await $fetch('/api/server/getServers', {
       default: () => [],
@@ -80,7 +87,7 @@ onBeforeMount(async () => {
       await updateData();
     }
   }
-});
+};
 
 const updateData = async () => {
   try {

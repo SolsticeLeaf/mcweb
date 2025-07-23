@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { type Server } from '~/utilities/server.interface';
+import PlayerScroll from '~/components/player/PlayerScroll.vue';
 import ServerList from '~/components/server/ServerList.vue';
 import Advancements from '~/components/main/Advancements.vue';
 
@@ -14,6 +15,9 @@ const advStatus = ref('');
 const adv = ref();
 const isAdvLoaded = ref(false);
 
+const players = ref<any[]>([]);
+const isPlayersLoaded = ref(false);
+
 const fetchServers = async () => {
   try {
     const { servers: response_servers } = await $fetch('/api/server/getServers', {
@@ -25,6 +29,23 @@ const fetchServers = async () => {
     servers.value = response_servers as Server[];
   } finally {
     isServersLoaded.value = true;
+  }
+};
+
+const fetchPlayers = async () => {
+  try {
+    const { players: response_players } = await $fetch('/api/system/getPlayers', {
+      default: () => [],
+      cache: 'no-cache',
+      server: false,
+      method: 'POST',
+      body: {
+        amount: 30,
+      },
+    });
+    players.value = response_players;
+  } finally {
+    isPlayersLoaded.value = true;
   }
 };
 
@@ -42,6 +63,9 @@ const fetchUserAndPlayer = async () => {
   } finally {
     isLoaded.value = true;
   }
+};
+
+const fetchServerLogs = async () => {
   try {
     const { status: response_status, data: response_data } = await $fetch('/api/system/getServerLogs', {
       default: () => [],
@@ -62,15 +86,14 @@ const fetchUserAndPlayer = async () => {
 };
 
 onBeforeMount(async () => {
-  await Promise.all([fetchServers(), fetchUserAndPlayer()]);
+  await Promise.all([fetchServers(), fetchUserAndPlayer(), fetchServerLogs()]);
 });
 
-onMounted(() => {
-  const interval = setInterval(() => {
-    fetchServers();
-    fetchUserAndPlayer();
+onMounted(async () => {
+  await fetchPlayers();
+  const interval = setInterval(async () => {
+    await Promise.all([fetchServers(), fetchUserAndPlayer(), fetchServerLogs()]);
   }, 2 * 60 * 1000);
-
   onUnmounted(() => {
     clearInterval(interval);
   });
@@ -81,7 +104,9 @@ onMounted(() => {
   <ClientOnly>
     <KeepAlive>
       <div class="body">
-        <div class="banners">Тут будут баннеры</div>
+        <div class="players">
+          <PlayerScroll v-if="isPlayersLoaded && players.length > 0" :players="players" direction="reverse" :duration="100" />
+        </div>
         <div class="body-row">
           <div class="advancements">
             <Advancements v-if="isAdvLoaded && isServersLoaded" class="advancements" :advancements="adv" :servers="servers" :showServerName="true" />
@@ -106,6 +131,7 @@ onMounted(() => {
   max-height: fit-content;
   align-items: center;
   gap: 1rem;
+  padding-top: 1rem;
   padding-bottom: 2rem;
 }
 
@@ -121,13 +147,12 @@ onMounted(() => {
   }
 }
 
-.banners {
+.players {
   display: flex;
   flex-direction: row;
-  border: 1px red solid;
-  height: 35%;
+  height: 5rem;
+  min-height: 5rem;
   width: 100%;
-  min-height: 35%;
 }
 
 .advancements {

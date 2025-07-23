@@ -38,32 +38,11 @@ const updatePlayerData = async () => {
     player.value = response_data;
   } finally {
     isLoaded.value = true;
-  }
-  await getAdvancements();
-};
-
-const getAdvancements = async (): Promise<void> => {
-  try {
-    const { status: response_status, data: response_data } = await $fetch('/api/system/getServerLogs', {
-      default: () => [],
-      cache: 'no-cache',
-      server: false,
-      method: 'POST',
-      body: {
-        amount: 7,
-        serverId: selectedServer.value?._id || '',
-        player: player.value.username,
-      },
-    });
-    advStatus.value = response_status;
-    adv.value = response_data;
-    console.log('ADV', response_data);
-  } finally {
-    isAdvLoaded.value = true;
+    await getAdvancements();
   }
 };
 
-onBeforeMount(async () => {
+const getServers = async () => {
   try {
     const { servers: response_servers } = await $fetch('/api/server/getServers', {
       default: () => [],
@@ -82,9 +61,33 @@ onBeforeMount(async () => {
     }
   } finally {
     isServersLoaded.value = true;
-    await updatePlayerData();
-    updateInterval = setInterval(updatePlayerData, 2 * 60 * 1000);
   }
+};
+
+const getAdvancements = async (): Promise<void> => {
+  try {
+    const { status: response_status, data: response_data } = await $fetch('/api/system/getServerLogs', {
+      default: () => [],
+      cache: 'no-cache',
+      server: false,
+      method: 'POST',
+      body: {
+        amount: 4,
+        serverId: selectedServer.value?._id || '',
+        player: player.value.username,
+      },
+    });
+    advStatus.value = response_status;
+    adv.value = response_data;
+    console.log('ADV', response_data);
+  } finally {
+    isAdvLoaded.value = true;
+  }
+};
+
+onBeforeMount(async () => {
+  await Promise.all([getServers(), updatePlayerData()]);
+  updateInterval = setInterval(updatePlayerData, 2 * 60 * 1000);
 });
 
 onUnmounted(() => {

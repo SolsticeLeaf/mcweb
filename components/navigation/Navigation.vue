@@ -50,12 +50,18 @@ function exit() {
 }
 
 onBeforeMount(async () => {
-  window.addEventListener('cart-changed', () => {
-    cart.value = getCart();
-  });
-  window.addEventListener('cart-cleared', () => {
-    cart.value = getCart();
-  });
+  await Promise.all([
+    window.addEventListener('cart-changed', () => {
+      cart.value = getCart();
+    }),
+    window.addEventListener('cart-cleared', () => {
+      cart.value = getCart();
+    }),
+    checkAuthStatus(),
+  ]);
+});
+
+const checkAuthStatus = async () => {
   try {
     const { status: response_status, user: response_data } = await $fetch('/api/auth/checkAuthStatus', {
       default: () => [],
@@ -69,7 +75,7 @@ onBeforeMount(async () => {
   } finally {
     isLoaded.value = true;
   }
-});
+};
 
 const links = computed((): any => {
   const currentLocale = locale.value;

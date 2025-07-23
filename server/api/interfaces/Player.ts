@@ -1,3 +1,4 @@
+import { Player } from './../../../.nuxt/components.d';
 import initialConfig from '~/config/initial.config';
 import mongoose, { Schema, Document } from 'mongoose';
 
@@ -123,7 +124,6 @@ async function setPlayerLastServer(username: string, lastServer: object): Promis
 }
 
 function getPlayerData(player: Player): PlayerData {
-  const username = player.username;
   return {
     _id: player._id,
     username: player.username,
@@ -132,4 +132,13 @@ function getPlayerData(player: Player): PlayerData {
     money: player.money,
     serversData: player.serversData,
   };
+}
+
+export async function getPlayers(amount: number): Promise<Player[]> {
+  try {
+    return await PlayerModel.aggregate([{ $sample: { size: amount } }]);
+  } catch (error) {
+    console.error('❌ Error in getPlayers:', error);
+    return [];
+  }
 }
