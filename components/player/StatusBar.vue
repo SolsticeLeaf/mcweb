@@ -45,14 +45,14 @@ const icons = computed(() => getIconCount(props.value));
 
 <template>
   <div class="status-bar" v-if="inverted">
-    <NuxtImg v-for="i in icons.empty" :key="`empty-${i}`" :src="images.empty" />
-    <NuxtImg v-if="icons.half" :src="images.half" />
-    <NuxtImg v-for="i in icons.full" :key="`full-${i}`" :src="images.full" />
+    <NuxtImg v-for="i in icons.empty" :key="`empty-${i}`" :placeholder="[50, 50, 10, 5]" :src="images.empty" />
+    <NuxtImg v-if="icons.half" :src="images.half" :placeholder="[50, 50, 10, 5]" />
+    <NuxtImg v-for="i in icons.full" :key="`full-${i}`" :placeholder="[50, 50, 10, 5]" :src="images.full" />
   </div>
   <div class="status-bar" v-else>
-    <img v-for="i in icons.full" :key="`full-${i}`" :src="images.full" />
-    <NuxtImg v-if="icons.half" :src="images.half" />
-    <NuxtImg v-for="i in icons.empty" :key="`empty-${i}`" :src="images.empty" />
+    <NuxtImg v-for="i in icons.full" :key="`full-${i}`" :src="images.full" :placeholder="[50, 50, 10, 5]" />
+    <NuxtImg v-if="icons.half" :src="images.half" :placeholder="[50, 50, 10, 5]" />
+    <NuxtImg v-for="i in icons.empty" :key="`empty-${i}`" :placeholder="[50, 50, 10, 5]" :src="images.empty" />
   </div>
 </template>
 

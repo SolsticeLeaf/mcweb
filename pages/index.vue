@@ -106,6 +106,7 @@ onMounted(() => {
   max-height: fit-content;
   align-items: center;
   gap: 1rem;
+  padding-bottom: 2rem;
 }
 
 .body-row {
@@ -114,6 +115,10 @@ onMounted(() => {
   height: fit-content;
   width: 98%;
   gap: 1rem;
+
+  @media screen and (max-width: $screen-mb) {
+    width: 95%;
+  }
 }
 
 .banners {

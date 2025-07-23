@@ -12,14 +12,11 @@ const props = defineProps<{
 const skinUrl = ref<string | null>(null);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
-const imgVisible = ref(false);
 
 const deaultSkinUrl = `${initialConfig.s3Link}/skins/${props.render}/Steve/${props.type}.png`;
 
 watchEffect(async () => {
-  isLoading.value = true;
   error.value = null;
-  imgVisible.value = false;
   if (!props.player || !props.render || !props.type) {
     skinUrl.value = null;
     isLoading.value = false;
@@ -36,8 +33,6 @@ watchEffect(async () => {
     const res = response as { url?: string; error?: string };
     if (res.url) {
       skinUrl.value = res.url;
-      await nextTick();
-      imgVisible.value = true;
     } else {
       error.value = res.error || 'undefined';
       skinUrl.value = deaultSkinUrl;
@@ -46,7 +41,6 @@ watchEffect(async () => {
     error.value = 'Error on skin load';
     skinUrl.value = deaultSkinUrl;
   } finally {
-    imgVisible.value = true;
     isLoading.value = false;
   }
 });
@@ -59,14 +53,14 @@ watchEffect(async () => {
         <LoadingSpinner class="skin-spinner" />
       </template>
       <template v-else-if="skinUrl">
-        <NuxtImg :src="skinUrl" :alt="props.player" class="skin-img" :class="{ 'skin-img--visible': imgVisible }" loading="lazy" decoding="async" />
+        <NuxtImg :src="skinUrl" :alt="props.player" class="skin-img" :placeholder="[50, 50, 10, 5]" loading="lazy" decoding="async" />
       </template>
       <template v-else>
         <NuxtImg
           :src="`${initialConfig.s3Link}/skins/${render}/Steve/${type}.png`"
           alt="Steve"
           class="skin-img"
-          :class="{ 'skin-img--visible': imgVisible }"
+          :placeholder="[50, 50, 10, 5]"
           loading="lazy"
           decoding="async" />
       </template>
@@ -83,19 +77,14 @@ watchEffect(async () => {
   width: 100%;
   height: 100%;
 }
+
 .skin-img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
   border-radius: 0.5rem;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.skin-img.skin-img--visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+
 .skin-spinner {
   width: 1rem;
   height: 1rem;

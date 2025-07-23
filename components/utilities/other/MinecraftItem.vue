@@ -14,7 +14,7 @@ console.log(itemUrl);
 <template>
   <KeepAlive>
     <div class="item">
-      <NuxtImg :src="itemUrl" :alt="item" class="item-img" loading="lazy" decoding="async" />
+      <NuxtImg :src="itemUrl" :placeholder="[50, 50, 10, 5]" :alt="item" class="item-img" loading="lazy" decoding="async" />
     </div>
   </KeepAlive>
 </template>

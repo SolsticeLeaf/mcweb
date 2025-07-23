@@ -59,11 +59,29 @@ function getAdvancementClass(adv: string): string {
 </template>
 
 <style scoped lang="scss">
+@use '/assets/scss/screens.scss' as *;
+
 .adv-wrapper {
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: fit-content;
+}
+
+.log {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+
+  @media screen and (max-width: $screen-mb) {
+    font-size: 1.2rem !important;
+  }
+
+  p {
+    @media screen and (max-width: $screen-mb) {
+      font-size: 1.2rem !important;
+    }
+  }
 }
 
 .serverName {
@@ -157,11 +175,5 @@ function getAdvancementClass(adv: string): string {
 
 .dark .WITHER {
   color: #ff0040;
-}
-
-.log {
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
 }
 </style>

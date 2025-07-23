@@ -98,7 +98,14 @@ const getJavaVersion = (version: string) => {
           <div v-if="getOnlineServer(server.ip)" class="servers__container">
             <div class="servers__container__row">
               <div class="servers__icon">
-                <NuxtImg v-if="server.icon" :src="server.icon" :alt="server.name" class="servers__icon__img" :custom="true" v-slot="{ imgAttrs, isLoaded }">
+                <NuxtImg
+                  v-if="server.icon"
+                  :src="server.icon"
+                  :placeholder="[50, 50, 10, 5]"
+                  :alt="server.name"
+                  class="servers__icon__img"
+                  :custom="true"
+                  v-slot="{ imgAttrs, isLoaded }">
                   <LoadingSpinner v-if="!isLoaded" class="servers__icon__img" />
                   <img v-else v-bind="imgAttrs" class="servers__icon__img" />
                 </NuxtImg>
@@ -124,7 +131,14 @@ const getJavaVersion = (version: string) => {
             </div>
           </div>
           <div v-else class="servers__container servers__container__offline">
-            <NuxtImg v-if="server.icon" :src="server.icon" :alt="server.name" class="servers__icon__img" :custom="true" v-slot="{ imgAttrs, isLoaded }">
+            <NuxtImg
+              v-if="server.icon"
+              :src="server.icon"
+              :placeholder="[50, 50, 10, 5]"
+              :alt="server.name"
+              class="servers__icon__img"
+              :custom="true"
+              v-slot="{ imgAttrs, isLoaded }">
               <LoadingSpinner v-if="!isLoaded" class="servers__icon__img" />
               <img v-else v-bind="imgAttrs" class="servers__icon__img" />
             </NuxtImg>
@@ -149,6 +163,7 @@ const getJavaVersion = (version: string) => {
 .servers {
   display: flex;
   flex-direction: column;
+  text-align: end;
   gap: 1rem;
 
   .blur__glass {
@@ -201,6 +216,7 @@ const getJavaVersion = (version: string) => {
   &__item {
     padding: 1rem;
     border-radius: 8px;
+    text-align: start;
     transition: all 0.3s ease;
 
     &:hover {

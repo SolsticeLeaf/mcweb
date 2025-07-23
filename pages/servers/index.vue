@@ -88,7 +88,6 @@ const getServerinfo = async (ip: string | undefined): Promise<void> => {
       serverJavaInfo.value = response.java;
       serverBedrockInfo.value = response.bedrock;
       serverOnline.value = response.online;
-      console.log(response.online);
     } finally {
       isServerInfoLoaded.value = true;
     }
@@ -189,7 +188,13 @@ const getJavaVersion = (version: string) => {
                       </div>
                       <div class="info-server blur__glass">
                         <div class="icon-block" v-if="serverJavaInfo.icon">
-                          <NuxtImg :src="selectedServer.icon" alt="Server Icon" class="server-icon" :custom="true" v-slot="{ imgAttrs, isLoaded }">
+                          <NuxtImg
+                            :src="selectedServer.icon"
+                            :placeholder="[50, 50, 10, 5]"
+                            alt="Server Icon"
+                            class="server-icon"
+                            :custom="true"
+                            v-slot="{ imgAttrs, isLoaded }">
                             <LoadingSpinner v-if="!isLoaded" class="server-icon__spinner" />
                             <img v-else v-bind="imgAttrs" class="server-icon" />
                           </NuxtImg>
@@ -350,6 +355,10 @@ const getJavaVersion = (version: string) => {
   padding: 0 1rem;
   width: 60%;
   gap: 1rem;
+
+  @media screen and (max-width: $screen-mb) {
+    width: 90%;
+  }
 
   &__advancements {
     display: flex;

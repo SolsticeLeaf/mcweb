@@ -141,10 +141,10 @@ const getServerData = computed(() => {
                     <h5>{{ t('name') }}: {{ player.username }}</h5>
                     <h5>{{ t('role') }}: {{ player.role }}</h5>
                     <h5>{{ t('last_join') }}: {{ player.lastServer?.name || '¯\\_(ツ)_/¯' }}</h5>
-                    <div class="info__user__personaladvancements">
+                    <div class="info__user__personal__advancements">
                       <Advancements
                         v-if="isAdvLoaded && isServersLoaded"
-                        class="info__user__personaladvancements"
+                        class="info__user__personal__advancements"
                         :advancements="adv"
                         :servers="servers"
                         :showServerName="false" />
@@ -234,11 +234,19 @@ const getServerData = computed(() => {
     padding: 2rem;
     height: 100%;
 
+    @media screen and (max-width: $screen-mb) {
+      justify-content: center;
+    }
+
     &__skin {
       justify-content: center;
       display: flex;
       width: 100%;
       height: 50%;
+
+      @media screen and (max-width: $screen-mb) {
+        height: 40%;
+      }
 
       &__img {
         display: flex;
@@ -254,6 +262,12 @@ const getServerData = computed(() => {
       text-align: start;
       height: 50%;
       gap: 0.5rem;
+
+      &__advancements {
+        @media screen and (max-width: $screen-mb) {
+          display: none;
+        }
+      }
     }
   }
 }
@@ -263,8 +277,13 @@ const getServerData = computed(() => {
   flex-direction: column;
   align-items: center;
   padding: 2rem 1rem;
+  justify-content: center;
   gap: 1rem;
   width: 70%;
+
+  @media screen and (max-width: $screen-mb) {
+    padding: 1rem;
+  }
 
   &__inventory {
     width: 100%;
