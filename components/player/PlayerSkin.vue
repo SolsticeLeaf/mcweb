@@ -12,13 +12,13 @@ const skinUrl = ref<string>('');
 
 onMounted(async () => {
   skinUrl.value = await getDefaultSkinUrl();
-  $fetch('/api/system/getPlayerSkin', {
+  $fetch(initialConfig.skinApi, {
     default: () => [],
     cache: 'no-cache',
     server: true,
     method: 'GET',
     params: {
-      player: props.player,
+      username: props.player,
       render: props.render,
       type: props.type,
     },

@@ -1,8 +1,5 @@
 import { Player } from './../../../.nuxt/components.d';
-import initialConfig from '~/config/initial.config';
 import mongoose, { Schema, Document } from 'mongoose';
-
-const skinRenderApi = initialConfig.skinRenderApi;
 
 export interface ServersData {
   serverId: string;
