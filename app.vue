@@ -31,7 +31,6 @@ const { tm } = useI18n();
             </Suspense>
           </ClientOnly>
         </div>
-        <div class="blank-nav" />
         <Suspense>
           <NuxtPage />
         </Suspense>
@@ -76,20 +75,11 @@ const { tm } = useI18n();
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    position: fixed;
+    position: sticky;
+    top: 0;
     width: 100%;
     height: 6rem;
     z-index: 15;
-
-    @media screen and (max-width: $screen-xss) {
-      height: 4rem;
-    }
-  }
-
-  &__blank {
-    display: flex;
-    width: 100%;
-    height: 6rem;
 
     @media screen and (max-width: $screen-xss) {
       height: 4rem;

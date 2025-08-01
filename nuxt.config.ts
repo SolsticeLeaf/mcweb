@@ -28,7 +28,7 @@ export default defineNuxtConfig({
       link: [
         {
           rel: 'icon',
-          type: 'image/x-icon',
+          type: 'image/webp',
           href: 'https://s3.sleaf.dev/mcweb/mc-gold-block.webp',
         },
       ],
@@ -53,8 +53,8 @@ export default defineNuxtConfig({
   plugins: ['@/plugins/Vue3Marquee.client.ts'],
   i18n: {
     locales: [
-      { code: 'en', iso: 'en-US', name: 'English', file: 'en-US.json' },
-      { code: 'ru', iso: 'ru-RU', name: 'Русский', file: 'ru-RU.json' },
+      { code: 'en', iso: 'en-US', name: 'English', file: 'en.json' },
+      { code: 'ru', iso: 'ru-RU', name: 'Русский', file: 'ru.json' },
     ],
     lazy: true,
     langDir: 'locales',
@@ -63,10 +63,10 @@ export default defineNuxtConfig({
     },
     detectBrowserLanguage: {
       useCookie: true,
-      fallbackLocale: 'en',
+      fallbackLocale: 'ru',
     },
     strategy: 'prefix',
-    defaultLocale: 'en',
+    defaultLocale: 'ru',
   },
   colorMode: {
     preference: 'system',

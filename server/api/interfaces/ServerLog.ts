@@ -1,4 +1,3 @@
-import { Player } from './Player';
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ServersLog extends Document {
@@ -37,10 +36,6 @@ export async function addServerLog(serverId: string, type: string, player: strin
     console.error('❌ Error in addServerLog:', error);
   }
 }
-
-// export async function getLogs(amount: number): Promise<ServersLog[]> {
-//   return ServersLogModel.find().sort({ $natural: -1 }).limit(amount);
-// }
 
 export async function getLogs(amount: number, serverId: string, player: string): Promise<ServersLog[]> {
   if (serverId === '') {

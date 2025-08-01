@@ -52,12 +52,12 @@ function getSkinLink(username: string): string {
     <div class="skin-block">
       <template v-if="isLoaded">
         <Suspense>
-          <NuxtImg :src="skinUrl" :alt="props.player" class="skin-img" :placeholder="[50, 50, 15, 5]" loading="lazy" decoding="async" />
+          <NuxtImg :src="skinUrl" :alt="props.player" class="skin-img" placeholder loading="lazy" decoding="async" />
         </Suspense>
       </template>
       <template v-else>
         <Suspense>
-          <NuxtImg :src="skinUrl" :alt="props.player" class="skin-img" :placeholder="[50, 50, 15, 5]" loading="lazy" decoding="async" />
+          <NuxtImg :src="skinUrl" :alt="props.player" class="skin-img" placeholder loading="lazy" decoding="async" />
         </Suspense>
       </template>
     </div>

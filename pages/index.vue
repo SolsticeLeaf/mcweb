@@ -124,13 +124,11 @@ onMounted(async () => {
 .body {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
-  top: 6rem;
-  position: absolute;
-  max-height: fit-content;
-  align-items: center;
+  align-content: center;
   gap: 1rem;
+  align-items: center;
   padding-top: 1rem;
   padding-bottom: 2rem;
 }

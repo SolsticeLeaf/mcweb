@@ -303,8 +303,6 @@ const getItemName = (type: ShopItem): string => {
   width: 100vw;
   gap: 1rem;
   z-index: 10;
-  position: absolute;
-  top: 6rem;
 }
 
 .wrapper {
